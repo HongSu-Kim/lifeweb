@@ -1,0 +1,31 @@
+server:
+  port: 8088
+  servlet:
+    encoding:
+      force: true
+      charset: UTF-8
+
+spring:
+  # mysql
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/lifeweb?serverTimezone=Asia/Seoul
+    username: lifeweb
+    password: a123
+  main:
+    allow-bean-definition-overriding: true
+    allow-circular-references: true
+  # jpa
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+        show_sql: true
+  # devtools
+  devtools:
+    livereload:
+      enabled: true
+    restart:
+      enabled: true
