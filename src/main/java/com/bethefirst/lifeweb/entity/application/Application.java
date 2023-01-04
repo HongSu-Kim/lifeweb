@@ -1,23 +1,23 @@
-package com.bethefirst.lifeweb.entity.review;
+package com.bethefirst.lifeweb.entity.application;
 
 import com.bethefirst.lifeweb.entity.campaign.Campaign;
 import com.bethefirst.lifeweb.entity.member.Member;
+import com.bethefirst.lifeweb.entity.member.Sns;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Entity
 @Getter
 @NoArgsConstructor
-public class Review {//리뷰
+public class Application {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "review_id")
-	private Long id;//리뷰ID PK
+	@Column(name = "application_id")
+	private Long id;//신청서ID PK
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "member_id")
@@ -27,7 +27,11 @@ public class Review {//리뷰
 	@JoinColumn(name = "campaign_id")
 	private Campaign campaign;//캠페인 FK
 
-	private String reviewUrl;//리뷰주소
-	private LocalDateTime created;//등록일
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "sns_id")
+	private Sns sns;//SNS FK
+
+	private LocalDateTime created;//신청일
+	private String memo;//신청한마디
 
 }

@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor
-public class SnsUrl {//SNS주소
+public class MemberSns {//SNS주소
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -17,6 +17,10 @@ public class SnsUrl {//SNS주소
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "member_id")
 	private Member member;//회원번호 FK
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "sns_id")
+	private Sns sns;//SNS FK
 
 	private String url;//SNS주소
 

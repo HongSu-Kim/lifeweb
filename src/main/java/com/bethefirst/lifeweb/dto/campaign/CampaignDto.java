@@ -19,12 +19,11 @@ public class CampaignDto {
 	private Long id;//캠페인ID
 
 	private String categoryName;//카테고리명
-	private String localName;//지역이름
 	private String typeName;//타입이름
 
 	private String title;//제목
 	private String fileName;//대표이미지
-	private String field;//제공내역 ---
+	private String provision;//제공내역
 	private LocalDateTime created;//등록일
 	private String reviewNotice;//리뷰주의사항
 	private String guideline;//가이드라인
@@ -33,25 +32,21 @@ public class CampaignDto {
 	private LocalDate StartDate;//등록시작일 ---
 	private LocalDate EndDate;//등록종료일 ---
 	private String keywords;//키워드
-	private String address;//주소
-	private String latitude;//위도
-	private String longitude;//경도
-	private String visitNotice;//방문주의사항
+	private String status;//진행상태
 
-	private List<String> snsList;//SNS
 	private List<String> imageList;//이미지
+	private List<String> snsList;//SNS
 
 	public CampaignDto(Campaign campaign) {
 
 		id = campaign.getId();
 
 		categoryName = campaign.getCampaignCategory().getName();
-		localName = campaign.getLocal().getName();
 		typeName = campaign.getCampaignType().getName();
 
 		title = campaign.getTitle();
 		fileName = campaign.getFileName();
-//		field = campaign.getField();
+		provision = campaign.getProvision();
 		created = campaign.getCreated();
 		reviewNotice = campaign.getReviewNotice();
 		guideline = campaign.getGuideline();
@@ -60,16 +55,14 @@ public class CampaignDto {
 //		StartDate = campaign.getStartDate();
 //		EndDate = campaign.getEndDate();
 		keywords = campaign.getKeywords();
-		address = campaign.getAddress();
-		latitude = campaign.getLatitude();
-		longitude = campaign.getLongitude();
+		status = campaign.getStatus();
 
 
-		snsList = campaign.getCampaignChannelList()
-				.stream().map(campaignChannel -> campaignChannel.getSns().getName())
-				.collect(Collectors.toList());
 		imageList = campaign.getCampaignImageList()
 				.stream().map(CampaignImage::getFileName)
+				.collect(Collectors.toList());
+		snsList = campaign.getCampaignSnsList()
+				.stream().map(campaignChannel -> campaignChannel.getSns().getName())
 				.collect(Collectors.toList());
 
 	}

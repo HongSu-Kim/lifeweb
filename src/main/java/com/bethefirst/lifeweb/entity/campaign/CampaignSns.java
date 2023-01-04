@@ -1,5 +1,6 @@
 package com.bethefirst.lifeweb.entity.campaign;
 
+import com.bethefirst.lifeweb.entity.member.Sns;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,10 +17,10 @@ public class CampaignSns {//캠페인SNS
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "campaign_id")
-	private Campaign campaign;//캠페인ID FK
+	private Campaign campaign;//캠페인 FK
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "sns_id")
-	private Sns sns;//SNSID FK
+	private Sns sns;//SNS FK
 
 }

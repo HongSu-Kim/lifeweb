@@ -2,7 +2,7 @@ package com.bethefirst.lifeweb.dto.member;
 
 import com.bethefirst.lifeweb.entity.member.Member;
 import com.bethefirst.lifeweb.entity.member.Role;
-import com.bethefirst.lifeweb.entity.member.SnsUrl;
+import com.bethefirst.lifeweb.entity.member.MemberSns;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -51,7 +51,7 @@ public class MemberDto {
 		point = member.getPoint();
 
 		urlList = member.getSnsUrlList()
-				.stream().map(SnsUrl::getUrl)
+				.stream().map(MemberSns::getUrl)
 				.collect(Collectors.toList());
 
 	}

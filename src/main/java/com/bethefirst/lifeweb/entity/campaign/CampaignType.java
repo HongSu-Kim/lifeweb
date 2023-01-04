@@ -10,7 +10,7 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor
-public class CampaignType {//캠페인타입
+public class CampaignType {//캠페인타입-방문형,배송형,기자단,방문기자단
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

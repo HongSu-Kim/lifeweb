@@ -20,6 +20,6 @@ public class Local {//지역
 	private String name;//지역이름
 
 	@OneToMany(mappedBy = "local")
-	private List<Campaign> campaignList = new ArrayList<>();//캠페인
+	private List<CampaignLocal> campaignLocalList = new ArrayList<>();//캠페인지역
 
 }

@@ -33,6 +33,6 @@ public class Member {//회원
 	private int point;//포인트
 
 	@OneToMany(mappedBy = "member")
-	private List<SnsUrl> snsUrlList = new ArrayList<>();//SNS주소
+	private List<MemberSns> memberSnsList = new ArrayList<>();//회원SNS
 
 }

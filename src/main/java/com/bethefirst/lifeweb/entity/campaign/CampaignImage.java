@@ -16,7 +16,7 @@ public class CampaignImage {//캠페인이미지
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "campaign_id")
-	private Campaign campaign;//캠페인ID FK
+	private Campaign campaign;//캠페인 FK
 
 	private String fileName;//이미지이름
 
