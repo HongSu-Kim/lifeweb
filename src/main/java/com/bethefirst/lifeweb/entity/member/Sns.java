@@ -16,8 +16,8 @@ public class Sns {//SNS
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "member_sns_id")
-	private Long id;//회원SNSID PK
+	@Column(name = "sns_id")
+	private Long id;//SNSID PK
 
 	private String name;//SNS이름
 

@@ -1,6 +1,6 @@
-package com.bethefirst.lifeweb.controller;
+package com.bethefirst.lifeweb.controller.member;
 
-import com.bethefirst.lifeweb.service.ReviewService;
+import com.bethefirst.lifeweb.service.member.interfaces.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -8,10 +8,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @RequiredArgsConstructor
 @Controller
-@RequestMapping("review")
+@RequestMapping("member")
 @Slf4j
-public class ReviewController {
+public class MemberController {
 
-	private final ReviewService reviewService;
+	private final MemberService memberService;
 
 }

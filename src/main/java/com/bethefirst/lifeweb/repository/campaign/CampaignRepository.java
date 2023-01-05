@@ -1,4 +1,4 @@
-package com.bethefirst.lifeweb.repository;
+package com.bethefirst.lifeweb.repository.campaign;
 
 import com.bethefirst.lifeweb.entity.campaign.Campaign;
 import org.springframework.data.jpa.repository.JpaRepository;

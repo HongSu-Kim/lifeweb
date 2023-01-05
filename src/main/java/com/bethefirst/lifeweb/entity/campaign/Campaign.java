@@ -34,10 +34,10 @@ public class Campaign {//캠페인
 	private LocalDateTime created;//등록일
 	private String reviewNotice;//리뷰주의사항
 	private String guideline;//가이드라인
-	private LocalDate receiveStartDate;//신청시작일
-	private LocalDate receiveEndDate;//신청종료일
-	private LocalDate StartDate;//등록시작일 ---
-	private LocalDate EndDate;//등록종료일 ---
+	private LocalDate applicationStartDate;//신청시작일
+	private LocalDate applicationEndDate;//신청종료일
+	private LocalDate filingStartDate;//등록시작일
+	private LocalDate filingEndDate;//등록종료일
 	private String keywords;//키워드
 	private String status;//진행상태
 
