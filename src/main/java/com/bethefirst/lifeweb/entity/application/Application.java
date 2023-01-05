@@ -31,7 +31,7 @@ public class Application {
 	@JoinColumn(name = "sns_id")
 	private Sns sns;//SNS FK
 
+	private String memo;//메모
 	private LocalDateTime created;//신청일
-	private String memo;//신청한마디
 
 }

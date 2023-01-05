@@ -11,7 +11,7 @@ public class MemberSns {//SNS주소
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "sns_url_id")
+	@Column(name = "member_sns_id")
 	private Long id;//SNS주소ID PK
 
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -22,6 +22,6 @@ public class MemberSns {//SNS주소
 	@JoinColumn(name = "sns_id")
 	private Sns sns;//SNS FK
 
-	private String url;//SNS주소
+	private String snsUrl;//SNS주소
 
 }

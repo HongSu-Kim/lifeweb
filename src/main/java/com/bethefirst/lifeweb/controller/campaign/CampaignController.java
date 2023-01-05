@@ -1,6 +1,6 @@
-package com.bethefirst.lifeweb.controller;
+package com.bethefirst.lifeweb.controller.campaign;
 
-import com.bethefirst.lifeweb.service.CampaignService;
+import com.bethefirst.lifeweb.service.campaign.interfaces.CampaignService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;

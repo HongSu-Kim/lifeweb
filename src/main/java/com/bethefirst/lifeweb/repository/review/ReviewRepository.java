@@ -1,4 +1,4 @@
-package com.bethefirst.lifeweb.repository;
+package com.bethefirst.lifeweb.repository.review;
 
 import com.bethefirst.lifeweb.entity.review.Review;
 import org.springframework.data.jpa.repository.JpaRepository;

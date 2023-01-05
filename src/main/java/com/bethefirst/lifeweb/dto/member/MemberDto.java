@@ -2,7 +2,6 @@ package com.bethefirst.lifeweb.dto.member;
 
 import com.bethefirst.lifeweb.entity.member.Member;
 import com.bethefirst.lifeweb.entity.member.Role;
-import com.bethefirst.lifeweb.entity.member.MemberSns;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -31,7 +30,7 @@ public class MemberDto {
 	private String extraAddress;//참고사항
 	private int point;//포인트
 
-	private List<String> urlList;//SNS주소
+	private List<MemberSnsDto> memberSnsList;//SNS주소
 
 	public MemberDto(Member member) {
 
@@ -50,8 +49,8 @@ public class MemberDto {
 		extraAddress = member.getExtraAddress();
 		point = member.getPoint();
 
-		urlList = member.getSnsUrlList()
-				.stream().map(MemberSns::getUrl)
+		memberSnsList = member.getMemberSnsList()
+				.stream().map(MemberSnsDto::new)
 				.collect(Collectors.toList());
 
 	}

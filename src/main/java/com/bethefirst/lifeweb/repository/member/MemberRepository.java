@@ -1,4 +1,4 @@
-package com.bethefirst.lifeweb.repository;
+package com.bethefirst.lifeweb.repository.member;
 
 import com.bethefirst.lifeweb.entity.member.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
