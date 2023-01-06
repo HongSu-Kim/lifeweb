@@ -10,7 +10,9 @@ import lombok.Setter;
 @NoArgsConstructor
 public class CampaignLocalDto {
 
-	private String localName;//지역 FK
+	private String campaign_local_id;//캠페인지역ID
+
+	private String localName;//지역
 
 	private String address;//주소
 	private String latitude;//위도

@@ -20,4 +20,9 @@ public class CampaignImage {//캠페인이미지
 
 	private String fileName;//이미지이름
 
+	public CampaignImage(Campaign campaign, String fileName) {
+		this.campaign = campaign;
+		this.fileName = fileName;
+	}
+
 }

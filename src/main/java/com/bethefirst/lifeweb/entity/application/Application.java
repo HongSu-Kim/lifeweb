@@ -33,5 +33,6 @@ public class Application {
 
 	private String memo;//메모
 	private LocalDateTime created;//신청일
+	private ApplicationStatus status;//상태
 
 }
