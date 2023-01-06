@@ -23,4 +23,12 @@ public class CampaignSns {//캠페인SNS
 	@JoinColumn(name = "sns_id")
 	private Sns sns;//SNS FK
 
+	private int headcount;//모집인원
+
+	public CampaignSns(Campaign campaign, Sns sns) {
+		this.campaign = campaign;
+		this.sns = sns;
+		this.headcount = headcount;
+	}
+
 }

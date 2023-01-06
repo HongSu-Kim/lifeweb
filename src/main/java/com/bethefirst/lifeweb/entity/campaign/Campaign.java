@@ -1,5 +1,6 @@
 package com.bethefirst.lifeweb.entity.campaign;
 
+import com.bethefirst.lifeweb.dto.campaign.CreateCampaignDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -39,7 +40,7 @@ public class Campaign {//캠페인
 	private LocalDate filingStartDate;//등록시작일
 	private LocalDate filingEndDate;//등록종료일
 	private String keywords;//키워드
-	private String status;//진행상태
+	private CampaignStatus status;//상태
 
 	@OneToOne(mappedBy = "campaign")
 	private CampaignLocal campaignLocal;//캠페인지역
@@ -49,5 +50,26 @@ public class Campaign {//캠페인
 
 	@OneToMany(mappedBy = "campaign")
 	private List<CampaignSns> campaignSnsList = new ArrayList<>();//캠페인채널
+
+	public Campaign(CampaignCategory campaignCategory, CampaignType campaignType, CreateCampaignDto createCampaignDto) {
+
+		this.campaignCategory = campaignCategory;
+		this.campaignType = campaignType;
+
+		this.special = createCampaignDto.getSpecial();
+		this.title = createCampaignDto.getTitle();
+		this.fileName = createCampaignDto.getFileName();
+		this.provision = createCampaignDto.getProvision();
+		this.created = LocalDateTime.now();
+		this.reviewNotice = createCampaignDto.getReviewNotice();
+		this.guideline = createCampaignDto.getGuideline();
+		this.applicationStartDate = createCampaignDto.getApplicationStartDate();
+		this.applicationEndDate = createCampaignDto.getApplicationEndDate();
+		this.filingStartDate = createCampaignDto.getFilingStartDate();
+		this.filingEndDate = createCampaignDto.getFilingEndDate();
+		this.keywords = createCampaignDto.getKeywords();
+		this.status = CampaignStatus.STAND;
+
+	}
 
 }

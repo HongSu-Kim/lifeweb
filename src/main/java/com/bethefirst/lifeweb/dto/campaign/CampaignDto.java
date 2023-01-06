@@ -2,6 +2,7 @@ package com.bethefirst.lifeweb.dto.campaign;
 
 import com.bethefirst.lifeweb.entity.campaign.Campaign;
 import com.bethefirst.lifeweb.entity.campaign.CampaignImage;
+import com.bethefirst.lifeweb.entity.campaign.CampaignStatus;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -33,7 +34,7 @@ public class CampaignDto {
 	private LocalDate filingStartDate;//등록시작일
 	private LocalDate filingEndDate;//등록종료일
 	private String keywords;//키워드
-	private String status;//진행상태
+	private CampaignStatus status;//진행상태
 
 	private CampaignLocalDto campaignLocalDto;//캠페인지역
 	private List<String> imageList;//이미지
