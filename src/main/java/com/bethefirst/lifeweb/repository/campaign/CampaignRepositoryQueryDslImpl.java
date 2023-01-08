@@ -26,6 +26,7 @@ public class CampaignRepositoryQueryDslImpl implements CampaignRepositoryQueryDs
 		queryFactory = new JPAQueryFactory(entityManager);
 	}
 
+	@Override
 	public Page<Campaign> findAllBySearchRequirements(SearchRequirements searchRequirements) {
 
 		List<Campaign> content = queryFactory
@@ -34,8 +35,8 @@ public class CampaignRepositoryQueryDslImpl implements CampaignRepositoryQueryDs
 				.where(
 						categoryNameEq(searchRequirements.getCategoryName()),
 						typeNameEq(searchRequirements.getTypeName()),
-						specialEq(searchRequirements.getSpecial())
-//						statusEq(searchRequirements.getStatus())
+						specialEq(searchRequirements.getSpecial()),
+						statusEq(searchRequirements.getStatus())
 				)
 				.orderBy()
 				.offset(searchRequirements.getPageable().getOffset())
@@ -75,9 +76,9 @@ public class CampaignRepositoryQueryDslImpl implements CampaignRepositoryQueryDs
 		return special == null ? null : campaign.special.eq(special);
 	}
 
-//	private BooleanExpression statusEq(CampaignStatus status) {
-//		return status == null ? null : campaign.status.eq();
-//	}
+	private BooleanExpression statusEq(CampaignStatus status) {
+		return status == null ? null : campaign.status.eq(status);
+	}
 
 	private BooleanExpression localNameEq(String localName) {
 		return localName == null ? null : campaign.campaignLocal.local.name.eq(localName);

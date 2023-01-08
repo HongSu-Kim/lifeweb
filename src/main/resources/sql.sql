@@ -1,10 +1,12 @@
 
-DROP TABLE IF EXISTS application;
-
 DROP TABLE IF EXISTS review;
+
+DROP TABLE IF EXISTS application_answer;
+DROP TABLE IF EXISTS application;
 
 DROP TABLE IF EXISTS campaign_sns;
 DROP TABLE IF EXISTS campaign_image;
+DROP TABLE IF EXISTS application_question;
 DROP TABLE IF EXISTS campaign_local;
 DROP TABLE IF EXISTS campaign;
 DROP TABLE IF EXISTS campaign_type;
@@ -80,10 +82,10 @@ CREATE TABLE campaign (
     created	                DATETIME	    DEFAULT NOW(),
     review_notice	        VARCHAR(6000)	NOT NULL,
     guideline	            VARCHAR(6000)	NOT NULL,
-    receive_start_date	    DATE	        NOT NULL,
-    receive_end_date	    DATE	        NOT NULL,
-    start_date	            DATE	        NOT NULL,
-    end_date	            DATE	        NOT NULL,
+    application_start_date	DATE	        NOT NULL,
+    application_end_date	DATE	        NOT NULL,
+    filing_start_date	    DATE	        NOT NULL,
+    filing_end_date	        DATE	        NOT NULL,
     keywords	            VARCHAR(255)	NOT NULL,
     status                  VARCHAR(10)	    NOT NULL,
     CONSTRAINT PK_CAMPAIGN PRIMARY KEY (campaign_id),
@@ -104,6 +106,16 @@ CREATE TABLE campaign_local (
     CONSTRAINT FK_CAMPAIGN_LOCAL_LOCAL FOREIGN KEY (local_id) REFERENCES local (local_id)
 );
 
+CREATE TABLE application_question (
+    application_question_id	BIGINT	        NOT NULL,
+    campaign_id	            BIGINT	        NOT NULL,
+    question	            VARCHAR(300)	NOT NULL,
+    type	                VARCHAR(10)	    NOT NULL,
+    items	                VARCHAR(100)	NULL,
+    CONSTRAINT PK_APPLICATION_QUESTION PRIMARY KEY (application_question_id),
+    CONSTRAINT FK_APPLICATION_QUESTION_CAMPAIGN FOREIGN KEY (campaign_id) REFERENCES campaign (campaign_id)
+);
+
 CREATE TABLE campaign_image (
     campaign_image_id	BIGINT	        NOT NULL,
     campaign_id	        BIGINT	        NOT NULL,
@@ -116,20 +128,10 @@ CREATE TABLE campaign_sns (
     campaign_sns_id	BIGINT	NOT NULL,
     campaign_id	    BIGINT	NOT NULL,
     sns_id	        BIGINT	NOT NULL,
+    headcount	    INT	    NOT NULL,
     CONSTRAINT PK_CAMPAIGN_SNS PRIMARY KEY (campaign_sns_id),
     CONSTRAINT FK_CAMPAIGN_SNS_CAMPAIGN FOREIGN KEY (campaign_id) REFERENCES campaign (campaign_id),
     CONSTRAINT FK_CAMPAIGN_SNS_SNS FOREIGN KEY (sns_id) REFERENCES sns (sns_id)
-);
-
-CREATE TABLE review (
-    review_id	BIGINT	        NOT NULL,
-    member_id	BIGINT	        NOT NULL,
-    campaign_id	BIGINT	        NOT NULL,
-    review_url	VARCHAR(255)	NOT NULL,
-    created	    DATETIME	    DEFAULT NOW(),
-    CONSTRAINT PK_REVIEW PRIMARY KEY (review_id),
-    CONSTRAINT FK_REVIEW_MEMBER FOREIGN KEY (member_id) REFERENCES member (member_id),
-    CONSTRAINT FK_REVIEW_CAMPAIGN FOREIGN KEY (campaign_id) REFERENCES campaign (campaign_id)
 );
 
 CREATE TABLE application (
@@ -139,8 +141,31 @@ CREATE TABLE application (
     sns_id	        BIGINT	        NOT NULL,
     created	        DATETIME	    DEFAULT NOW(),
     memo	        VARCHAR(500)    NOT NULL,
+    status	        VARCHAR(10)     NOT NULL,
     CONSTRAINT PK_REVIEW_IMAGE PRIMARY KEY (application_id),
     CONSTRAINT FK_REVIEW_IMAGE_MEMBER FOREIGN KEY (member_id) REFERENCES member (member_id),
     CONSTRAINT FK_REVIEW_IMAGE_CAMPAIGN FOREIGN KEY (campaign_id) REFERENCES campaign (campaign_id),
     CONSTRAINT FK_REVIEW_IMAGE_SNS FOREIGN KEY (sns_id) REFERENCES sns (sns_id)
+);
+
+CREATE TABLE application_answer (
+    application_answer_id	BIGINT	        NOT NULL,
+    application_id	        BIGINT	        NOT NULL,
+    application_question_id	BIGINT	        NOT NULL,
+    answer	                VARCHAR(300)	NULL,
+    CONSTRAINT PK_APPLICATION_ANSWER PRIMARY KEY (application_answer_id),
+    CONSTRAINT FK_APPLICATION_ANSWER_APPLICATION FOREIGN KEY (application_id) REFERENCES application (application_id),
+    CONSTRAINT FK_APPLICATION_ANSWER_APPLICATION_QUESTION FOREIGN KEY (application_question_id) REFERENCES application_question (application_question_id)
+);
+
+CREATE TABLE review (
+    review_id	BIGINT	        NOT NULL,
+    member_id	BIGINT	        NOT NULL,
+    campaign_id	BIGINT	        NOT NULL,
+    review_url	VARCHAR(255)	NOT NULL,
+    created	    DATETIME	    DEFAULT NOW(),
+    status	    VARCHAR(10)	    NOT NULL,
+    CONSTRAINT PK_REVIEW PRIMARY KEY (review_id),
+    CONSTRAINT FK_REVIEW_MEMBER FOREIGN KEY (member_id) REFERENCES member (member_id),
+    CONSTRAINT FK_REVIEW_CAMPAIGN FOREIGN KEY (campaign_id) REFERENCES campaign (campaign_id)
 );

@@ -19,7 +19,7 @@ public class SearchRequirements {
 	private String typeName;//타입
 	private Boolean special;//스페셜
 	private CampaignStatus status;//상태
-	private String localName;
-	private List<String> snsNameList;
+	private String localName;//지역
+	private List<String> snsNameList;//sns
 
 }
