@@ -7,7 +7,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Entity
 @Getter
@@ -29,5 +28,8 @@ public class Review {//리뷰
 
 	private String reviewUrl;//리뷰주소
 	private LocalDateTime created;//등록일
+
+	@Enumerated(EnumType.STRING)
+	private ReviewStatus status;//상태
 
 }

@@ -26,6 +26,7 @@ public class CampaignRepositoryQueryDslImpl implements CampaignRepositoryQueryDs
 		queryFactory = new JPAQueryFactory(entityManager);
 	}
 
+	@Override
 	public Page<Campaign> findAllBySearchRequirements(SearchRequirements searchRequirements) {
 
 		List<Campaign> content = queryFactory
@@ -76,7 +77,7 @@ public class CampaignRepositoryQueryDslImpl implements CampaignRepositoryQueryDs
 	}
 
 	private BooleanExpression statusEq(CampaignStatus status) {
-		return status == null ? null : campaign.status.eq(status.name());
+		return status == null ? null : campaign.status.eq(status);
 	}
 
 	private BooleanExpression localNameEq(String localName) {

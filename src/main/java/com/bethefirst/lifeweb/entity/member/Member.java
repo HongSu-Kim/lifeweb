@@ -18,7 +18,9 @@ public class Member {//회원
 	@Column(name = "member_id")
 	private Long id;//회원ID PK
 
+	@Enumerated(EnumType.STRING)
 	private Role role;//권한
+
 	private String email;//이메일
 	private String pwd;//비밀번호
 	private String fileName;//프로필이미지
