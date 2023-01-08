@@ -40,6 +40,8 @@ public class Campaign {//캠페인
 	private LocalDate filingStartDate;//등록시작일
 	private LocalDate filingEndDate;//등록종료일
 	private String keywords;//키워드
+
+	@Enumerated(EnumType.STRING)
 	private CampaignStatus status;//상태
 
 	@OneToOne(mappedBy = "campaign")
@@ -50,6 +52,9 @@ public class Campaign {//캠페인
 
 	@OneToMany(mappedBy = "campaign")
 	private List<CampaignSns> campaignSnsList = new ArrayList<>();//캠페인채널
+
+	@OneToMany(mappedBy = "campaign")
+	private List<ApplicationQuestion> applicationQuestionList = new ArrayList<>();//신청서질문
 
 	public Campaign(CampaignCategory campaignCategory, CampaignType campaignType, CreateCampaignDto createCampaignDto) {
 

@@ -2,6 +2,7 @@ package com.bethefirst.lifeweb.service.campaign;
 
 import com.bethefirst.lifeweb.dto.campaign.CampaignDto;
 import com.bethefirst.lifeweb.dto.campaign.CreateCampaignDto;
+import com.bethefirst.lifeweb.dto.campaign.SearchRequirements;
 import com.bethefirst.lifeweb.entity.campaign.*;
 import com.bethefirst.lifeweb.entity.member.Sns;
 import com.bethefirst.lifeweb.repository.campaign.*;
@@ -10,6 +11,7 @@ import com.bethefirst.lifeweb.service.campaign.interfaces.CampaignService;
 import com.bethefirst.lifeweb.util.ImageUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -67,12 +69,13 @@ public class CampaignServiceImpl implements CampaignService {
 	}
 
 	// 캠페인 리스트 조회
-	public List<CampaignDto> campaignDtoList() {
-
-
-
-		return null;
+	public Page<CampaignDto> campaignDtoList(SearchRequirements searchRequirements) {
+		return campaignRepository.findAllBySearchRequirements(searchRequirements).map(CampaignDto::new);
 	}
+	
+	// 캠페인 수정
+	public void updateCampaign() {
 
+	}
 
 }
