@@ -30,15 +30,15 @@ CREATE TABLE member (
     email           VARCHAR(30)	    NOT NULL,
     pwd	            VARCHAR(60)	    NOT NULL,
     file_name       VARCHAR(100)	NULL,
-    name            VARCHAR(30)	    NOT NULL,
+    name            VARCHAR(30)	    NULL,
     nickname        VARCHAR(30)	    NOT NULL,
-    gender          VARCHAR(10)     NOT NULL,
-    birth           DATE	        NOT NULL,
+    gender          VARCHAR(10)     NULL,
+    birth           DATE	        NULL,
     tel             CHAR(11)	    NULL,
-    postcode        CHAR(5)	        NOT NULL,
-    address         VARCHAR(100)    NOT NULL,
-    detail_address  VARCHAR(100)    NOT NULL,
-    extra_address   VARCHAR(100)    NOT NULL,
+    postcode        CHAR(5)	        NULL,
+    address         VARCHAR(100)    NULL,
+    detail_address  VARCHAR(100)    NULL,
+    extra_address   VARCHAR(100)    NULL,
     point           INT	            DEFAULT 0,
     CONSTRAINT PK_MEMBER PRIMARY KEY (member_id)
 );
@@ -169,3 +169,4 @@ CREATE TABLE review (
     CONSTRAINT FK_REVIEW_MEMBER FOREIGN KEY (member_id) REFERENCES member (member_id),
     CONSTRAINT FK_REVIEW_CAMPAIGN FOREIGN KEY (campaign_id) REFERENCES campaign (campaign_id)
 );
+
