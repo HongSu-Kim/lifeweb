@@ -1,4 +1,4 @@
-package com.bethefirst.lifeweb.util;
+package com.bethefirst.lifeweb.config.security;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;

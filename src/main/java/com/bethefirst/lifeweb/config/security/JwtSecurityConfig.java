@@ -1,7 +1,5 @@
 package com.bethefirst.lifeweb.config.security;
 
-import com.bethefirst.lifeweb.util.JwtFilter;
-import com.bethefirst.lifeweb.util.TokenProvider;
 import org.springframework.security.config.annotation.SecurityConfigurerAdapter;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.DefaultSecurityFilterChain;

@@ -1,8 +1,5 @@
 package com.bethefirst.lifeweb.config.security;
 
-import com.bethefirst.lifeweb.util.JwtAccessDeniedHandler;
-import com.bethefirst.lifeweb.util.JwtAuthenticationEntryPoint;
-import com.bethefirst.lifeweb.util.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

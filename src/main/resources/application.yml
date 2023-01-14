@@ -5,6 +5,7 @@ server:
       force: true
       charset: UTF-8
 
+
 spring:
   # mysql
   datasource:
@@ -35,3 +36,8 @@ jwt:
   header: Authorization
   secret: YmV0aGVmaXJzdC1saWZlLXNwcmluZy1ib290LWp3dC1zZWNyZXQtYmV0aGVmaXJzdC1saWZlLWp3dC1zZWNyZXQK
   token-validity-in-seconds: 86400
+
+
+basic:
+  image: basicimage.jpg
+
