@@ -1,6 +1,7 @@
 package com.bethefirst.lifeweb.entity.campaign;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -9,7 +10,7 @@ import java.util.List;
 
 @Entity
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CampaignType {//캠페인타입-방문형,배송형,기자단,방문기자단
 
 	@Id

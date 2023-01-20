@@ -1,7 +1,9 @@
 package com.bethefirst.lifeweb.entity.campaign;
 
 import com.bethefirst.lifeweb.dto.campaign.CreateCampaignDto;
+import com.bethefirst.lifeweb.dto.campaign.UpdateCampaignDto;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -12,7 +14,8 @@ import java.util.List;
 
 @Entity
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+//@EntityListeners(AuditingEntityListener.class)
 public class Campaign {//캠페인
 
 	@Id
@@ -32,7 +35,10 @@ public class Campaign {//캠페인
 	private String title;//제목
 	private String fileName;//대표이미지
 	private String provision;//제공내역
+
+//	@CreatedDate
 	private LocalDateTime created;//등록일
+
 	private String reviewNotice;//리뷰주의사항
 	private String guideline;//가이드라인
 	private LocalDate applicationStartDate;//신청시작일
@@ -47,34 +53,75 @@ public class Campaign {//캠페인
 	@OneToOne(mappedBy = "campaign")
 	private CampaignLocal campaignLocal;//캠페인지역
 
+	@OneToOne(mappedBy = "campaign")
+	private CampaignSns campaignSns;//캠페인SNS
+
 	@OneToMany(mappedBy = "campaign")
 	private List<CampaignImage> campaignImageList = new ArrayList<>();//캠페인이미지
 
 	@OneToMany(mappedBy = "campaign")
-	private List<CampaignSns> campaignSnsList = new ArrayList<>();//캠페인채널
-
-	@OneToMany(mappedBy = "campaign")
 	private List<ApplicationQuestion> applicationQuestionList = new ArrayList<>();//신청서질문
 
-	public Campaign(CampaignCategory campaignCategory, CampaignType campaignType, CreateCampaignDto createCampaignDto) {
+	private Campaign(CampaignCategory campaignCategory, CampaignType campaignType,
+					 Boolean special, String title, String fileName, String provision,
+					 String reviewNotice, String guideline,
+					 LocalDate applicationStartDate, LocalDate applicationEndDate,
+					 LocalDate filingStartDate, LocalDate filingEndDate, String keywords) {
 
 		this.campaignCategory = campaignCategory;
 		this.campaignType = campaignType;
 
-		this.special = createCampaignDto.getSpecial();
-		this.title = createCampaignDto.getTitle();
-		this.fileName = createCampaignDto.getFileName();
-		this.provision = createCampaignDto.getProvision();
+		this.special = special;
+		this.title = title;
+		this.fileName = fileName;
+		this.provision = provision;
 		this.created = LocalDateTime.now();
-		this.reviewNotice = createCampaignDto.getReviewNotice();
-		this.guideline = createCampaignDto.getGuideline();
-		this.applicationStartDate = createCampaignDto.getApplicationStartDate();
-		this.applicationEndDate = createCampaignDto.getApplicationEndDate();
-		this.filingStartDate = createCampaignDto.getFilingStartDate();
-		this.filingEndDate = createCampaignDto.getFilingEndDate();
-		this.keywords = createCampaignDto.getKeywords();
+		this.reviewNotice = reviewNotice;
+		this.guideline = guideline;
+		this.applicationStartDate = applicationStartDate;
+		this.applicationEndDate = applicationEndDate;
+		this.filingStartDate = filingStartDate;
+		this.filingEndDate = filingEndDate;
+		this.keywords = keywords;
 		this.status = CampaignStatus.STAND;
 
+	}
+
+	/** 캠페인 생성 */
+	public static Campaign createCampaign(CampaignCategory campaignCategory, CampaignType campaignType, CreateCampaignDto dto) {
+
+		return new Campaign(campaignCategory, campaignType,
+				dto.getSpecial(), dto.getTitle(), dto.getFileName(), dto.getProvision(),
+				dto.getReviewNotice(), dto.getGuideline(),
+				dto.getApplicationStartDate(), dto.getApplicationEndDate(),
+				dto.getFilingStartDate(), dto.getFilingEndDate(), dto.getKeywords());
+
+	}
+
+	/** 캠페인 수정 */
+	public void update(CampaignCategory campaignCategory, CampaignType campaignType, UpdateCampaignDto dto) {
+
+		this.campaignCategory = campaignCategory;
+		this.campaignType = campaignType;
+
+		this.special = dto.getSpecial();
+		this.title = dto.getTitle();
+		this.fileName = dto.getFileName();
+		this.provision = dto.getProvision();
+		this.reviewNotice = dto.getReviewNotice();
+		this.guideline = dto.getGuideline();
+		this.applicationStartDate = dto.getApplicationStartDate();
+		this.applicationEndDate = dto.getApplicationEndDate();
+		this.filingStartDate = dto.getFilingStartDate();
+		this.filingEndDate = dto.getFilingEndDate();
+		this.keywords = dto.getKeywords();
+		this.status = dto.getStatus();
+
+	}
+
+	/** 캠페인 상태 변경 */
+	public void updateStatus(CampaignStatus status) {
+		this.status = status;
 	}
 
 }

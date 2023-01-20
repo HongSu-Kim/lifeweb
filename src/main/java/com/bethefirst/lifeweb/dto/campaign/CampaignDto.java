@@ -37,8 +37,9 @@ public class CampaignDto {
 	private CampaignStatus status;//진행상태
 
 	private CampaignLocalDto campaignLocalDto;//캠페인지역
+	private String snsName;//SNS
 	private List<String> imageList;//이미지
-	private List<String> snsList;//SNS
+	private List<ApplicationQuestionDto> applicationQuestionDtoList;//신청서질문
 
 	public CampaignDto(Campaign campaign) {
 
@@ -62,11 +63,12 @@ public class CampaignDto {
 		status = campaign.getStatus();
 
 		campaignLocalDto = campaign.getCampaignLocal() == null ? null : new CampaignLocalDto(campaign.getCampaignLocal());
+		snsName = campaign.getCampaignSns().getSns().getName();
 		imageList = campaign.getCampaignImageList()
 				.stream().map(CampaignImage::getFileName)
 				.collect(Collectors.toList());
-		snsList = campaign.getCampaignSnsList()
-				.stream().map(campaignChannel -> campaignChannel.getSns().getName())
+		applicationQuestionDtoList = campaign.getApplicationQuestionList()
+				.stream().map(ApplicationQuestionDto::new)
 				.collect(Collectors.toList());
 
 	}
