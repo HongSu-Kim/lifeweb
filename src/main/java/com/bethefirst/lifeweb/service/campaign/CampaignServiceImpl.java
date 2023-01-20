@@ -31,7 +31,7 @@ public class CampaignServiceImpl implements CampaignService {
 	private final CampaignSnsRepository campaignSnsRepository;
 	private final SnsRepository snsRepository;
 	private final ApplicationQuestionRepository applicationQuestionRepository;
-
+	private final ImageUtil imageUtil;
 
 	/** 캠페인 생성 */
 	@Override
@@ -58,7 +58,7 @@ public class CampaignServiceImpl implements CampaignService {
 		// 캠페인이미지 저장
 		try {
 			// 이미지 파일 저장
-			List<String> fileNameList = ImageUtil.store(createCampaignDto.getUploadFile(), "campaign");
+			List<String> fileNameList = imageUtil.store(createCampaignDto.getUploadFile(), "campaign");
 			// DB에 이미지이름 저장
 			fileNameList.forEach(fileName -> campaignImageRepository.save(CampaignImage.createCampaignImage(campaign, fileName)));
 		} catch (IOException e) {
