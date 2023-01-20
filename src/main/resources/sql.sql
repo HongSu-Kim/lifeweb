@@ -19,32 +19,32 @@ DROP TABLE IF EXISTS sns;
 
 
 CREATE TABLE sns (
-    sns_id  BIGINT      NOT NULL,
+    sns_id  BIGINT      NOT NULL AUTO_INCREMENT,
     name    VARCHAR(30)	NOT NULL,
     CONSTRAINT PK_SNS PRIMARY KEY (sns_id)
 );
 
 CREATE TABLE member (
-    member_id       BIGINT	        NOT NULL,
+    member_id       BIGINT	        NOT NULL AUTO_INCREMENT,
     role            VARCHAR(10)     NOT NULL,
     email           VARCHAR(30)	    NOT NULL,
     pwd	            VARCHAR(60)	    NOT NULL,
     file_name       VARCHAR(100)	NULL,
-    name            VARCHAR(30)	    NOT NULL,
+    name            VARCHAR(30)	    NULL,
     nickname        VARCHAR(30)	    NOT NULL,
-    gender          VARCHAR(10)     NOT NULL,
-    birth           DATE	        NOT NULL,
+    gender          VARCHAR(10)     NULL,
+    birth           DATE	        NULL,
     tel             CHAR(11)	    NULL,
-    postcode        CHAR(5)	        NOT NULL,
-    address         VARCHAR(100)    NOT NULL,
-    detail_address  VARCHAR(100)    NOT NULL,
-    extra_address   VARCHAR(100)    NOT NULL,
+    postcode        CHAR(5)	        NULL,
+    address         VARCHAR(100)    NULL,
+    detail_address  VARCHAR(100)    NULL,
+    extra_address   VARCHAR(100)    NULL,
     point           INT	            DEFAULT 0,
     CONSTRAINT PK_MEMBER PRIMARY KEY (member_id)
 );
 
 CREATE TABLE member_sns (
-    member_sns_id   BIGINT	        NOT NULL,
+    member_sns_id   BIGINT	        NOT NULL AUTO_INCREMENT,
     member_id	    BIGINT	        NOT NULL,
     sns_id	        BIGINT	        NOT NULL,
     sns_url         VARCHAR(255)    NOT NULL,
@@ -54,25 +54,25 @@ CREATE TABLE member_sns (
 );
 
 CREATE TABLE local (
-    local_id	BIGINT	    NOT NULL,
+    local_id	BIGINT	    NOT NULL AUTO_INCREMENT,
     name	    VARCHAR(30)	NOT NULL,
     CONSTRAINT PK_LOCAL PRIMARY KEY (local_id)
 );
 
 CREATE TABLE campaign_category (
-    campaign_category_id	BIGINT	    NOT NULL,
+    campaign_category_id	BIGINT	    NOT NULL AUTO_INCREMENT,
     name	                VARCHAR(30)	NOT NULL,
     CONSTRAINT PK_CAMPAIGN_CATEGORY PRIMARY KEY (campaign_category_id)
 );
 
 CREATE TABLE campaign_type (
-    campaign_type_id	BIGINT	    NOT NULL,
+    campaign_type_id	BIGINT	    NOT NULL AUTO_INCREMENT,
     name	            VARCHAR(30)	NOT NULL,
     CONSTRAINT PK_CAMPAIGN_TYPE PRIMARY KEY (campaign_type_id)
 );
 
 CREATE TABLE campaign (
-    campaign_id	            BIGINT	        NOT NULL,
+    campaign_id	            BIGINT	        NOT NULL AUTO_INCREMENT,
     campaign_category_id	BIGINT	        NOT NULL,
     campaign_type_id	    BIGINT	        NOT NULL,
     special	                BOOLEAN	        NOT NULL,
@@ -94,20 +94,19 @@ CREATE TABLE campaign (
 );
 
 CREATE TABLE campaign_local (
-    campaign_local_id	BIGINT	        NOT NULL,
     campaign_id	        BIGINT	        NOT NULL,
     local_id	        BIGINT	        NOT NULL,
     address         	VARCHAR(255)	NOT NULL,
     latitude	        VARCHAR(30)	    NOT NULL,
     longitude	        VARCHAR(30)	    NOT NULL,
     visit_notice	    VARCHAR(1000)	NOT NULL,
-    CONSTRAINT PK_CAMPAIGN_LOCAL PRIMARY KEY (campaign_local_id),
+    CONSTRAINT PK_CAMPAIGN_LOCAL PRIMARY KEY (campaign_id),
     CONSTRAINT FK_CAMPAIGN_LOCAL_CAMPAIGN FOREIGN KEY (campaign_id) REFERENCES campaign (campaign_id),
     CONSTRAINT FK_CAMPAIGN_LOCAL_LOCAL FOREIGN KEY (local_id) REFERENCES local (local_id)
 );
 
 CREATE TABLE application_question (
-    application_question_id	BIGINT	        NOT NULL,
+    application_question_id	BIGINT	        NOT NULL AUTO_INCREMENT,
     campaign_id	            BIGINT	        NOT NULL,
     question	            VARCHAR(300)	NOT NULL,
     type	                VARCHAR(10)	    NOT NULL,
@@ -117,7 +116,7 @@ CREATE TABLE application_question (
 );
 
 CREATE TABLE campaign_image (
-    campaign_image_id	BIGINT	        NOT NULL,
+    campaign_image_id	BIGINT	        NOT NULL AUTO_INCREMENT,
     campaign_id	        BIGINT	        NOT NULL,
     file_name	        VARCHAR(100)	NOT NULL,
     CONSTRAINT PK_CAMPAIGN_IMAGE PRIMARY KEY (campaign_image_id),
@@ -125,7 +124,7 @@ CREATE TABLE campaign_image (
 );
 
 CREATE TABLE campaign_sns (
-    campaign_sns_id	BIGINT	NOT NULL,
+    campaign_sns_id	BIGINT	NOT NULL AUTO_INCREMENT,
     campaign_id	    BIGINT	NOT NULL,
     sns_id	        BIGINT	NOT NULL,
     headcount	    INT	    NOT NULL,
@@ -135,7 +134,7 @@ CREATE TABLE campaign_sns (
 );
 
 CREATE TABLE application (
-    application_id	BIGINT	        NOT NULL,
+    application_id	BIGINT	        NOT NULL AUTO_INCREMENT,
     member_id	    BIGINT	        NOT NULL,
     campaign_id	    BIGINT	        NOT NULL,
     sns_id	        BIGINT	        NOT NULL,
@@ -149,7 +148,7 @@ CREATE TABLE application (
 );
 
 CREATE TABLE application_answer (
-    application_answer_id	BIGINT	        NOT NULL,
+    application_answer_id	BIGINT	        NOT NULL AUTO_INCREMENT,
     application_id	        BIGINT	        NOT NULL,
     application_question_id	BIGINT	        NOT NULL,
     answer	                VARCHAR(300)	NULL,
@@ -159,7 +158,7 @@ CREATE TABLE application_answer (
 );
 
 CREATE TABLE review (
-    review_id	BIGINT	        NOT NULL,
+    review_id	BIGINT	        NOT NULL AUTO_INCREMENT,
     member_id	BIGINT	        NOT NULL,
     campaign_id	BIGINT	        NOT NULL,
     review_url	VARCHAR(255)	NOT NULL,
@@ -169,3 +168,4 @@ CREATE TABLE review (
     CONSTRAINT FK_REVIEW_MEMBER FOREIGN KEY (member_id) REFERENCES member (member_id),
     CONSTRAINT FK_REVIEW_CAMPAIGN FOREIGN KEY (campaign_id) REFERENCES campaign (campaign_id)
 );
+

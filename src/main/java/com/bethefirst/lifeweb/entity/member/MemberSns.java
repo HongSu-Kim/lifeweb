@@ -1,12 +1,15 @@
 package com.bethefirst.lifeweb.entity.member;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@EqualsAndHashCode
 public class MemberSns {//SNS주소
 
 	@Id
@@ -23,5 +26,21 @@ public class MemberSns {//SNS주소
 	private Sns sns;//SNS FK
 
 	private String snsUrl;//SNS주소
+
+	private MemberSns(Member member, Sns sns, String snsUrl) {
+		this.member = member;
+		this.sns = sns;
+		this.snsUrl = snsUrl;
+
+	}
+
+	public static MemberSns createMemberSns(Member member, Sns sns,String snsUrl){
+		return new MemberSns(member, sns, snsUrl);
+	}
+
+	public void updateMemberSnsByUpdateDto(String snsUrl){
+		this.snsUrl = snsUrl;
+	}
+
 
 }

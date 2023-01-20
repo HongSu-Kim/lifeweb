@@ -10,12 +10,17 @@ import lombok.Setter;
 @NoArgsConstructor
 public class MemberSnsDto {
 
-	private String snsName;//SNS
+	private Long snsId; //SNS PK
+	private String snsName; //SNS 이름
 	private String snsUrl;//SNS주소
 
-	public MemberSnsDto(MemberSns memberSns) {
-		snsName = memberSns.getSns().getName();
-		snsUrl = memberSns.getSnsUrl();
+	public MemberSnsDto(Long snsId, String snsName, String snsUrl) {
+		this.snsId = snsId;
+		this.snsName = snsName;
+		this.snsUrl = snsUrl;
 	}
 
+	public MemberSnsDto(MemberSns memberSns) {
+		this(memberSns.getSns().getId(),memberSns.getSns().getName(), memberSns.getSnsUrl());
+	}
 }
