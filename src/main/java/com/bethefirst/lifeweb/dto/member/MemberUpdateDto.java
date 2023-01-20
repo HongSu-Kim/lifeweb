@@ -4,6 +4,7 @@ package com.bethefirst.lifeweb.dto.member;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -24,7 +25,7 @@ public class MemberUpdateDto {
     private String address;
     private String detailAddress;
     private String extraAddress;
-    private String fileName;
+    private MultipartFile fileName;
     private List<Long> memberSnsId;
     private List<String> snsName;
     private List<String> snsUrl;

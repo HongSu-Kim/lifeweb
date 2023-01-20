@@ -49,8 +49,8 @@ public class MemberController {
     public void updateMember(@Valid @RequestBody MemberUpdateDto memberUpdateDto){
 
         Long currentMemberId = SecurityUtil.getCurrentMemberId().orElseThrow(()
-                -> new UnauthorizedException("asdasd."));
-        memberService.update(memberUpdateDto, currentMemberId);
+                -> new UnauthorizedException("Security Context에 인증 정보가 없습니다."));
+        memberService.updateMemberInfo(memberUpdateDto, currentMemberId);
 
     }
 
