@@ -1,5 +1,6 @@
 package com.bethefirst.lifeweb.dto.campaign;
 
+import com.bethefirst.lifeweb.entity.campaign.CampaignStatus;
 import com.bethefirst.lifeweb.entity.campaign.QuestionType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,7 +14,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-public class CreateCampaignDto {
+public class UpdateCampaignDto {
 
 	private String categoryName;//카테고리명
 	private String typeName;//타입이름
@@ -29,6 +30,7 @@ public class CreateCampaignDto {
 	private LocalDate filingStartDate;//등록시작일
 	private LocalDate filingEndDate;//등록종료일
 	private String keywords;//키워드
+	private CampaignStatus status;//상태
 
 	private String localName;//지역
 
@@ -37,10 +39,12 @@ public class CreateCampaignDto {
 	private String longitude;//경도
 	private String visitNotice;//방문주의사항
 
-	private List<MultipartFile> uploadFile;//이미지
 	private String snsName;//SNS
 	private Integer headcount;//모집인원
+
+	private List<MultipartFile> uploadFile;//이미지
 //	private List<ApplicationQuestionDto> applicationQuestionDtoList;//신청서질문
+	private List<Long> applicationQuestionId;//질문
 	private List<String> question;//질문
 	private List<QuestionType> type;//유형
 	private List<String> items;//항목
@@ -48,9 +52,8 @@ public class CreateCampaignDto {
 	public List<ApplicationQuestionDto> getApplicationQuestionDtoList() {
 		List<ApplicationQuestionDto> list = new ArrayList<>();
 		for (int i = 0; i < question.size(); i++) {
-			list.add(new ApplicationQuestionDto(question.get(i), type.get(i), items.get(i)));
+			list.add(new ApplicationQuestionDto(applicationQuestionId.get(i), question.get(i), type.get(i), items.get(i)));
 		}
 		return list;
 	}
-
 }

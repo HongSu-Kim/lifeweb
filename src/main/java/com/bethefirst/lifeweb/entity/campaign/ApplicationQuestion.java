@@ -1,7 +1,9 @@
 package com.bethefirst.lifeweb.entity.campaign;
 
+import com.bethefirst.lifeweb.dto.campaign.ApplicationQuestionDto;
 import com.bethefirst.lifeweb.entity.application.ApplicationAnswer;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -10,7 +12,7 @@ import java.util.List;
 
 @Entity
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ApplicationQuestion {//지역
 
 	@Id
@@ -31,5 +33,22 @@ public class ApplicationQuestion {//지역
 
 	@OneToMany(mappedBy = "applicationQuestion")
 	private List<ApplicationAnswer> applicationAnswerList = new ArrayList<>();//신청서답변
+
+	private ApplicationQuestion(Campaign campaign, String question, QuestionType type, String items) {
+		this.campaign = campaign;
+		this.question = question;
+		this.type = type;
+		this.items = items;
+	}
+
+	public static ApplicationQuestion createApplicationQuestion(Campaign campaign, ApplicationQuestionDto dto) {
+		return new ApplicationQuestion(campaign, dto.getQuestion(), dto.getType(), dto.getItems());
+	}
+
+	public void update(ApplicationQuestionDto dto) {
+		question = dto.getQuestion();
+		type = dto.getType();
+		items = dto.getItems();
+	}
 
 }
