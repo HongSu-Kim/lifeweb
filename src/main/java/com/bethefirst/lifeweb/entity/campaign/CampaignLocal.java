@@ -1,13 +1,15 @@
 package com.bethefirst.lifeweb.entity.campaign;
 
 import com.bethefirst.lifeweb.dto.campaign.CreateCampaignDto;
+import com.bethefirst.lifeweb.dto.campaign.UpdateCampaignDto;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CampaignLocal {//캠페인카테고리
 
 	@Id
@@ -27,16 +29,30 @@ public class CampaignLocal {//캠페인카테고리
 	private String longitude;//경도
 	private String visitNotice;//방문주의사항
 
-	public CampaignLocal(Campaign campaign, Local local, CreateCampaignDto createCampaignDto) {
+	private CampaignLocal(Campaign campaign, Local local, String address, String latitude, String longitude, String visitNotice) {
 
 		this.campaign = campaign;
 		this.local = local;
 
-		this.address = createCampaignDto.getAddress();
-		this.latitude = createCampaignDto.getLatitude();
-		this.longitude = createCampaignDto.getLongitude();
-		this.visitNotice = createCampaignDto.getVisitNotice();
+		this.address = address;
+		this.latitude = latitude;
+		this.longitude = longitude;
+		this.visitNotice = visitNotice;
 
 	}
 
+	public static CampaignLocal createCampaignLocal(Campaign campaign, Local local, CreateCampaignDto dto) {
+		return new CampaignLocal(campaign, local, dto.getAddress(), dto.getLatitude(), dto.getLongitude(), dto.getVisitNotice());
+	}
+
+	public void update(Campaign campaign, Local local, UpdateCampaignDto dto) {
+
+		this.local = local;
+
+		this.address = dto.getAddress();
+		this.latitude = dto.getLatitude();
+		this.longitude = dto.getLongitude();
+		this.visitNotice = dto.getVisitNotice();
+
+	}
 }

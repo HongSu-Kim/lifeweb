@@ -17,6 +17,8 @@ import org.springframework.data.domain.Sort;
 import java.util.List;
 
 import static com.bethefirst.lifeweb.entity.campaign.QCampaign.campaign;
+import static com.bethefirst.lifeweb.entity.campaign.QCampaignCategory.campaignCategory;
+import static com.bethefirst.lifeweb.entity.campaign.QCampaignType.campaignType;
 
 public class CampaignRepositoryQueryDslImpl implements CampaignRepositoryQueryDsl {
 
@@ -26,34 +28,47 @@ public class CampaignRepositoryQueryDslImpl implements CampaignRepositoryQueryDs
 		queryFactory = new JPAQueryFactory(entityManager);
 	}
 
+	/** 캠페인 리스트 조회 */
 	@Override
 	public Page<Campaign> findAllBySearchRequirements(SearchRequirements searchRequirements) {
 
+		// content
 		List<Campaign> content = queryFactory
 				.select(campaign)
+				.from(campaign)
+				.join(campaign.campaignCategory, campaignCategory).fetchJoin()
+				.join(campaign.campaignType, campaignType).fetchJoin()
+				.where(
+						categoryNameEq(searchRequirements.getCategoryName()),
+						typeNameEq(searchRequirements.getTypeName()),
+						specialEq(searchRequirements.getSpecial()),
+						statusEq(searchRequirements.getStatus()),
+						localNameEq(searchRequirements.getLocalName()),
+						snsNameListIn(searchRequirements.getSnsNameList())
+				)
+				.orderBy(orderBy(searchRequirements.getPageable()))
+				.offset(searchRequirements.getPageable().getOffset())
+				.limit(searchRequirements.getPageable().getPageSize())
+				.fetch();
+
+		// size
+		Long count = queryFactory
+				.select(campaign.count())
 				.from(campaign)
 				.where(
 						categoryNameEq(searchRequirements.getCategoryName()),
 						typeNameEq(searchRequirements.getTypeName()),
 						specialEq(searchRequirements.getSpecial()),
-						statusEq(searchRequirements.getStatus())
-				)
-				.orderBy()
-				.offset(searchRequirements.getPageable().getOffset())
-				.limit(searchRequirements.getPageable().getPageSize())
-				.fetch();
-
-		Long count = queryFactory
-				.select(campaign.count())
-				.from(campaign)
-				.where(
-
+						statusEq(searchRequirements.getStatus()),
+						localNameEq(searchRequirements.getLocalName()),
+						snsNameListIn(searchRequirements.getSnsNameList())
 				)
 				.fetchOne();
 
 		return new PageImpl<>(content, searchRequirements.getPageable(), count);
 	}
 
+	/** 정렬 설정 */
 	private OrderSpecifier<?> orderBy(Pageable pageable) {
 
 		for (Sort.Order o : pageable.getSort()) {
@@ -64,29 +79,35 @@ public class CampaignRepositoryQueryDslImpl implements CampaignRepositoryQueryDs
 		return null;
 	}
 
+	/** 카테고리 */
 	private BooleanExpression categoryNameEq(String categoryName) {
 		return categoryName == null ? null : campaign.campaignCategory.name.eq(categoryName);
 	}
 
+	/** 타입 */
 	private BooleanExpression typeNameEq(String typeName) {
 		return typeName == null ? null : campaign.campaignType.name.eq(typeName);
 	}
 
+	/** 스페셜 */
 	private BooleanExpression specialEq(Boolean special) {
 		return special == null ? null : campaign.special.eq(special);
 	}
 
+	/** 상태 */
 	private BooleanExpression statusEq(CampaignStatus status) {
 		return status == null ? null : campaign.status.eq(status);
 	}
 
+	/** 지역 */
 	private BooleanExpression localNameEq(String localName) {
 		return localName == null ? null : campaign.campaignLocal.local.name.eq(localName);
 	}
 
-//	private BooleanExpression snsNameListIn(String snsNameList) {
-//		return snsNameList == null ? null : campaign.campaignSnsList.eq(snsNameList);
-//	}
+	/** SNS */
+	private BooleanExpression snsNameListIn(List<String> snsNameList) {
+		return snsNameList == null ? null : campaign.campaignSns.sns.name.in(snsNameList);
+	}
 
 
 }

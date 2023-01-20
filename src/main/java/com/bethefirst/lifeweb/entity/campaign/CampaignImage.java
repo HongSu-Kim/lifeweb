@@ -1,12 +1,13 @@
 package com.bethefirst.lifeweb.entity.campaign;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class CampaignImage {//캠페인이미지
 
 	@Id
@@ -20,9 +21,13 @@ public class CampaignImage {//캠페인이미지
 
 	private String fileName;//이미지이름
 
-	public CampaignImage(Campaign campaign, String fileName) {
+	private CampaignImage(Campaign campaign, String fileName) {
 		this.campaign = campaign;
 		this.fileName = fileName;
+	}
+
+	public static CampaignImage createCampaignImage(Campaign campaign, String fileName) {
+		return new CampaignImage(campaign, fileName);
 	}
 
 }
