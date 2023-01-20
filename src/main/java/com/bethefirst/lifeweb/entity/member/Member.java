@@ -70,8 +70,6 @@ public class Member {//회원
 
 
 	//== 정보 수정 == /
-
-
 	public void updateMemberByUpdateDto(MemberUpdateDto memberUpdateDto){
 
 		this.name = memberUpdateDto.getName() == null ? null : memberUpdateDto.getName();
@@ -83,7 +81,14 @@ public class Member {//회원
 		this.address = memberUpdateDto.getAddress() == null ? null : memberUpdateDto.getAddress();
 		this.detailAddress = memberUpdateDto.getDetailAddress() == null ? null : memberUpdateDto.getDetailAddress();
 		this.extraAddress = memberUpdateDto.getExtraAddress() == null ? null : memberUpdateDto.getExtraAddress();
+
 	}
+
+	//회원 이미지 수정
+	public void updateFileName(String fileName){
+		this.fileName = fileName;
+	}
+
 
 
 	public void updatePassword(PasswordEncoder passwordEncoder, String pwd){
