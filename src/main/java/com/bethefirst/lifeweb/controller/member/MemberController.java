@@ -46,14 +46,25 @@ public class MemberController {
      */
     @PutMapping
     @ResponseStatus(HttpStatus.OK)
-    public void updateMember(@Valid @RequestBody MemberUpdateDto memberUpdateDto){
+    public void updateMember(@Valid MemberUpdateDto memberUpdateDto){
 
         Long currentMemberId = SecurityUtil.getCurrentMemberId().orElseThrow(()
                 -> new UnauthorizedException("Security Context에 인증 정보가 없습니다."));
-        memberService.updateMemberInfo(memberUpdateDto, currentMemberId);
 
+        if(memberUpdateDto.getNickname() != null)
+            //회원정보 수정
+            memberService.updateMemberInfo(memberUpdateDto, currentMemberId);
+
+        else if(memberUpdateDto.getFileName() != null)
+            //회원이미지 수정
+            memberService.updateMemberImage(memberUpdateDto.getFileName() , currentMemberId);
+
+        else if(memberUpdateDto.getSnsId() != null) {
+            //회원 SNS 수정
+            memberService.updateMemberSnsList(memberUpdateDto.getMemberSnsDtoList(),
+                    currentMemberId);
+        }
     }
-
 
     /**
      * 로그인

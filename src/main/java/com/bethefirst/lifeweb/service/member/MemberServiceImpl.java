@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
@@ -73,33 +74,33 @@ public class MemberServiceImpl implements MemberService {
 
 	/** 회원 이미지 수정 */
 	@Override
-	public void updateMemberImage(MemberUpdateDto memberUpdateDto, Long memberId) {
+	public void updateMemberImage(MultipartFile memberFileName, Long memberId) {
 		//회원 유효성 검사
 		Member member = memberRepository.findById(memberId).orElseThrow(()
 				-> new IllegalArgumentException("존재하지 않는 회원입니다. " + memberId));
 
 		//파일이 넘어온 경우 파일을 저장후 DB를 업데이트 합니다.
-		getSavedFileNameAfterSaveFile(memberUpdateDto).ifPresent(savedFileName ->
+		getSavedFileNameAfterSaveFile(memberFileName).ifPresent(savedFileName ->
 				member.updateFileName(savedFileName));
 
 	}
 
 	/** 회원 SNS 수정 */
 	@Override
-	public void updateMemberSnsList(MemberUpdateDto memberUpdateDto, Long memberId) {
+	public void updateMemberSnsList(List<MemberSnsDto> memberSnsDtoList, Long memberId) {
 		Member member = memberRepository.findById(memberId).orElseThrow(()
 				-> new IllegalArgumentException("존재하지 않는 회원입니다. " + memberId));
 
-		updateMemberSnsList(memberUpdateDto, member);
+		updateMemberSnsList(memberSnsDtoList, member);
 	}
 
 
 	/** DTO에 파일 이름이 있으면 파일을 저장후 저장된 파일이름을 반환합니다 */
-	private Optional<String> getSavedFileNameAfterSaveFile(MemberUpdateDto memberUpdateDto) {
+	private Optional<String> getSavedFileNameAfterSaveFile(MultipartFile memberFileName) {
 		String storeFileName = null;
 		try {
-			if(memberUpdateDto.getFileName() != null) {
-				storeFileName = imageUtil.store(memberUpdateDto.getFileName(), imageFolder);
+			if(memberFileName != null) {
+				storeFileName = imageUtil.store(memberFileName, imageFolder);
 			}
 		} catch (IOException ex) {
 			throw new RuntimeException("이미지 저장에 실패했습니다.");
@@ -110,26 +111,24 @@ public class MemberServiceImpl implements MemberService {
 
 
 	/** 넘어온 snsDto를 확인 후 DB에 수정,삭제,등록합니다. */
-	private void updateMemberSnsList(MemberUpdateDto memberUpdateDto, Member member) {
-		List<MemberSnsDto> memberSnsDtoList = memberUpdateDto.getMemberSnsDtoList();
-
-		if(memberSnsDtoList.isEmpty()){
-			throw new IllegalStateException("잘못된 요청입니다.");
-		}
+	private void updateMemberSnsList(List<MemberSnsDto> memberSnsDtoList, Member member) {
 
 		memberSnsDtoList.forEach(memberSnsDto -> {
-			if(memberSnsDto.getId() == 0){
+			if(memberSnsDto.getSnsId() == 0 || memberSnsDto.getSnsId() == null){
 				Sns sns = snsRepository.findByName(memberSnsDto.getSnsName()).orElseThrow(() -> {
-					throw new IllegalArgumentException("잘못된 SNS 이름 입니다.");
+					throw new IllegalArgumentException("잘못된 SNS 입니다.");
 				});
-				MemberSns createMemberSns = MemberSns.createMemberSns(member, sns);
+				MemberSns createMemberSns = MemberSns.createMemberSns(member, sns, memberSnsDto.getSnsUrl());
 				memberSnsRepository.save(createMemberSns);
 			}else{
 				member.getMemberSnsList().forEach(memberSns -> {
-					if(memberSns.getSns().getName() == memberSnsDto.getSnsName()){
+
+					if(memberSns.getSns().getId() == memberSnsDto.getSnsId()){
 						memberSns.updateMemberSnsByUpdateDto(memberSnsDto.getSnsUrl());
+					}else if(memberSnsDto.getSnsUrl() == null){
+						memberSnsRepository.delete(memberSns);
 					}
-					memberSnsRepository.delete(memberSns);
+
 				});
 			}
 		});

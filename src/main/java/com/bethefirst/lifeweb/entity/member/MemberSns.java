@@ -27,14 +27,15 @@ public class MemberSns {//SNS주소
 
 	private String snsUrl;//SNS주소
 
-	private MemberSns(Member member, Sns sns) {
+	private MemberSns(Member member, Sns sns, String snsUrl) {
 		this.member = member;
 		this.sns = sns;
+		this.snsUrl = snsUrl;
 
 	}
 
-	public static MemberSns createMemberSns(Member member, Sns sns){
-		return new MemberSns(member , sns);
+	public static MemberSns createMemberSns(Member member, Sns sns,String snsUrl){
+		return new MemberSns(member, sns, snsUrl);
 	}
 
 	public void updateMemberSnsByUpdateDto(String snsUrl){
