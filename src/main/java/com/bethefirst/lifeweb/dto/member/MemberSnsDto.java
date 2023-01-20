@@ -1,6 +1,5 @@
 package com.bethefirst.lifeweb.dto.member;
 
-import com.bethefirst.lifeweb.entity.member.MemberSns;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -10,12 +9,13 @@ import lombok.Setter;
 @NoArgsConstructor
 public class MemberSnsDto {
 
+	private Long id; //SNS PK
 	private String snsName;//SNS
 	private String snsUrl;//SNS주소
 
-	public MemberSnsDto(MemberSns memberSns) {
-		snsName = memberSns.getSns().getName();
-		snsUrl = memberSns.getSnsUrl();
+	public MemberSnsDto(Long id, String snsName, String snsUrl) {
+		this.id = id;
+		this.snsName = snsName;
+		this.snsUrl = snsUrl;
 	}
-
 }

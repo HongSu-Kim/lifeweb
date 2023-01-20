@@ -1,7 +1,5 @@
 package com.bethefirst.lifeweb.entity.member;
 
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

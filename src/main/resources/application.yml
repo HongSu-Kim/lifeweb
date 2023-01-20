@@ -41,3 +41,6 @@ jwt:
 basic:
   image: basicimage.jpg
 
+image_folder:
+  member: member
+

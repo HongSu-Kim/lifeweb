@@ -1,11 +1,15 @@
 package com.bethefirst.lifeweb.controller.member;
 
+import com.bethefirst.lifeweb.config.security.JwtFilter;
+import com.bethefirst.lifeweb.config.security.TokenProvider;
 import com.bethefirst.lifeweb.dto.jwt.TokenDto;
 import com.bethefirst.lifeweb.dto.member.JoinDto;
 import com.bethefirst.lifeweb.dto.member.LoginDto;
-import com.bethefirst.lifeweb.config.security.JwtFilter;
-import com.bethefirst.lifeweb.config.security.TokenProvider;
+import com.bethefirst.lifeweb.dto.member.MemberUpdateDto;
+import com.bethefirst.lifeweb.exception.UnauthorizedException;
 import com.bethefirst.lifeweb.service.member.interfaces.MemberService;
+import com.bethefirst.lifeweb.util.security.SecurityUtil;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -17,8 +21,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import jakarta.validation.Valid;
-
 @RestController
 @RequestMapping("/member")
 @RequiredArgsConstructor
@@ -28,13 +30,36 @@ public class MemberController {
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final MemberService memberService;
 
+    /**
+     * 회원 가입
+     * @param joinDto
+     */
     @ResponseStatus(HttpStatus.OK)
     @PostMapping("/join")
-    public void join(@Valid @RequestBody JoinDto joinDto){
+    public void join(@Valid @RequestBody JoinDto joinDto) {
         memberService.join(joinDto);
+    }
+
+    /**
+     * 회원정보 수정
+     * @param memberUpdateDto
+     */
+    @PutMapping
+    @ResponseStatus(HttpStatus.OK)
+    public void updateMember(@Valid @RequestBody MemberUpdateDto memberUpdateDto){
+
+        Long currentMemberId = SecurityUtil.getCurrentMemberId().orElseThrow(()
+                -> new UnauthorizedException("asdasd."));
+        memberService.update(memberUpdateDto, currentMemberId);
 
     }
 
+
+    /**
+     * 로그인
+     * @param loginDto
+     * @return ResponseEntity<TokenDto></TokenDto>
+     */
     @PostMapping("/login")
     public ResponseEntity<TokenDto> login(@Valid @RequestBody LoginDto loginDto) {
 

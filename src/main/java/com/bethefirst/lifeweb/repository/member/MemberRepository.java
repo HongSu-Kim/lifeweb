@@ -11,7 +11,8 @@ import java.util.Optional;
 public interface MemberRepository extends JpaRepository<Member, Long> {
 
     @EntityGraph(attributePaths = "memberSnsList")
-    Optional<Member> findOneWithMemberSnsListByEmail(String email);
+    Optional<Member> findOneWithMemberSnsListById(Long id);
+
 
     Optional<Member> findByEmail(String email);
 

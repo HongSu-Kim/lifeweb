@@ -10,4 +10,5 @@ import java.util.Optional;
 @Repository
 public interface SnsRepository extends JpaRepository<Sns, Long> {
 	List<Sns> findAllByNameIn(List<String> snsName);
+	Optional<Sns> findByName(String snsName);
 }

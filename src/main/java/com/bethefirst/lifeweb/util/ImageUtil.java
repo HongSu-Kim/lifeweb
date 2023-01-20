@@ -13,11 +13,12 @@ import java.util.List;
 import java.util.UUID;
 
 @Slf4j
+@Component
 public class ImageUtil {
 
 
 	// 이미지 저장
-	public static String store(MultipartFile multipartFile, String imageFolder) throws IOException {
+	public String store(MultipartFile multipartFile, String imageFolder) throws IOException {
 		if (multipartFile.isEmpty()) {
 			return null;
 		}
@@ -48,7 +49,7 @@ public class ImageUtil {
 		return storeFileName;
 	}
 
-	public static List<String> store(List<MultipartFile> multipartFileList, String imageFolder) throws IOException {
+	public List<String> store(List<MultipartFile> multipartFileList, String imageFolder) throws IOException {
 
 		List<String> list = new ArrayList<>();
 
@@ -66,7 +67,7 @@ public class ImageUtil {
 	}
 
 	// 이미지 삭제
-	public static void delete(String imageName, String imageFolder) {
+	public void delete(String imageName, String imageFolder) {
 		File file = new File(getFilePath() + imageFolder + "/" + imageName);
 
 		if (file.exists()) {
@@ -74,19 +75,19 @@ public class ImageUtil {
 		}
 	}
 
-	public static void delete(List<String> imageNameList, String imageFolder) {
+	public void delete(List<String> imageNameList, String imageFolder) {
 		for (String s : imageNameList) {
 			delete(s, imageFolder);
 		}
 	}
 
-	public static Boolean existsImage(String imageName, String imageFolder ) {
+	public Boolean existsImage(String imageName, String imageFolder ) {
 		File file = new File(getFilePath() + imageFolder + "/" + imageName);
 		return file.exists();
 	}
 
 	// 이미지 저장 경로
-	private static String getFilePath() {
+	private String getFilePath() {
 		return System.getProperty("user.dir") + "/src/img/";
 	}
 

@@ -21,8 +21,8 @@ public class JoinDto {
     private String pwd;
 
     @NotBlank(message = "닉네임은 필수 입력 값입니다.")
-    @Pattern(regexp = "/^[\\w\\Wㄱ-ㅎㅏ-ㅣ가-힣]{2,15}$/",
-            message = "닉네임은 특수문자를 제외한 2자 ~ 15자여야 합니다. ")
+//    @Pattern(regexp = "/^[\\w\\Wㄱ-ㅎㅏ-ㅣ가-힣]{2,15}$/",
+//            message = "닉네임은 특수문자를 제외한 2자 ~ 15자여야 합니다. ")
     private String nickname;
 
 }

@@ -1,5 +1,6 @@
 package com.bethefirst.lifeweb.config.security;
 
+import com.bethefirst.lifeweb.dto.CustomUser;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -11,7 +12,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
@@ -24,10 +24,12 @@ import java.util.stream.Collectors;
 public class TokenProvider implements InitializingBean {
 
     private final Logger logger = LoggerFactory.getLogger(TokenProvider.class);
-    private static final String AUTHORITIES_KEY = "auth";
+    private static final String AUTHORITIES_KEY = "role";
+    private static final String MEMBER_ID_KEY = "memberId";
     private final String secret;
     private final long tokenValidityInMilliseconds;
     private Key key;
+
 
     public TokenProvider(
             @Value("${jwt.secret}") String secret,
@@ -47,11 +49,14 @@ public class TokenProvider implements InitializingBean {
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));
 
+        CustomUser customUser = (CustomUser) authentication.getPrincipal();
+
         long now = (new Date()).getTime();
         Date validity = new Date(now + this.tokenValidityInMilliseconds);
 
         return Jwts.builder()
                 .setSubject(authentication.getName())
+                .claim(MEMBER_ID_KEY, customUser.getMemberId())
                 .claim(AUTHORITIES_KEY, authorities)
                 .signWith(key, SignatureAlgorithm.HS512)
                 .setExpiration(validity)
@@ -71,7 +76,10 @@ public class TokenProvider implements InitializingBean {
                         .map(SimpleGrantedAuthority::new)
                         .collect(Collectors.toList());
 
-        User principal = new User(claims.getSubject(), "", authorities);
+        Long memberId = Long.parseLong(claims.get(MEMBER_ID_KEY).toString());
+
+        CustomUser principal = new CustomUser(claims.getSubject(), "", authorities);
+        principal.setMemberId(memberId);
 
         return new UsernamePasswordAuthenticationToken(principal, token, authorities);
     }
