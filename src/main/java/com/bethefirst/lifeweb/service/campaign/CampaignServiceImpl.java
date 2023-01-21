@@ -9,11 +9,11 @@ import com.bethefirst.lifeweb.service.campaign.interfaces.CampaignService;
 import com.bethefirst.lifeweb.util.ImageUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.IOException;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -33,6 +33,9 @@ public class CampaignServiceImpl implements CampaignService {
 	private final ApplicationQuestionRepository applicationQuestionRepository;
 	private final ImageUtil imageUtil;
 
+	@Value("${image-folder.campaign}")
+	private String imageFolder;
+
 	/** 캠페인 생성 */
 	@Override
 	public void createCampaign(CreateCampaignDto createCampaignDto) {
@@ -42,6 +45,8 @@ public class CampaignServiceImpl implements CampaignService {
 				.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 카테고리입니다. " + createCampaignDto.getCategoryName()));
 		CampaignType campaignType = campaignTypeRepository.findByName(createCampaignDto.getTypeName())
 				.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 타입입니다. " + createCampaignDto.getTypeName()));
+		createCampaignDto.setFileName(imageUtil.store(createCampaignDto.getUploadFile(), imageFolder));// 이미지 파일 저장
+
 		Campaign campaign = Campaign.createCampaign(campaignCategory, campaignType, createCampaignDto);
 
 		campaignRepository.save(campaign);
@@ -56,14 +61,10 @@ public class CampaignServiceImpl implements CampaignService {
 		}
 
 		// 캠페인이미지 저장
-		try {
-			// 이미지 파일 저장
-			List<String> fileNameList = imageUtil.store(createCampaignDto.getUploadFile(), "campaign");
-			// DB에 이미지이름 저장
-			fileNameList.forEach(fileName -> campaignImageRepository.save(CampaignImage.createCampaignImage(campaign, fileName)));
-		} catch (IOException e) {
-			throw new RuntimeException("이미지 저장에 실패했습니다.");
-		}
+		//이미지 파일 저장
+		List<String> fileNameList = imageUtil.store(createCampaignDto.getUploadFileList(), imageFolder);
+		//DB에 이미지이름 저장
+		fileNameList.forEach(fileName -> campaignImageRepository.save(CampaignImage.createCampaignImage(campaign, fileName)));
 
 		// 캠페인SNS 저장
 		Sns sns = snsRepository.findByName(createCampaignDto.getSnsName())
@@ -97,17 +98,18 @@ public class CampaignServiceImpl implements CampaignService {
 	@Override
 	public void updateCampaign(Long campaignId, UpdateCampaignDto updateCampaignDto) {
 
-		//캠페인 수정
+		// 캠페인 수정
 		Campaign campaign = campaignRepository.findById(campaignId)
 				.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 캠페인입니다. " + campaignId));
 		CampaignCategory campaignCategory = campaignCategoryRepository.findByName(updateCampaignDto.getCategoryName())
 				.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 카테고리입니다. " + updateCampaignDto.getCategoryName()));
 		CampaignType campaignType = campaignTypeRepository.findByName(updateCampaignDto.getTypeName())
 				.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 타입입니다. " + updateCampaignDto.getTypeName()));
+		updateCampaignDto.setFileName(imageUtil.store(updateCampaignDto.getUploadFile(), imageFolder));// 이미지 파일 저장
 
 		campaign.update(campaignCategory, campaignType, updateCampaignDto);
 
-		//캠페인지역 수정
+		// 캠페인지역 수정
 		CampaignLocal campaignLocal = campaignLocalRepository.findById(campaign.getCampaignLocal().getId())
 				.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 캠페인지역입니다. " + campaign.getCampaignLocal().getId()));
 		Local local = localRepository.findByName(updateCampaignDto.getLocalName())
@@ -115,7 +117,7 @@ public class CampaignServiceImpl implements CampaignService {
 
 		campaignLocal.update(campaign, local, updateCampaignDto);
 
-		//캠페인SNS 수정
+		// 캠페인SNS 수정
 		CampaignSns campaignSns = campaignSnsRepository.findById(campaign.getCampaignSns().getId())
 				.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 캠페인SNS입니다. " + campaign.getCampaignSns().getId()));
 		Sns sns = snsRepository.findByName(updateCampaignDto.getSnsName())
@@ -123,31 +125,41 @@ public class CampaignServiceImpl implements CampaignService {
 
 		campaignSns.update(campaign, sns, updateCampaignDto.getHeadcount());
 
-		//캠페인이미지 수정
+		// 캠페인이미지 수정
+		//캠페인이미지 insert
+		imageUtil.store(updateCampaignDto.getUploadFileList(), imageFolder)
+				.forEach(fileName -> campaignImageRepository.save(CampaignImage.createCampaignImage(campaign, fileName)));
+		//캠페인이미지 delete
+		campaign.getCampaignImageList().stream().filter(campaignImage -> {
+			for (Long campaignImageId : updateCampaignDto.getCampaignImageId()) {
+				if (campaignImage.getId().equals(campaignImageId)) return false;
+			}
+			return true;
+		}).forEach(campaignImageId -> campaignImageRepository.deleteById(campaignId));
 
-
-		//신청서질문 수정
+		// 신청서질문 수정
 		List<ApplicationQuestion> applicationQuestionList = campaign.getApplicationQuestionList();
 		List<ApplicationQuestionDto> applicationQuestionDtoList = updateCampaignDto.getApplicationQuestionDtoList();
+
+		//신청서질문 insert
+		applicationQuestionDtoList.stream().filter(applicationQuestionDto -> applicationQuestionDto.getApplicationQuestionId() == 0)
+				.forEach(applicationQuestionDto -> applicationQuestionRepository.save(ApplicationQuestion.createApplicationQuestion(campaign, applicationQuestionDto)));
 
 		for (ApplicationQuestion applicationQuestion : applicationQuestionList) {
 			boolean result = false;
 			for (ApplicationQuestionDto applicationQuestionDto : applicationQuestionDtoList) {
-				// 신청서질문 update
+				//신청서질문 update
 				if (applicationQuestionDto.getApplicationQuestionId().equals(applicationQuestion.getId())) {
 					applicationQuestion.update(applicationQuestionDto);
 					result = true;
 					break;
 				}
 			}
-			// 신청서질문 delete
+			//신청서질문 delete
 			if (!result) {
 				applicationQuestionRepository.delete(applicationQuestion);
 			}
 		}
-		// 신청서질문 insert
-		applicationQuestionDtoList.stream().filter(applicationQuestionDto -> applicationQuestionDto.getApplicationQuestionId() == 0)
-				.forEach(applicationQuestionDto -> applicationQuestionRepository.save(ApplicationQuestion.createApplicationQuestion(campaign, applicationQuestionDto)));
 
 	}
 

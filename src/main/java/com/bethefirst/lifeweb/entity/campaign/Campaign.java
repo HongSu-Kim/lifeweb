@@ -106,7 +106,7 @@ public class Campaign {//캠페인
 
 		this.special = dto.getSpecial();
 		this.title = dto.getTitle();
-		this.fileName = dto.getFileName();
+		this.fileName = dto.getFileName() == null ? fileName : dto.getFileName();
 		this.provision = dto.getProvision();
 		this.reviewNotice = dto.getReviewNotice();
 		this.guideline = dto.getGuideline();

@@ -19,7 +19,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,8 +30,8 @@ import java.util.Optional;
 public class MemberServiceImpl implements MemberService {
 
 
-	@Value("${image_folder.member}")
-	private String imageFolder = "member";
+	@Value("${image-folder.member}")
+	private String imageFolder;
 	private final MemberRepository memberRepository;
 	private final SnsRepository snsRepository;
 	private final MemberSnsRepository memberSnsRepository;
@@ -98,12 +97,8 @@ public class MemberServiceImpl implements MemberService {
 	/** DTO에 파일 이름이 있으면 파일을 저장후 저장된 파일이름을 반환합니다 */
 	private Optional<String> getSavedFileNameAfterSaveFile(MultipartFile memberFileName) {
 		String storeFileName = null;
-		try {
-			if(memberFileName != null) {
-				storeFileName = imageUtil.store(memberFileName, imageFolder);
-			}
-		} catch (IOException ex) {
-			throw new RuntimeException("이미지 저장에 실패했습니다.");
+		if(memberFileName != null) {
+			storeFileName = imageUtil.store(memberFileName, imageFolder);
 		}
 
 		return Optional.ofNullable(storeFileName);
