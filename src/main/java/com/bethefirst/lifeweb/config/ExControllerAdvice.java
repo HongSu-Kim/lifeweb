@@ -11,16 +11,22 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class ExControllerAdvice {
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler
-    public ErrorResult illegalExHandler(IllegalArgumentException e ){
-        return new ErrorResult("BAD" , e.getMessage());
-    }
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	@ExceptionHandler
+	public ErrorResult illegalExHandler(IllegalArgumentException e){
+		return new ErrorResult("IllegalArgumentException" , e.getMessage());
+	}
+
+	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+	@ExceptionHandler
+	public ErrorResult runtimeExHandler(RuntimeException e){
+		return new ErrorResult("RuntimeException" , e.getMessage());
+	}
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler
-    public ErrorResult exceptionHandler(Exception e ){
-        return new ErrorResult("ERROR" , e.getMessage());
+    public ErrorResult exceptionHandler(Exception e){
+        return new ErrorResult("Exception" , e.getMessage());
     }
 }
 

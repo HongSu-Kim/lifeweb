@@ -75,7 +75,7 @@ CREATE TABLE campaign (
     campaign_id	            BIGINT	        NOT NULL AUTO_INCREMENT,
     campaign_category_id	BIGINT	        NOT NULL,
     campaign_type_id	    BIGINT	        NOT NULL,
-    special	                BOOLEAN	        NOT NULL,
+    special	                BOOLEAN	        DEFAULT FALSE,
     title	                VARCHAR(255)	NOT NULL,
     file_name	            VARCHAR(100)	NOT NULL,
     provision	            VARCHAR(500)	NOT NULL,
@@ -87,7 +87,7 @@ CREATE TABLE campaign (
     filing_start_date	    DATE	        NOT NULL,
     filing_end_date	        DATE	        NOT NULL,
     keywords	            VARCHAR(255)	NOT NULL,
-    status                  VARCHAR(10)	    NOT NULL,
+    status                  VARCHAR(10)	    DEFAULT 'STAND',
     CONSTRAINT PK_CAMPAIGN PRIMARY KEY (campaign_id),
     CONSTRAINT FK_CAMPAIGN_CAMPAIGN_CATEGORY FOREIGN KEY (campaign_category_id) REFERENCES campaign_category (campaign_category_id),
     CONSTRAINT FK_CAMPAIGN_CAMPAIGN_TYPE FOREIGN KEY (campaign_type_id) REFERENCES campaign_type (campaign_type_id)

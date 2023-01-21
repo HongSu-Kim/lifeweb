@@ -41,6 +41,7 @@ jwt:
 basic:
   image: basicimage.jpg
 
-image_folder:
+image-folder:
   member: member
+  campaign: campaign
 

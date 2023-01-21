@@ -1,7 +1,6 @@
 package com.bethefirst.lifeweb.util;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -18,7 +17,7 @@ public class ImageUtil {
 
 
 	// 이미지 저장
-	public String store(MultipartFile multipartFile, String imageFolder) throws IOException {
+	public String store(MultipartFile multipartFile, String imageFolder) {
 		if (multipartFile.isEmpty()) {
 			return null;
 		}
@@ -43,13 +42,17 @@ public class ImageUtil {
 			file = new File(path, storeFileName);
 		} while (file.exists());
 
-		FileCopyUtils.copy(multipartFile.getBytes(), file);
+		try {
+			FileCopyUtils.copy(multipartFile.getBytes(), file);
+		} catch (IOException e) {
+			throw new RuntimeException("이미지 저장에 실패했습니다.");
+		}
 		log.info("이미지 저장 완료");
 
 		return storeFileName;
 	}
 
-	public List<String> store(List<MultipartFile> multipartFileList, String imageFolder) throws IOException {
+	public List<String> store(List<MultipartFile> multipartFileList, String imageFolder) {
 
 		List<String> list = new ArrayList<>();
 

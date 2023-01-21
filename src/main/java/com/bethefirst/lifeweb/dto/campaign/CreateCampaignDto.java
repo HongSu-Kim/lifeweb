@@ -21,6 +21,7 @@ public class CreateCampaignDto {
 	private Boolean special;//스페셜
 	private String title;//제목
 	private String fileName;//대표이미지
+	private MultipartFile uploadFile;//대표이미지 파일
 	private String provision;//제공내역
 	private String reviewNotice;//리뷰주의사항
 	private String guideline;//가이드라인
@@ -37,7 +38,7 @@ public class CreateCampaignDto {
 	private String longitude;//경도
 	private String visitNotice;//방문주의사항
 
-	private List<MultipartFile> uploadFile;//이미지
+	private List<MultipartFile> uploadFileList;//이미지
 	private String snsName;//SNS
 	private Integer headcount;//모집인원
 //	private List<ApplicationQuestionDto> applicationQuestionDtoList;//신청서질문
