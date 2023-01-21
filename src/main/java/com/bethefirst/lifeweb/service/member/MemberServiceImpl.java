@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -78,9 +79,16 @@ public class MemberServiceImpl implements MemberService {
 		Member member = memberRepository.findById(memberId).orElseThrow(()
 				-> new IllegalArgumentException("존재하지 않는 회원입니다. " + memberId));
 
-		//파일이 넘어온 경우 파일을 저장후 DB를 업데이트 합니다.
-		getSavedFileNameAfterSaveFile(memberFileName).ifPresent(savedFileName ->
-				member.updateFileName(savedFileName));
+		//파일을 파일저장소에 저장 후 저장된 파일명을 받환 받습니다.
+		String storeName = imageUtil.store(memberFileName, imageFolder);
+
+		//기존에 파일저장소에 있던 파일을 삭제합니다.
+		if(storeName != null){
+			imageUtil.delete(member.getFileName(), imageFolder);
+		}
+
+		//DB에 파일 이름을 저장합니다.
+		member.updateFileName(storeName);
 
 	}
 

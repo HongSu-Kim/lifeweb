@@ -14,7 +14,7 @@ public interface MemberService {
     /** 회원 가입 */
     void join(JoinDto joinDto);
 
-    /** 회원 수정 */
+    /** 회원정보 수정 */
     void updateMemberInfo(MemberUpdateDto memberUpdateDto, Long memberId);
 
     /** 회원 이미지 수정 */

@@ -20,6 +20,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/member")
@@ -30,47 +31,37 @@ public class MemberController {
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final MemberService memberService;
 
-    /**
-     * 회원 가입
-     * @param joinDto
-     */
+    /** 회원 가입 */
     @ResponseStatus(HttpStatus.OK)
     @PostMapping("/join")
     public void join(@Valid @RequestBody JoinDto joinDto) {
         memberService.join(joinDto);
     }
 
-    /**
-     * 회원정보 수정
-     * @param memberUpdateDto
-     */
+    /** 회원정보 수정 */
     @PutMapping
     @ResponseStatus(HttpStatus.OK)
-    public void updateMember(@Valid MemberUpdateDto memberUpdateDto){
+    public void updateMember(@Valid @RequestBody MemberUpdateDto memberUpdateDto) {
 
         Long currentMemberId = SecurityUtil.getCurrentMemberId().orElseThrow(()
                 -> new UnauthorizedException("Security Context에 인증 정보가 없습니다."));
 
-        if(memberUpdateDto.getNickname() != null)
-            //회원정보 수정
-            memberService.updateMemberInfo(memberUpdateDto, currentMemberId);
+        memberService.updateMemberInfo(memberUpdateDto, currentMemberId);
 
-        else if(memberUpdateDto.getFileName() != null)
-            //회원이미지 수정
-            memberService.updateMemberImage(memberUpdateDto.getFileName() , currentMemberId);
-
-        else if(memberUpdateDto.getSnsId() != null) {
-            //회원 SNS 수정
-            memberService.updateMemberSnsList(memberUpdateDto.getMemberSnsDtoList(),
-                    currentMemberId);
-        }
     }
 
-    /**
-     * 로그인
-     * @param loginDto
-     * @return ResponseEntity<TokenDto></TokenDto>
-     */
+    /** 이미지 수정 */
+    @PutMapping("/images")
+    @ResponseStatus(HttpStatus.OK)
+    public void updateMemberImage(MultipartFile multipartFile){
+
+        Long currentMemberId = SecurityUtil.getCurrentMemberId().orElseThrow(()
+                -> new UnauthorizedException("Security Context에 인증 정보가 없습니다."));
+
+        memberService.updateMemberImage(multipartFile,currentMemberId);
+    }
+
+    /** 로그인 */
     @PostMapping("/login")
     public ResponseEntity<TokenDto> login(@Valid @RequestBody LoginDto loginDto) {
 

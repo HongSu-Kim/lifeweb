@@ -27,7 +27,6 @@ public class MemberUpdateDto {
     private String address;
     private String detailAddress;
     private String extraAddress;
-    private MultipartFile fileName;
     private List<Long> snsId;
     private List<String> snsName;
     private List<String> snsUrl;
