@@ -23,4 +23,17 @@ public class CampaignType {//캠페인타입-방문형,배송형,기자단,방�
 	@OneToMany(mappedBy = "campaignType")
 	private List<Campaign> campaignList = new ArrayList<>();//캠페인
 
+	private CampaignType(String name) {
+		this.name = name;
+	}
+
+	/** 캠페인타입 생성 */
+	public static CampaignType createCampaignType(String name) {
+		return new CampaignType(name);
+	}
+
+	/** 캠페인타입 수정 */
+	public void updateCampaignType(String name) {
+		this.name = name;
+	}
 }

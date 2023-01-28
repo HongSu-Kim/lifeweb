@@ -46,32 +46,38 @@ public class SecurityConfig {
 
                 .addFilterBefore(corsFilter, UsernamePasswordAuthenticationFilter.class)
 
-                /** 401 , 403 Exception 핸들링 */
+                // 401 , 403 Exception 핸들링
                 .exceptionHandling()
                 .authenticationEntryPoint(jwtAuthenticationEntryPoint)
                 .accessDeniedHandler(jwtAccessDeniedHandler)
 
+				//
+//                .and()
+//                .headers()
+//                .frameOptions()
+//                .sameOrigin()
 
-                .and()
-                .headers()
-                .frameOptions()
-                .sameOrigin()
-
-                /** 세션을 사용하지 않습니다 */
+                // 세션을 사용하지 않습니다
                 .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 
+				//
                 .and()
                 .formLogin().disable() //폼을 사용하지 않습니다.
                 .httpBasic().disable() //basic 방식을 사용하지 않습니다.
 
-                /** 요청 접근제한 설정 */
+                // 요청 접근제한 설정
                 .authorizeHttpRequests(authorize -> authorize
-                .requestMatchers("/admin/**").hasRole("ADMIN") // admin만 접근가능합니다.
-                .anyRequest().permitAll())
+						.requestMatchers(
+								"/sns", "/sns/**",
+								"/campaign-categories", "/campaign-categories/**",
+								"/campaign-types", "/campaign-types/**",
+								"/locals", "/locals/**"
+						).hasRole("ADMIN") // admin만 접근가능합니다.
+                		.anyRequest().permitAll())
 
-                /** 스프링시큐리티가 동작하기 전 토큰작업이 먼저 실행됩니다 */
+                // 스프링시큐리티가 동작하기 전 토큰작업이 먼저 실행됩니다
                 .apply(new JwtSecurityConfig(tokenProvider));
 
         return httpSecurity.build();
