@@ -13,7 +13,7 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class ApplicationQuestion {//지역
+public class ApplicationQuestion {//신청서질문
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,11 +41,13 @@ public class ApplicationQuestion {//지역
 		this.items = items;
 	}
 
+	/** 신청서질문 생성 */
 	public static ApplicationQuestion createApplicationQuestion(Campaign campaign, ApplicationQuestionDto dto) {
 		return new ApplicationQuestion(campaign, dto.getQuestion(), dto.getType(), dto.getItems());
 	}
 
-	public void update(ApplicationQuestionDto dto) {
+	/** 신청서질문 수정 */
+	public void updateApplicationQuestion(ApplicationQuestionDto dto) {
 		question = dto.getQuestion();
 		type = dto.getType();
 		items = dto.getItems();

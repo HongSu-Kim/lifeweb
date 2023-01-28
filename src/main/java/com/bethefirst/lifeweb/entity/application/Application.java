@@ -2,17 +2,19 @@ package com.bethefirst.lifeweb.entity.application;
 
 import com.bethefirst.lifeweb.entity.campaign.Campaign;
 import com.bethefirst.lifeweb.entity.member.Member;
-import com.bethefirst.lifeweb.entity.member.Sns;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
-@NoArgsConstructor
-public class Application {
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class Application {//신청서
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,14 +29,31 @@ public class Application {
 	@JoinColumn(name = "campaign_id")
 	private Campaign campaign;//캠페인 FK
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "sns_id")
-	private Sns sns;//SNS FK
-
 	private String memo;//메모
 	private LocalDateTime created;//신청일
 
 	@Enumerated(EnumType.STRING)
 	private ApplicationStatus status;//상태
+
+	@OneToMany(mappedBy = "application", cascade = CascadeType.REMOVE)
+	private List<ApplicationAnswer> applicationAnswerList = new ArrayList<>();
+
+	private Application(Member member, Campaign campaign, String memo) {
+		this.member = member;
+		this.campaign = campaign;
+		this.memo = memo;
+		this.created = LocalDateTime.now();
+		this.status = ApplicationStatus.UNSELECT;
+	}
+
+	/** 신청서 생성 */
+	public static Application createApplication(Member member, Campaign campaign, String memo) {
+		return new Application(member, campaign, memo);
+	}
+
+	/** 신청서 수정 */
+	public void updateApplication(String memo) {
+		this.memo = memo;
+	}
 
 }

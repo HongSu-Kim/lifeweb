@@ -2,14 +2,15 @@ package com.bethefirst.lifeweb.entity.application;
 
 import com.bethefirst.lifeweb.entity.campaign.ApplicationQuestion;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 
 @Entity
 @Getter
-@NoArgsConstructor
-public class ApplicationAnswer {
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class ApplicationAnswer {//신청서답변
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,4 +27,19 @@ public class ApplicationAnswer {
 
 	private String answer;//답변
 
+	private ApplicationAnswer(Application application, ApplicationQuestion applicationQuestion, String answer) {
+		this.application = application;
+		this.applicationQuestion = applicationQuestion;
+		this.answer = answer;
+	}
+
+	/** 신청서답변 생성 */
+	public static ApplicationAnswer createApplicationAnswer(Application application, ApplicationQuestion applicationQuestion, String answer) {
+		return new ApplicationAnswer(application, applicationQuestion, answer);
+	}
+
+	/** 신청서답변 수정 */
+	public void updateApplicationAnswer(String answer) {
+		this.answer = answer;
+	}
 }
