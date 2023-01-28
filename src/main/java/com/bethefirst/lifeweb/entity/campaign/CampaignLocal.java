@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class CampaignLocal {//캠페인카테고리
+public class CampaignLocal {//캠페인지역
 
 	@Id
 	private Long id;
@@ -41,11 +41,13 @@ public class CampaignLocal {//캠페인카테고리
 
 	}
 
+	/** 캠페인지역 생성 */
 	public static CampaignLocal createCampaignLocal(Campaign campaign, Local local, CreateCampaignDto dto) {
 		return new CampaignLocal(campaign, local, dto.getAddress(), dto.getLatitude(), dto.getLongitude(), dto.getVisitNotice());
 	}
 
-	public void update(Campaign campaign, Local local, UpdateCampaignDto dto) {
+	/** 캠페인지역 수정 */
+	public void updateCampaignLocal(Local local, UpdateCampaignDto dto) {
 
 		this.local = local;
 
