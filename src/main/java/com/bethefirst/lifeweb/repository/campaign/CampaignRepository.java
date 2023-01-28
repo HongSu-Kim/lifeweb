@@ -10,8 +10,9 @@ import java.util.Optional;
 @Repository
 public interface CampaignRepository extends JpaRepository<Campaign, Long>, CampaignRepositoryQueryDsl {
 
+	/** 캠페인 조회 */
 	@Override
 	@EntityGraph(attributePaths = { "campaignCategory", "campaignType" })
-	Optional<Campaign> findById(Long aLong);
+	Optional<Campaign> findById(Long campaignId);
 
 }

@@ -26,6 +26,7 @@ public class CampaignImage {//캠페인이미지
 		this.fileName = fileName;
 	}
 
+	/** 캠페인이미지 생성 */
 	public static CampaignImage createCampaignImage(Campaign campaign, String fileName) {
 		return new CampaignImage(campaign, fileName);
 	}

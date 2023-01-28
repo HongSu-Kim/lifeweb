@@ -9,6 +9,7 @@ import lombok.Setter;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,6 +22,7 @@ public class CampaignDto {
 
 	private String categoryName;//카테고리명
 	private String typeName;//타입이름
+	private String snsName;//SNS
 
 	private Boolean special;//스페셜
 	private String title;//제목
@@ -29,15 +31,15 @@ public class CampaignDto {
 	private LocalDateTime created;//등록일
 	private String reviewNotice;//리뷰주의사항
 	private String guideline;//가이드라인
+	private List<String> keywords;//키워드
 	private LocalDate applicationStartDate;//신청시작일
 	private LocalDate applicationEndDate;//신청종료일
 	private LocalDate filingStartDate;//등록시작일
 	private LocalDate filingEndDate;//등록종료일
-	private String keywords;//키워드
+	private Integer headcount;//모집인원
 	private CampaignStatus status;//진행상태
 
 	private CampaignLocalDto campaignLocalDto;//캠페인지역
-	private String snsName;//SNS
 	private List<String> imageList;//이미지
 	private List<ApplicationQuestionDto> applicationQuestionDtoList;//신청서질문
 
@@ -47,6 +49,7 @@ public class CampaignDto {
 
 		categoryName = campaign.getCampaignCategory().getName();
 		typeName = campaign.getCampaignType().getName();
+		snsName = campaign.getSns().getName();
 
 		special = campaign.getSpecial();
 		title = campaign.getTitle();
@@ -59,11 +62,10 @@ public class CampaignDto {
 		applicationEndDate = campaign.getApplicationEndDate();
 		filingStartDate = campaign.getFilingStartDate();
 		filingEndDate = campaign.getFilingEndDate();
-		keywords = campaign.getKeywords();
+		keywords = Arrays.asList(campaign.getKeywords().split("#"));
 		status = campaign.getStatus();
 
 		campaignLocalDto = campaign.getCampaignLocal() == null ? null : new CampaignLocalDto(campaign.getCampaignLocal());
-		snsName = campaign.getCampaignSns().getSns().getName();
 		imageList = campaign.getCampaignImageList()
 				.stream().map(CampaignImage::getFileName)
 				.collect(Collectors.toList());

@@ -1,7 +1,6 @@
 package com.bethefirst.lifeweb.entity.member;
 
-import com.bethefirst.lifeweb.entity.application.Application;
-import com.bethefirst.lifeweb.entity.campaign.CampaignSns;
+import com.bethefirst.lifeweb.entity.campaign.Campaign;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,9 +24,6 @@ public class Sns {//SNS
 	private List<MemberSns> memberSnsList = new ArrayList<>();//회원SNS
 
 	@OneToMany(mappedBy = "sns")
-	private List<CampaignSns> campaignSnsList = new ArrayList<>();//캠페인타입
-
-	@OneToMany(mappedBy = "sns")
-	private List<Application> applicationList = new ArrayList<>();//신청서
+	private List<Campaign> campaignList = new ArrayList<>();//캠페인
 
 }

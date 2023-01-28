@@ -2,7 +2,7 @@ package com.bethefirst.lifeweb.service.campaign.interfaces;
 
 import com.bethefirst.lifeweb.dto.campaign.CampaignDto;
 import com.bethefirst.lifeweb.dto.campaign.CreateCampaignDto;
-import com.bethefirst.lifeweb.dto.campaign.SearchRequirements;
+import com.bethefirst.lifeweb.dto.campaign.CampaignSearchRequirements;
 import com.bethefirst.lifeweb.dto.campaign.UpdateCampaignDto;
 import com.bethefirst.lifeweb.entity.campaign.CampaignStatus;
 import org.springframework.data.domain.Page;
@@ -16,7 +16,7 @@ public interface CampaignService {
 	CampaignDto getCampaignDto(Long campaignId);
 
 	/** 캠페인 리스트 조회 */
-	Page<CampaignDto> getCampaignDtoList(SearchRequirements searchRequirements);
+	Page<CampaignDto> getCampaignDtoList(CampaignSearchRequirements searchRequirements);
 
 	/** 캠페인 수정 */
 	void updateCampaign(Long campaignId, UpdateCampaignDto campaignDto);

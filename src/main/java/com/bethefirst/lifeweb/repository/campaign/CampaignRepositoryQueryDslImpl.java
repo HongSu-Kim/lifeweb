@@ -1,6 +1,6 @@
 package com.bethefirst.lifeweb.repository.campaign;
 
-import com.bethefirst.lifeweb.dto.campaign.SearchRequirements;
+import com.bethefirst.lifeweb.dto.campaign.CampaignSearchRequirements;
 import com.bethefirst.lifeweb.entity.campaign.Campaign;
 import com.bethefirst.lifeweb.entity.campaign.CampaignStatus;
 import com.querydsl.core.types.Order;
@@ -8,7 +8,7 @@ import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.PathBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import jakarta.persistence.EntityManager;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -20,17 +20,14 @@ import static com.bethefirst.lifeweb.entity.campaign.QCampaign.campaign;
 import static com.bethefirst.lifeweb.entity.campaign.QCampaignCategory.campaignCategory;
 import static com.bethefirst.lifeweb.entity.campaign.QCampaignType.campaignType;
 
+@RequiredArgsConstructor
 public class CampaignRepositoryQueryDslImpl implements CampaignRepositoryQueryDsl {
 
 	private final JPAQueryFactory queryFactory;
 
-	public CampaignRepositoryQueryDslImpl(EntityManager entityManager) {
-		queryFactory = new JPAQueryFactory(entityManager);
-	}
-
 	/** 캠페인 리스트 조회 */
 	@Override
-	public Page<Campaign> findAllBySearchRequirements(SearchRequirements searchRequirements) {
+	public Page<Campaign> findAllBySearchRequirements(CampaignSearchRequirements searchRequirements) {
 
 		// content
 		List<Campaign> content = queryFactory
@@ -41,10 +38,10 @@ public class CampaignRepositoryQueryDslImpl implements CampaignRepositoryQueryDs
 				.where(
 						categoryNameEq(searchRequirements.getCategoryName()),
 						typeNameEq(searchRequirements.getTypeName()),
+						snsNameListIn(searchRequirements.getSnsNameList()),
 						specialEq(searchRequirements.getSpecial()),
 						statusEq(searchRequirements.getStatus()),
-						localNameEq(searchRequirements.getLocalName()),
-						snsNameListIn(searchRequirements.getSnsNameList())
+						localNameEq(searchRequirements.getLocalName())
 				)
 				.orderBy(orderBy(searchRequirements.getPageable()))
 				.offset(searchRequirements.getPageable().getOffset())
@@ -58,10 +55,10 @@ public class CampaignRepositoryQueryDslImpl implements CampaignRepositoryQueryDs
 				.where(
 						categoryNameEq(searchRequirements.getCategoryName()),
 						typeNameEq(searchRequirements.getTypeName()),
+						snsNameListIn(searchRequirements.getSnsNameList()),
 						specialEq(searchRequirements.getSpecial()),
 						statusEq(searchRequirements.getStatus()),
-						localNameEq(searchRequirements.getLocalName()),
-						snsNameListIn(searchRequirements.getSnsNameList())
+						localNameEq(searchRequirements.getLocalName())
 				)
 				.fetchOne();
 
@@ -89,6 +86,11 @@ public class CampaignRepositoryQueryDslImpl implements CampaignRepositoryQueryDs
 		return typeName == null ? null : campaign.campaignType.name.eq(typeName);
 	}
 
+	/** SNS */
+	private BooleanExpression snsNameListIn(List<String> snsNameList) {
+		return snsNameList == null ? null : campaign.sns.name.in(snsNameList);
+	}
+
 	/** 스페셜 */
 	private BooleanExpression specialEq(Boolean special) {
 		return special == null ? null : campaign.special.eq(special);
@@ -103,11 +105,5 @@ public class CampaignRepositoryQueryDslImpl implements CampaignRepositoryQueryDs
 	private BooleanExpression localNameEq(String localName) {
 		return localName == null ? null : campaign.campaignLocal.local.name.eq(localName);
 	}
-
-	/** SNS */
-	private BooleanExpression snsNameListIn(List<String> snsNameList) {
-		return snsNameList == null ? null : campaign.campaignSns.sns.name.in(snsNameList);
-	}
-
 
 }
