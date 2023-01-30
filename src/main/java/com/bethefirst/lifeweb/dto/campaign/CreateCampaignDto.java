@@ -1,6 +1,7 @@
 package com.bethefirst.lifeweb.dto.campaign;
 
-import com.bethefirst.lifeweb.entity.campaign.QuestionType;
+import com.bethefirst.lifeweb.entity.campaign.*;
+import com.bethefirst.lifeweb.entity.member.Sns;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
@@ -81,18 +82,34 @@ public class CreateCampaignDto {
 	private String longitude;//경도
 	private String visitNotice;//방문주의사항
 
-	private List<MultipartFile> uploadFileList;//이미지
+	private List<MultipartFile> uploadFileList = new ArrayList<>();//이미지
 
-	private List<String> question;//질문
+	private List<String> question = new ArrayList<>();//질문
 	private List<QuestionType> type;//유형
-	private List<String> items;//항목
+	private List<List<String>> items;//항목
+
+	public CampaignLocalDto getCampaignLocalDto() {
+		return new CampaignLocalDto(localId, address, latitude, longitude, visitNotice);
+	}
 
 	public List<ApplicationQuestionDto> getApplicationQuestionDtoList() {
 		List<ApplicationQuestionDto> list = new ArrayList<>();
 		for (int i = 0; i < question.size(); i++) {
-			list.add(new ApplicationQuestionDto(question.get(i), type.get(i), items.get(i)));
+			list.add(new ApplicationQuestionDto(question.get(i), type.get(i),
+					type.get(i) == QuestionType.RADIO || type.get(i) == QuestionType.CHECKBOX ? items.get(i) : null));
 		}
 		return list;
+	}
+
+	/** 캠페인 생성 */
+	public Campaign createCampaign(CampaignCategory campaignCategory, CampaignType campaignType, Sns sns) {
+		return new Campaign(campaignCategory, campaignType, sns,
+				special, title, fileName, provision,
+				reviewNotice, guideline, String.join("#", keywords),
+//				applicationStartDate, applicationEndDate,
+//				filingStartDate, filingEndDate, headcount);
+				LocalDate.parse(applicationStartDate), LocalDate.parse(applicationEndDate),
+				LocalDate.parse(filingStartDate), LocalDate.parse(filingEndDate), headcount);
 	}
 
 }

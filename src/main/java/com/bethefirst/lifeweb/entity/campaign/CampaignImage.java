@@ -21,14 +21,9 @@ public class CampaignImage {//캠페인이미지
 
 	private String fileName;//이미지이름
 
-	private CampaignImage(Campaign campaign, String fileName) {
+	public CampaignImage(Campaign campaign, String fileName) {
 		this.campaign = campaign;
 		this.fileName = fileName;
-	}
-
-	/** 캠페인이미지 생성 */
-	public static CampaignImage createCampaignImage(Campaign campaign, String fileName) {
-		return new CampaignImage(campaign, fileName);
 	}
 
 }

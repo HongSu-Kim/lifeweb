@@ -27,15 +27,10 @@ public class ApplicationAnswer {//신청서답변
 
 	private String answer;//답변
 
-	private ApplicationAnswer(Application application, ApplicationQuestion applicationQuestion, String answer) {
+	public ApplicationAnswer(Application application, ApplicationQuestion applicationQuestion, String answer) {
 		this.application = application;
 		this.applicationQuestion = applicationQuestion;
 		this.answer = answer;
-	}
-
-	/** 신청서답변 생성 */
-	public static ApplicationAnswer createApplicationAnswer(Application application, ApplicationQuestion applicationQuestion, String answer) {
-		return new ApplicationAnswer(application, applicationQuestion, answer);
 	}
 
 	/** 신청서답변 수정 */

@@ -40,15 +40,18 @@ public class ApplicationServiceImpl implements ApplicationService {
 		Campaign campaign = campaignRepository.findById(createApplicationDto.getCampaignId())
 				.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 캠페인입니다. " + createApplicationDto.getCampaignId()));
 
-		Application application = Application.createApplication(member, campaign, createApplicationDto.getMemo());
+		Application application = createApplicationDto.createApplication(member, campaign);
 
 		applicationRepository.save(application);
 
 		// 신청서답변 저장
-		for (ApplicationAnswerDto applicationAnswerDto : createApplicationDto.getApplicationAnswerDtoList()) {
-			ApplicationQuestion applicationQuestion = applicationQuestionRepository.findById(applicationAnswerDto.getId())
-					.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 신청서질문입니다. " + applicationAnswerDto.getId()));
-			applicationAnswerRepository.save(ApplicationAnswer.createApplicationAnswer(application, applicationQuestion, applicationAnswerDto.getAnswer()));
+		for (ApplicationQuestion applicationQuestion : campaign.getApplicationQuestionList()) {
+			for (ApplicationAnswerDto applicationAnswerDto : createApplicationDto.getApplicationAnswerDtoList()) {
+				if (applicationAnswerDto.getId().equals(applicationQuestion.getId())) {
+					applicationAnswerRepository.save(applicationAnswerDto.createApplicationAnswer(application, applicationQuestion));
+					break;
+				}
+			}
 		}
 		
 	}

@@ -32,4 +32,9 @@ public class CreateApplicationDto {
 		return list;
 	}
 
+	/** 신청서 생성 */
+	public Application createApplication(Member member, Campaign campaign) {
+		return new Application(member, campaign, memo);
+	}
+
 }

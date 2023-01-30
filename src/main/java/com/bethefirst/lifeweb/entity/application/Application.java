@@ -38,17 +38,12 @@ public class Application {//신청서
 	@OneToMany(mappedBy = "application", cascade = CascadeType.REMOVE)
 	private List<ApplicationAnswer> applicationAnswerList = new ArrayList<>();
 
-	private Application(Member member, Campaign campaign, String memo) {
+	public Application(Member member, Campaign campaign, String memo) {
 		this.member = member;
 		this.campaign = campaign;
 		this.memo = memo;
 		this.created = LocalDateTime.now();
 		this.status = ApplicationStatus.UNSELECT;
-	}
-
-	/** 신청서 생성 */
-	public static Application createApplication(Member member, Campaign campaign, String memo) {
-		return new Application(member, campaign, memo);
 	}
 
 	/** 신청서 수정 */

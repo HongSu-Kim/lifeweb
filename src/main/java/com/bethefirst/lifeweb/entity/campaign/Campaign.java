@@ -1,7 +1,5 @@
 package com.bethefirst.lifeweb.entity.campaign;
 
-import com.bethefirst.lifeweb.dto.campaign.CreateCampaignDto;
-import com.bethefirst.lifeweb.dto.campaign.UpdateCampaignDto;
 import com.bethefirst.lifeweb.entity.member.Sns;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -66,7 +64,7 @@ public class Campaign {//캠페인
 	@OneToMany(mappedBy = "campaign")
 	private List<ApplicationQuestion> applicationQuestionList = new ArrayList<>();//신청서질문
 
-	private Campaign(CampaignCategory campaignCategory, CampaignType campaignType, Sns sns,
+	public Campaign(CampaignCategory campaignCategory, CampaignType campaignType, Sns sns,
 					 Boolean special, String title, String fileName, String provision,
 					 String reviewNotice, String guideline, String keywords,
 					 LocalDate applicationStartDate, LocalDate applicationEndDate,
@@ -93,37 +91,31 @@ public class Campaign {//캠페인
 
 	}
 
-	/** 캠페인 생성 */
-	public static Campaign createCampaign(CampaignCategory campaignCategory, CampaignType campaignType, Sns sns, CreateCampaignDto dto) {
-
-		return new Campaign(campaignCategory, campaignType, sns,
-				dto.getSpecial(), dto.getTitle(), dto.getFileName(), dto.getProvision(),
-				dto.getReviewNotice(), dto.getGuideline(), String.join("#", dto.getKeywords()),
-				dto.getApplicationStartDate(), dto.getApplicationEndDate(),
-				dto.getFilingStartDate(), dto.getFilingEndDate(), dto.getHeadcount());
-
-	}
-
 	/** 캠페인 수정 */
-	public void updateCampaign(CampaignCategory campaignCategory, CampaignType campaignType, Sns sns, UpdateCampaignDto dto) {
+	public void updateCampaign(CampaignCategory campaignCategory, CampaignType campaignType, Sns sns,
+							   Boolean special, String title, String fileName, String provision,
+							   String reviewNotice, String guideline, String keywords,
+							   LocalDate applicationStartDate, LocalDate applicationEndDate,
+							   LocalDate filingStartDate, LocalDate filingEndDate,
+							   Integer headcount, CampaignStatus status) {
 
 		this.campaignCategory = campaignCategory;
 		this.campaignType = campaignType;
 		this.sns = sns;
 
-		this.special = dto.getSpecial();
-		this.title = dto.getTitle();
-		this.fileName = dto.getFileName() == null ? this.fileName : dto.getFileName();
-		this.provision = dto.getProvision();
-		this.reviewNotice = dto.getReviewNotice();
-		this.guideline = dto.getGuideline();
-		this.keywords = String.join("#", dto.getKeywords());
-		this.applicationStartDate = dto.getApplicationStartDate();
-		this.applicationEndDate = dto.getApplicationEndDate();
-		this.filingStartDate = dto.getFilingStartDate();
-		this.filingEndDate = dto.getFilingEndDate();
-		this.headcount = dto.getHeadcount();
-		this.status = dto.getStatus();
+		this.special = special;
+		this.title = title;
+		this.fileName = fileName == null ? this.fileName : fileName;
+		this.provision = provision;
+		this.reviewNotice = reviewNotice;
+		this.guideline = guideline;
+		this.keywords = keywords;
+		this.applicationStartDate = applicationStartDate;
+		this.applicationEndDate = applicationEndDate;
+		this.filingStartDate = filingStartDate;
+		this.filingEndDate = filingEndDate;
+		this.headcount = headcount;
+		this.status = status;
 
 	}
 
