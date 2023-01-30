@@ -1,6 +1,9 @@
 package com.bethefirst.lifeweb.dto.application;
 
-import jakarta.validation.constraints.NotBlank;
+import com.bethefirst.lifeweb.entity.application.Application;
+import com.bethefirst.lifeweb.entity.campaign.Campaign;
+import com.bethefirst.lifeweb.entity.member.Member;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -13,7 +16,7 @@ import java.util.List;
 @NoArgsConstructor
 public class CreateApplicationDto {
 
-	@NotBlank(message = "캠페인ID는 필수 입력 값입니다.")
+	@NotNull(message = "캠페인ID는 필수 입력 값입니다.")
 	private Long campaignId;//캠페인
 
 	private String memo;//메모
@@ -27,6 +30,11 @@ public class CreateApplicationDto {
 			list.add(new ApplicationAnswerDto(applicationQuestionId.get(i), answer.get(i)));
 		}
 		return list;
+	}
+
+	/** 신청서 생성 */
+	public Application createApplication(Member member, Campaign campaign) {
+		return new Application(member, campaign, memo);
 	}
 
 }

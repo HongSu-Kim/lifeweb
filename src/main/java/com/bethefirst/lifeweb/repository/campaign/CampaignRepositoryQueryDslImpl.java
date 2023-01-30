@@ -36,12 +36,12 @@ public class CampaignRepositoryQueryDslImpl implements CampaignRepositoryQueryDs
 				.join(campaign.campaignCategory, campaignCategory).fetchJoin()
 				.join(campaign.campaignType, campaignType).fetchJoin()
 				.where(
-						categoryNameEq(searchRequirements.getCategoryName()),
-						typeNameEq(searchRequirements.getTypeName()),
-						snsNameListIn(searchRequirements.getSnsNameList()),
+						categoryIdEq(searchRequirements.getCategoryId()),
+						typeIdEq(searchRequirements.getTypeId()),
+						snsIdListIn(searchRequirements.getSnsIdList()),
 						specialEq(searchRequirements.getSpecial()),
 						statusEq(searchRequirements.getStatus()),
-						localNameEq(searchRequirements.getLocalName())
+						localIdEq(searchRequirements.getLocalId())
 				)
 				.orderBy(orderBy(searchRequirements.getPageable()))
 				.offset(searchRequirements.getPageable().getOffset())
@@ -53,12 +53,12 @@ public class CampaignRepositoryQueryDslImpl implements CampaignRepositoryQueryDs
 				.select(campaign.count())
 				.from(campaign)
 				.where(
-						categoryNameEq(searchRequirements.getCategoryName()),
-						typeNameEq(searchRequirements.getTypeName()),
-						snsNameListIn(searchRequirements.getSnsNameList()),
+						categoryIdEq(searchRequirements.getCategoryId()),
+						typeIdEq(searchRequirements.getTypeId()),
+						snsIdListIn(searchRequirements.getSnsIdList()),
 						specialEq(searchRequirements.getSpecial()),
 						statusEq(searchRequirements.getStatus()),
-						localNameEq(searchRequirements.getLocalName())
+						localIdEq(searchRequirements.getLocalId())
 				)
 				.fetchOne();
 
@@ -77,18 +77,18 @@ public class CampaignRepositoryQueryDslImpl implements CampaignRepositoryQueryDs
 	}
 
 	/** 카테고리 */
-	private BooleanExpression categoryNameEq(String categoryName) {
-		return categoryName == null ? null : campaign.campaignCategory.name.eq(categoryName);
+	private BooleanExpression categoryIdEq(Long categoryId) {
+		return categoryId == null ? null : campaign.campaignCategory.id.eq(categoryId);
 	}
 
 	/** 타입 */
-	private BooleanExpression typeNameEq(String typeName) {
-		return typeName == null ? null : campaign.campaignType.name.eq(typeName);
+	private BooleanExpression typeIdEq(Long typeId) {
+		return typeId == null ? null : campaign.campaignType.id.eq(typeId);
 	}
 
 	/** SNS */
-	private BooleanExpression snsNameListIn(List<String> snsNameList) {
-		return snsNameList == null ? null : campaign.sns.name.in(snsNameList);
+	private BooleanExpression snsIdListIn(List<Long> snsIdList) {
+		return snsIdList == null ? null : campaign.sns.id.in(snsIdList);
 	}
 
 	/** 스페셜 */
@@ -102,8 +102,8 @@ public class CampaignRepositoryQueryDslImpl implements CampaignRepositoryQueryDs
 	}
 
 	/** 지역 */
-	private BooleanExpression localNameEq(String localName) {
-		return localName == null ? null : campaign.campaignLocal.local.name.eq(localName);
+	private BooleanExpression localIdEq(Long localId) {
+		return localId == null ? null : campaign.campaignLocal.local.id.eq(localId);
 	}
 
 }

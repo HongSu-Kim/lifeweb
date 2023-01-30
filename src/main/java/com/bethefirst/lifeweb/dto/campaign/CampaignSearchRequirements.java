@@ -11,15 +11,14 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-// 캠페인 검색 조건
-public class CampaignSearchRequirements {
+public class CampaignSearchRequirements {//캠페인 검색 조건
 
 	private Pageable pageable;//페이징
-	private String categoryName;//카테고리
-	private String typeName;//타입
-	private List<String> snsNameList;//SNS
+	private Long categoryId;//카테고리
+	private Long typeId;//타입
+	private List<Long> snsIdList;//SNS
 	private Boolean special;//스페셜
 	private CampaignStatus status;//상태
-	private String localName;//지역
+	private Long localId;//지역
 
 }

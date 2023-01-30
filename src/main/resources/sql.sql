@@ -159,3 +159,28 @@ CREATE TABLE review (
     CONSTRAINT FK_REVIEW_CAMPAIGN FOREIGN KEY (campaign_id) REFERENCES campaign (campaign_id)
 );
 
+INSERT INTO sns(name) VALUES('naver');
+INSERT INTO sns(name) VALUES('instagram');
+INSERT INTO sns(name) VALUES('youtube');
+
+INSERT INTO local(name) VALUES('서울');
+INSERT INTO local(name) VALUES('경기/인천');
+INSERT INTO local(name) VALUES('대전/충청');
+INSERT INTO local(name) VALUES('대구/경북');
+INSERT INTO local(name) VALUES('부산/경남');
+INSERT INTO local(name) VALUES('광주/전라');
+INSERT INTO local(name) VALUES('다른지역');
+
+INSERT INTO campaign_category(name) VALUES('맛집');
+INSERT INTO campaign_category(name) VALUES('뷰티');
+INSERT INTO campaign_category(name) VALUES('숙박');
+INSERT INTO campaign_category(name) VALUES('문화');
+INSERT INTO campaign_category(name) VALUES('배달');
+INSERT INTO campaign_category(name) VALUES('테이크아웃');
+INSERT INTO campaign_category(name) VALUES('기타');
+
+INSERT INTO campaign_type(name) VALUES('방문형');
+INSERT INTO campaign_type(name) VALUES('배송형');
+INSERT INTO campaign_type(name) VALUES('기자단');
+INSERT INTO campaign_type(name) VALUES('방문기자단');
+

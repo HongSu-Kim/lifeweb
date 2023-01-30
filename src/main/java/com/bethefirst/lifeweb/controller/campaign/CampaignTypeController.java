@@ -2,6 +2,8 @@ package com.bethefirst.lifeweb.controller.campaign;
 
 import com.bethefirst.lifeweb.dto.campaign.CampaignTypeDto;
 import com.bethefirst.lifeweb.service.campaign.interfaces.CampaignTypeService;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +20,7 @@ public class CampaignTypeController {
 
 	/** 캠페인타입 생성 */
 	@PostMapping
-	public void create(String campaignTypeName) {
+	public void create(@Valid @NotEmpty(message = "타입명은 필수 입력 값입니다.") String campaignTypeName) {
 		campaignTypeService.createCampaignType(campaignTypeName);
 	}
 
@@ -30,7 +32,7 @@ public class CampaignTypeController {
 
 	/** 캠페인타입 수정 */
 	@PutMapping("/{campaignTypeId}")
-	public void update(@PathVariable Long campaignTypeId, String campaignTypeName) {
+	public void update(@PathVariable Long campaignTypeId, @Valid @NotEmpty(message = "타입명은 필수 입력 값입니다.") String campaignTypeName) {
 		campaignTypeService.updateCampaignType(campaignTypeId, campaignTypeName);
 	}
 

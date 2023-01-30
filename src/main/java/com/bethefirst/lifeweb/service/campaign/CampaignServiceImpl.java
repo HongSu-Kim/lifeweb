@@ -49,7 +49,7 @@ public class CampaignServiceImpl implements CampaignService {
 
 		createCampaignDto.setFileName(imageUtil.store(createCampaignDto.getUploadFile(), imageFolder));//이미지 파일 저장
 
-		Campaign campaign = Campaign.createCampaign(campaignCategory, campaignType, sns, createCampaignDto);
+		Campaign campaign = createCampaignDto.createCampaign(campaignCategory, campaignType, sns);
 
 		campaignRepository.save(campaign);
 
@@ -58,18 +58,18 @@ public class CampaignServiceImpl implements CampaignService {
 			Local local = localRepository.findById(createCampaignDto.getLocalId())
 					.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 지역입니다. " + createCampaignDto.getLocalId()));
 
-			campaignLocalRepository.save(CampaignLocal.createCampaignLocal(campaign, local, createCampaignDto));
+			campaignLocalRepository.save(createCampaignDto.getCampaignLocalDto().createCampaignLocal(campaign, local));
 		}
 
 		// 캠페인이미지 저장
 		//이미지 파일 저장
 		List<String> fileNameList = imageUtil.store(createCampaignDto.getUploadFileList(), imageFolder);
 		//DB에 이미지이름 저장
-		fileNameList.forEach(fileName -> campaignImageRepository.save(CampaignImage.createCampaignImage(campaign, fileName)));
+		fileNameList.forEach(fileName -> campaignImageRepository.save(new CampaignImage(campaign, fileName)));
 
 		// 신청서질문 저장
 		createCampaignDto.getApplicationQuestionDtoList()
-				.forEach(applicationQuestionDto -> applicationQuestionRepository.save(ApplicationQuestion.createApplicationQuestion(campaign, applicationQuestionDto)));
+				.forEach(applicationQuestionDto -> applicationQuestionRepository.save(applicationQuestionDto.createApplicationQuestion(campaign)));
 
 	}
 
@@ -104,19 +104,24 @@ public class CampaignServiceImpl implements CampaignService {
 
 		updateCampaignDto.setFileName(imageUtil.store(updateCampaignDto.getUploadFile(), imageFolder));// 이미지 파일 저장
 
-		campaign.updateCampaign(campaignCategory, campaignType, sns, updateCampaignDto);
+		updateCampaignDto.updateCampaign(campaign, campaignCategory, campaignType, sns);
 
 		// 캠페인지역 수정
 		Local local = localRepository.findById(updateCampaignDto.getLocalId())
 				.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 지역입니다. " + updateCampaignDto.getLocalId()));
-		campaignLocalRepository.findById(campaign.getCampaignLocal().getId())
-				.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 캠페인지역입니다. " + campaign.getCampaignLocal().getId()))
-				.updateCampaignLocal(local, updateCampaignDto);
+		//캠페인지역 insert
+		if (campaign.getCampaignLocal() == null) {
+			campaignLocalRepository.save(updateCampaignDto.getCampaignLocalDto().createCampaignLocal(campaign, local));
+		//캠페인지역 update
+		} else {
+			CampaignLocal campaignLocal = campaign.getCampaignLocal();
+			updateCampaignDto.getCampaignLocalDto().updateCampaignLocal(campaignLocal, local);
+		}
 
 		// 캠페인이미지 수정
 		//캠페인이미지 insert
 		imageUtil.store(updateCampaignDto.getUploadFileList(), imageFolder)
-				.forEach(fileName -> campaignImageRepository.save(CampaignImage.createCampaignImage(campaign, fileName)));
+				.forEach(fileName -> campaignImageRepository.save(new CampaignImage(campaign, fileName)));
 		//캠페인이미지 delete
 		campaign.getCampaignImageList().stream().filter(campaignImage -> {
 			for (Long campaignImageId : updateCampaignDto.getCampaignImageId()) {
@@ -130,14 +135,14 @@ public class CampaignServiceImpl implements CampaignService {
 		List<ApplicationQuestionDto> applicationQuestionDtoList = updateCampaignDto.getApplicationQuestionDtoList();
 		//신청서질문 insert
 		applicationQuestionDtoList.stream().filter(applicationQuestionDto -> applicationQuestionDto.getId() == 0)
-				.forEach(applicationQuestionDto -> applicationQuestionRepository.save(ApplicationQuestion.createApplicationQuestion(campaign, applicationQuestionDto)));
+				.forEach(applicationQuestionDto -> applicationQuestionRepository.save(applicationQuestionDto.createApplicationQuestion(campaign)));
 		
 		for (ApplicationQuestion applicationQuestion : applicationQuestionList) {
 			boolean result = false;
 			for (ApplicationQuestionDto applicationQuestionDto : applicationQuestionDtoList) {
 				//신청서질문 update
 				if (applicationQuestionDto.getId().equals(applicationQuestion.getId())) {
-					applicationQuestion.updateApplicationQuestion(applicationQuestionDto);
+					applicationQuestionDto.updateApplicationQuestion(applicationQuestion);
 					result = true;
 					break;
 				}

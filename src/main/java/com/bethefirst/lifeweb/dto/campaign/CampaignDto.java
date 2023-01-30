@@ -58,11 +58,12 @@ public class CampaignDto {
 		created = campaign.getCreated();
 		reviewNotice = campaign.getReviewNotice();
 		guideline = campaign.getGuideline();
+		keywords = Arrays.asList(campaign.getKeywords().split("#"));
 		applicationStartDate = campaign.getApplicationStartDate();
 		applicationEndDate = campaign.getApplicationEndDate();
 		filingStartDate = campaign.getFilingStartDate();
 		filingEndDate = campaign.getFilingEndDate();
-		keywords = Arrays.asList(campaign.getKeywords().split("#"));
+		headcount = campaign.getHeadcount();
 		status = campaign.getStatus();
 
 		campaignLocalDto = campaign.getCampaignLocal() == null ? null : new CampaignLocalDto(campaign.getCampaignLocal());

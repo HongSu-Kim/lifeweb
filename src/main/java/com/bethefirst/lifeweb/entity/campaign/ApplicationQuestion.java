@@ -1,6 +1,5 @@
 package com.bethefirst.lifeweb.entity.campaign;
 
-import com.bethefirst.lifeweb.dto.campaign.ApplicationQuestionDto;
 import com.bethefirst.lifeweb.entity.application.ApplicationAnswer;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -34,23 +33,18 @@ public class ApplicationQuestion {//신청서질문
 	@OneToMany(mappedBy = "applicationQuestion")
 	private List<ApplicationAnswer> applicationAnswerList = new ArrayList<>();//신청서답변
 
-	private ApplicationQuestion(Campaign campaign, String question, QuestionType type, String items) {
+	public ApplicationQuestion(Campaign campaign, String question, QuestionType type, String items) {
 		this.campaign = campaign;
 		this.question = question;
 		this.type = type;
 		this.items = items;
 	}
 
-	/** 신청서질문 생성 */
-	public static ApplicationQuestion createApplicationQuestion(Campaign campaign, ApplicationQuestionDto dto) {
-		return new ApplicationQuestion(campaign, dto.getQuestion(), dto.getType(), dto.getItems());
-	}
-
 	/** 신청서질문 수정 */
-	public void updateApplicationQuestion(ApplicationQuestionDto dto) {
-		question = dto.getQuestion();
-		type = dto.getType();
-		items = dto.getItems();
+	public void updateApplicationQuestion(String question, QuestionType type, String items) {
+		this.question = question;
+		this.type = type;
+		this.items = items;
 	}
 
 }
