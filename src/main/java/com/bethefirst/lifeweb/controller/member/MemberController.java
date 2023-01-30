@@ -6,6 +6,7 @@ import com.bethefirst.lifeweb.dto.jwt.TokenDto;
 import com.bethefirst.lifeweb.dto.member.JoinDto;
 import com.bethefirst.lifeweb.dto.member.LoginDto;
 import com.bethefirst.lifeweb.dto.member.MemberUpdateDto;
+import com.bethefirst.lifeweb.dto.member.PasswordDto;
 import com.bethefirst.lifeweb.exception.UnauthorizedException;
 import com.bethefirst.lifeweb.service.member.interfaces.MemberService;
 import com.bethefirst.lifeweb.util.security.SecurityUtil;
@@ -23,7 +24,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
-@RequestMapping("/member")
+@RequestMapping("/members")
 @RequiredArgsConstructor
 @Slf4j
 public class MemberController {
@@ -33,21 +34,41 @@ public class MemberController {
 
     /** 회원 가입 */
     @ResponseStatus(HttpStatus.OK)
-    @PostMapping("/join")
+    @PostMapping
     public void join(@Valid @RequestBody JoinDto joinDto) {
         memberService.join(joinDto);
     }
 
     /** 회원정보 수정 */
-    @PutMapping
+    @PutMapping("/{memberId}")
     @ResponseStatus(HttpStatus.OK)
-    public void updateMember(@Valid @RequestBody MemberUpdateDto memberUpdateDto) {
+    public void updateMember(@PathVariable Long memberId,
+                             @Valid @RequestBody MemberUpdateDto memberUpdateDto) {
 
         Long currentMemberId = SecurityUtil.getCurrentMemberId().orElseThrow(()
                 -> new UnauthorizedException("Security Context에 인증 정보가 없습니다."));
 
         memberService.updateMemberInfo(memberUpdateDto, currentMemberId);
 
+    }
+
+    /** 로그인 */
+    @PostMapping("/login")
+    public ResponseEntity<TokenDto> login(@Valid @RequestBody LoginDto loginDto) {
+
+        UsernamePasswordAuthenticationToken authenticationToken =
+                new UsernamePasswordAuthenticationToken(loginDto.getEmail(), loginDto.getPwd());
+
+        Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+
+        String jwt = tokenProvider.createToken(authentication);
+
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add(JwtFilter.AUTHORIZATION_HEADER, "Bearer " + jwt);
+
+        return new ResponseEntity<>(new TokenDto(jwt), httpHeaders, HttpStatus.OK);
     }
 
     /** 이미지 수정 */
@@ -61,22 +82,17 @@ public class MemberController {
         memberService.updateMemberImage(multipartFile,currentMemberId);
     }
 
-    /** 로그인 */
-    @PostMapping("/login")
-    public ResponseEntity<TokenDto> login(@Valid @RequestBody LoginDto loginDto) {
+    /** 비밀번호 변경 */
+    @PutMapping("/passwords")
+    @ResponseStatus(HttpStatus.OK)
+    public void updatePassword(@RequestBody PasswordDto passwordDto){
 
-        UsernamePasswordAuthenticationToken authenticationToken =
-                new UsernamePasswordAuthenticationToken(loginDto.getEmail(), loginDto.getPwd());
+        Long currentMemberId = SecurityUtil.getCurrentMemberId().orElseThrow(()
+                -> new UnauthorizedException("Security Context에 인증 정보가 없습니다."));
 
-        Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-
-        String jwt = tokenProvider.createToken(authentication);
-
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.add(JwtFilter.AUTHORIZATION_HEADER, "Bearer " + jwt);
-
-        return new ResponseEntity<>(new TokenDto(jwt), httpHeaders, HttpStatus.OK);
+        memberService.updatePassword(passwordDto, currentMemberId);
     }
+
+
 
 }
