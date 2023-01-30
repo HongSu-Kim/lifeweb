@@ -16,9 +16,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-@RequiredArgsConstructor
 @Service
 @Transactional
+@RequiredArgsConstructor
 @Slf4j
 public class CampaignServiceImpl implements CampaignService {
 
@@ -28,7 +28,6 @@ public class CampaignServiceImpl implements CampaignService {
 	private final CampaignTypeRepository campaignTypeRepository;
 	private final LocalRepository localRepository;
 	private final CampaignImageRepository campaignImageRepository;
-	private final CampaignSnsRepository campaignSnsRepository;
 	private final SnsRepository snsRepository;
 	private final ApplicationQuestionRepository applicationQuestionRepository;
 	private final ImageUtil imageUtil;
@@ -41,41 +40,36 @@ public class CampaignServiceImpl implements CampaignService {
 	public void createCampaign(CreateCampaignDto createCampaignDto) {
 
 		// 캠페인 저장
-		CampaignCategory campaignCategory = campaignCategoryRepository.findByName(createCampaignDto.getCategoryName())
-				.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 카테고리입니다. " + createCampaignDto.getCategoryName()));
-		CampaignType campaignType = campaignTypeRepository.findByName(createCampaignDto.getTypeName())
-				.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 타입입니다. " + createCampaignDto.getTypeName()));
-		createCampaignDto.setFileName(imageUtil.store(createCampaignDto.getUploadFile(), imageFolder));// 이미지 파일 저장
+		CampaignCategory campaignCategory = campaignCategoryRepository.findById(createCampaignDto.getCategoryId())
+				.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 카테고리입니다. " + createCampaignDto.getCategoryId()));
+		CampaignType campaignType = campaignTypeRepository.findById(createCampaignDto.getTypeId())
+				.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 타입입니다. " + createCampaignDto.getTypeId()));
+		Sns sns = snsRepository.findById(createCampaignDto.getSnsId())
+				.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 SNS입니다. " + createCampaignDto.getSnsId()));
 
-		Campaign campaign = Campaign.createCampaign(campaignCategory, campaignType, createCampaignDto);
+		createCampaignDto.setFileName(imageUtil.store(createCampaignDto.getUploadFile(), imageFolder));//이미지 파일 저장
+
+		Campaign campaign = createCampaignDto.createCampaign(campaignCategory, campaignType, sns);
 
 		campaignRepository.save(campaign);
 
 		// 캠페인지역 저장
-		if (createCampaignDto.getLocalName() != null) {
-			Local local = localRepository.findByName(createCampaignDto.getLocalName())
-					.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 지역입니다. " + createCampaignDto.getLocalName()));
-			CampaignLocal campaignLocal = CampaignLocal.createCampaignLocal(campaign, local, createCampaignDto);
+		if (createCampaignDto.getLocalId() != null) {
+			Local local = localRepository.findById(createCampaignDto.getLocalId())
+					.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 지역입니다. " + createCampaignDto.getLocalId()));
 
-			campaignLocalRepository.save(campaignLocal);
+			campaignLocalRepository.save(createCampaignDto.getCampaignLocalDto().createCampaignLocal(campaign, local));
 		}
 
 		// 캠페인이미지 저장
 		//이미지 파일 저장
 		List<String> fileNameList = imageUtil.store(createCampaignDto.getUploadFileList(), imageFolder);
 		//DB에 이미지이름 저장
-		fileNameList.forEach(fileName -> campaignImageRepository.save(CampaignImage.createCampaignImage(campaign, fileName)));
-
-		// 캠페인SNS 저장
-		Sns sns = snsRepository.findByName(createCampaignDto.getSnsName())
-				.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 SNS입니다. " + createCampaignDto.getSnsName()));
-
-		campaignSnsRepository.save(CampaignSns.createCampaignSns(campaign, sns, createCampaignDto.getHeadcount()));
-
+		fileNameList.forEach(fileName -> campaignImageRepository.save(new CampaignImage(campaign, fileName)));
 
 		// 신청서질문 저장
 		createCampaignDto.getApplicationQuestionDtoList()
-				.forEach(applicationQuestionDto -> applicationQuestionRepository.save(ApplicationQuestion.createApplicationQuestion(campaign, applicationQuestionDto)));
+				.forEach(applicationQuestionDto -> applicationQuestionRepository.save(applicationQuestionDto.createApplicationQuestion(campaign)));
 
 	}
 
@@ -90,7 +84,7 @@ public class CampaignServiceImpl implements CampaignService {
 	/** 캠페인 리스트 조회 */
 	@Transactional(readOnly = true)
 	@Override
-	public Page<CampaignDto> getCampaignDtoList(SearchRequirements searchRequirements) {
+	public Page<CampaignDto> getCampaignDtoList(CampaignSearchRequirements searchRequirements) {
 		return campaignRepository.findAllBySearchRequirements(searchRequirements).map(CampaignDto::new);
 	}
 
@@ -101,34 +95,33 @@ public class CampaignServiceImpl implements CampaignService {
 		// 캠페인 수정
 		Campaign campaign = campaignRepository.findById(campaignId)
 				.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 캠페인입니다. " + campaignId));
-		CampaignCategory campaignCategory = campaignCategoryRepository.findByName(updateCampaignDto.getCategoryName())
-				.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 카테고리입니다. " + updateCampaignDto.getCategoryName()));
-		CampaignType campaignType = campaignTypeRepository.findByName(updateCampaignDto.getTypeName())
-				.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 타입입니다. " + updateCampaignDto.getTypeName()));
+		CampaignCategory campaignCategory = campaignCategoryRepository.findById(updateCampaignDto.getCategoryId())
+				.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 카테고리입니다. " + updateCampaignDto.getCategoryId()));
+		CampaignType campaignType = campaignTypeRepository.findById(updateCampaignDto.getTypeId())
+				.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 타입입니다. " + updateCampaignDto.getTypeId()));
+		Sns sns = snsRepository.findById(updateCampaignDto.getSnsId())
+				.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 SNS입니다. " + updateCampaignDto.getSnsId()));
+
 		updateCampaignDto.setFileName(imageUtil.store(updateCampaignDto.getUploadFile(), imageFolder));// 이미지 파일 저장
 
-		campaign.update(campaignCategory, campaignType, updateCampaignDto);
+		updateCampaignDto.updateCampaign(campaign, campaignCategory, campaignType, sns);
 
 		// 캠페인지역 수정
-		CampaignLocal campaignLocal = campaignLocalRepository.findById(campaign.getCampaignLocal().getId())
-				.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 캠페인지역입니다. " + campaign.getCampaignLocal().getId()));
-		Local local = localRepository.findByName(updateCampaignDto.getLocalName())
-				.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 지역입니다. " + updateCampaignDto.getLocalName()));
-
-		campaignLocal.update(campaign, local, updateCampaignDto);
-
-		// 캠페인SNS 수정
-		CampaignSns campaignSns = campaignSnsRepository.findById(campaign.getCampaignSns().getId())
-				.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 캠페인SNS입니다. " + campaign.getCampaignSns().getId()));
-		Sns sns = snsRepository.findByName(updateCampaignDto.getSnsName())
-				.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 SNS입니다. " + updateCampaignDto.getSnsName()));
-
-		campaignSns.update(campaign, sns, updateCampaignDto.getHeadcount());
+		Local local = localRepository.findById(updateCampaignDto.getLocalId())
+				.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 지역입니다. " + updateCampaignDto.getLocalId()));
+		//캠페인지역 insert
+		if (campaign.getCampaignLocal() == null) {
+			campaignLocalRepository.save(updateCampaignDto.getCampaignLocalDto().createCampaignLocal(campaign, local));
+		//캠페인지역 update
+		} else {
+			CampaignLocal campaignLocal = campaign.getCampaignLocal();
+			updateCampaignDto.getCampaignLocalDto().updateCampaignLocal(campaignLocal, local);
+		}
 
 		// 캠페인이미지 수정
 		//캠페인이미지 insert
 		imageUtil.store(updateCampaignDto.getUploadFileList(), imageFolder)
-				.forEach(fileName -> campaignImageRepository.save(CampaignImage.createCampaignImage(campaign, fileName)));
+				.forEach(fileName -> campaignImageRepository.save(new CampaignImage(campaign, fileName)));
 		//캠페인이미지 delete
 		campaign.getCampaignImageList().stream().filter(campaignImage -> {
 			for (Long campaignImageId : updateCampaignDto.getCampaignImageId()) {
@@ -140,17 +133,16 @@ public class CampaignServiceImpl implements CampaignService {
 		// 신청서질문 수정
 		List<ApplicationQuestion> applicationQuestionList = campaign.getApplicationQuestionList();
 		List<ApplicationQuestionDto> applicationQuestionDtoList = updateCampaignDto.getApplicationQuestionDtoList();
-
 		//신청서질문 insert
-		applicationQuestionDtoList.stream().filter(applicationQuestionDto -> applicationQuestionDto.getApplicationQuestionId() == 0)
-				.forEach(applicationQuestionDto -> applicationQuestionRepository.save(ApplicationQuestion.createApplicationQuestion(campaign, applicationQuestionDto)));
-
+		applicationQuestionDtoList.stream().filter(applicationQuestionDto -> applicationQuestionDto.getId() == 0)
+				.forEach(applicationQuestionDto -> applicationQuestionRepository.save(applicationQuestionDto.createApplicationQuestion(campaign)));
+		
 		for (ApplicationQuestion applicationQuestion : applicationQuestionList) {
 			boolean result = false;
 			for (ApplicationQuestionDto applicationQuestionDto : applicationQuestionDtoList) {
 				//신청서질문 update
-				if (applicationQuestionDto.getApplicationQuestionId().equals(applicationQuestion.getId())) {
-					applicationQuestion.update(applicationQuestionDto);
+				if (applicationQuestionDto.getId().equals(applicationQuestion.getId())) {
+					applicationQuestionDto.updateApplicationQuestion(applicationQuestion);
 					result = true;
 					break;
 				}
@@ -166,12 +158,9 @@ public class CampaignServiceImpl implements CampaignService {
 	/** 캠페인 상태 변경 */
 	@Override
 	public void updateStatus(Long campaignId, CampaignStatus status) {
-
-		Campaign campaign = campaignRepository.findById(campaignId)
-				.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 캠페인입니다. " + campaignId));
-
-		campaign.updateStatus(status);
-
+		campaignRepository.findById(campaignId)
+				.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 캠페인입니다. " + campaignId))
+				.updateCampaignStatus(status);
 	}
 
 }

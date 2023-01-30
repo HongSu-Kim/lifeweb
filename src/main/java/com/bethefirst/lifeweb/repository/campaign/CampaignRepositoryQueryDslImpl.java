@@ -1,6 +1,6 @@
 package com.bethefirst.lifeweb.repository.campaign;
 
-import com.bethefirst.lifeweb.dto.campaign.SearchRequirements;
+import com.bethefirst.lifeweb.dto.campaign.CampaignSearchRequirements;
 import com.bethefirst.lifeweb.entity.campaign.Campaign;
 import com.bethefirst.lifeweb.entity.campaign.CampaignStatus;
 import com.querydsl.core.types.Order;
@@ -8,7 +8,7 @@ import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.PathBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import jakarta.persistence.EntityManager;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -20,17 +20,14 @@ import static com.bethefirst.lifeweb.entity.campaign.QCampaign.campaign;
 import static com.bethefirst.lifeweb.entity.campaign.QCampaignCategory.campaignCategory;
 import static com.bethefirst.lifeweb.entity.campaign.QCampaignType.campaignType;
 
+@RequiredArgsConstructor
 public class CampaignRepositoryQueryDslImpl implements CampaignRepositoryQueryDsl {
 
 	private final JPAQueryFactory queryFactory;
 
-	public CampaignRepositoryQueryDslImpl(EntityManager entityManager) {
-		queryFactory = new JPAQueryFactory(entityManager);
-	}
-
 	/** 캠페인 리스트 조회 */
 	@Override
-	public Page<Campaign> findAllBySearchRequirements(SearchRequirements searchRequirements) {
+	public Page<Campaign> findAllBySearchRequirements(CampaignSearchRequirements searchRequirements) {
 
 		// content
 		List<Campaign> content = queryFactory
@@ -39,12 +36,12 @@ public class CampaignRepositoryQueryDslImpl implements CampaignRepositoryQueryDs
 				.join(campaign.campaignCategory, campaignCategory).fetchJoin()
 				.join(campaign.campaignType, campaignType).fetchJoin()
 				.where(
-						categoryNameEq(searchRequirements.getCategoryName()),
-						typeNameEq(searchRequirements.getTypeName()),
+						categoryIdEq(searchRequirements.getCategoryId()),
+						typeIdEq(searchRequirements.getTypeId()),
+						snsIdListIn(searchRequirements.getSnsIdList()),
 						specialEq(searchRequirements.getSpecial()),
 						statusEq(searchRequirements.getStatus()),
-						localNameEq(searchRequirements.getLocalName()),
-						snsNameListIn(searchRequirements.getSnsNameList())
+						localIdEq(searchRequirements.getLocalId())
 				)
 				.orderBy(orderBy(searchRequirements.getPageable()))
 				.offset(searchRequirements.getPageable().getOffset())
@@ -56,12 +53,12 @@ public class CampaignRepositoryQueryDslImpl implements CampaignRepositoryQueryDs
 				.select(campaign.count())
 				.from(campaign)
 				.where(
-						categoryNameEq(searchRequirements.getCategoryName()),
-						typeNameEq(searchRequirements.getTypeName()),
+						categoryIdEq(searchRequirements.getCategoryId()),
+						typeIdEq(searchRequirements.getTypeId()),
+						snsIdListIn(searchRequirements.getSnsIdList()),
 						specialEq(searchRequirements.getSpecial()),
 						statusEq(searchRequirements.getStatus()),
-						localNameEq(searchRequirements.getLocalName()),
-						snsNameListIn(searchRequirements.getSnsNameList())
+						localIdEq(searchRequirements.getLocalId())
 				)
 				.fetchOne();
 
@@ -80,13 +77,18 @@ public class CampaignRepositoryQueryDslImpl implements CampaignRepositoryQueryDs
 	}
 
 	/** 카테고리 */
-	private BooleanExpression categoryNameEq(String categoryName) {
-		return categoryName == null ? null : campaign.campaignCategory.name.eq(categoryName);
+	private BooleanExpression categoryIdEq(Long categoryId) {
+		return categoryId == null ? null : campaign.campaignCategory.id.eq(categoryId);
 	}
 
 	/** 타입 */
-	private BooleanExpression typeNameEq(String typeName) {
-		return typeName == null ? null : campaign.campaignType.name.eq(typeName);
+	private BooleanExpression typeIdEq(Long typeId) {
+		return typeId == null ? null : campaign.campaignType.id.eq(typeId);
+	}
+
+	/** SNS */
+	private BooleanExpression snsIdListIn(List<Long> snsIdList) {
+		return snsIdList == null ? null : campaign.sns.id.in(snsIdList);
 	}
 
 	/** 스페셜 */
@@ -100,14 +102,8 @@ public class CampaignRepositoryQueryDslImpl implements CampaignRepositoryQueryDs
 	}
 
 	/** 지역 */
-	private BooleanExpression localNameEq(String localName) {
-		return localName == null ? null : campaign.campaignLocal.local.name.eq(localName);
+	private BooleanExpression localIdEq(Long localId) {
+		return localId == null ? null : campaign.campaignLocal.local.id.eq(localId);
 	}
-
-	/** SNS */
-	private BooleanExpression snsNameListIn(List<String> snsNameList) {
-		return snsNameList == null ? null : campaign.campaignSns.sns.name.in(snsNameList);
-	}
-
 
 }

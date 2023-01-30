@@ -4,7 +4,6 @@ DROP TABLE IF EXISTS review;
 DROP TABLE IF EXISTS application_answer;
 DROP TABLE IF EXISTS application;
 
-DROP TABLE IF EXISTS campaign_sns;
 DROP TABLE IF EXISTS campaign_image;
 DROP TABLE IF EXISTS application_question;
 DROP TABLE IF EXISTS campaign_local;
@@ -75,6 +74,7 @@ CREATE TABLE campaign (
     campaign_id	            BIGINT	        NOT NULL AUTO_INCREMENT,
     campaign_category_id	BIGINT	        NOT NULL,
     campaign_type_id	    BIGINT	        NOT NULL,
+    sns_id	                BIGINT	        NOT NULL,
     special	                BOOLEAN	        DEFAULT FALSE,
     title	                VARCHAR(255)	NOT NULL,
     file_name	            VARCHAR(100)	NOT NULL,
@@ -82,15 +82,17 @@ CREATE TABLE campaign (
     created	                DATETIME	    DEFAULT NOW(),
     review_notice	        VARCHAR(6000)	NOT NULL,
     guideline	            VARCHAR(6000)	NOT NULL,
+    keywords	            VARCHAR(255)	NOT NULL,
     application_start_date	DATE	        NOT NULL,
     application_end_date	DATE	        NOT NULL,
     filing_start_date	    DATE	        NOT NULL,
     filing_end_date	        DATE	        NOT NULL,
-    keywords	            VARCHAR(255)	NOT NULL,
+    headcount	            INT	            NOT NULL,
     status                  VARCHAR(10)	    DEFAULT 'STAND',
     CONSTRAINT PK_CAMPAIGN PRIMARY KEY (campaign_id),
     CONSTRAINT FK_CAMPAIGN_CAMPAIGN_CATEGORY FOREIGN KEY (campaign_category_id) REFERENCES campaign_category (campaign_category_id),
-    CONSTRAINT FK_CAMPAIGN_CAMPAIGN_TYPE FOREIGN KEY (campaign_type_id) REFERENCES campaign_type (campaign_type_id)
+    CONSTRAINT FK_CAMPAIGN_CAMPAIGN_TYPE FOREIGN KEY (campaign_type_id) REFERENCES campaign_type (campaign_type_id),
+    CONSTRAINT FK_CAMPAIGN_SNS FOREIGN KEY (sns_id) REFERENCES sns (sns_id)
 );
 
 CREATE TABLE campaign_local (
@@ -123,28 +125,16 @@ CREATE TABLE campaign_image (
     CONSTRAINT FK_CAMPAIGN_IMAGE_CAMPAIGN FOREIGN KEY (campaign_id) REFERENCES campaign (campaign_id)
 );
 
-CREATE TABLE campaign_sns (
-    campaign_sns_id	BIGINT	NOT NULL AUTO_INCREMENT,
-    campaign_id	    BIGINT	NOT NULL,
-    sns_id	        BIGINT	NOT NULL,
-    headcount	    INT	    NOT NULL,
-    CONSTRAINT PK_CAMPAIGN_SNS PRIMARY KEY (campaign_sns_id),
-    CONSTRAINT FK_CAMPAIGN_SNS_CAMPAIGN FOREIGN KEY (campaign_id) REFERENCES campaign (campaign_id),
-    CONSTRAINT FK_CAMPAIGN_SNS_SNS FOREIGN KEY (sns_id) REFERENCES sns (sns_id)
-);
-
 CREATE TABLE application (
     application_id	BIGINT	        NOT NULL AUTO_INCREMENT,
     member_id	    BIGINT	        NOT NULL,
     campaign_id	    BIGINT	        NOT NULL,
-    sns_id	        BIGINT	        NOT NULL,
     created	        DATETIME	    DEFAULT NOW(),
-    memo	        VARCHAR(500)    NOT NULL,
+    memo	        VARCHAR(500)    NULL,
     status	        VARCHAR(10)     NOT NULL,
     CONSTRAINT PK_REVIEW_IMAGE PRIMARY KEY (application_id),
     CONSTRAINT FK_REVIEW_IMAGE_MEMBER FOREIGN KEY (member_id) REFERENCES member (member_id),
-    CONSTRAINT FK_REVIEW_IMAGE_CAMPAIGN FOREIGN KEY (campaign_id) REFERENCES campaign (campaign_id),
-    CONSTRAINT FK_REVIEW_IMAGE_SNS FOREIGN KEY (sns_id) REFERENCES sns (sns_id)
+    CONSTRAINT FK_REVIEW_IMAGE_CAMPAIGN FOREIGN KEY (campaign_id) REFERENCES campaign (campaign_id)
 );
 
 CREATE TABLE application_answer (
@@ -168,4 +158,29 @@ CREATE TABLE review (
     CONSTRAINT FK_REVIEW_MEMBER FOREIGN KEY (member_id) REFERENCES member (member_id),
     CONSTRAINT FK_REVIEW_CAMPAIGN FOREIGN KEY (campaign_id) REFERENCES campaign (campaign_id)
 );
+
+INSERT INTO sns(name) VALUES('naver');
+INSERT INTO sns(name) VALUES('instagram');
+INSERT INTO sns(name) VALUES('youtube');
+
+INSERT INTO local(name) VALUES('서울');
+INSERT INTO local(name) VALUES('경기/인천');
+INSERT INTO local(name) VALUES('대전/충청');
+INSERT INTO local(name) VALUES('대구/경북');
+INSERT INTO local(name) VALUES('부산/경남');
+INSERT INTO local(name) VALUES('광주/전라');
+INSERT INTO local(name) VALUES('다른지역');
+
+INSERT INTO campaign_category(name) VALUES('맛집');
+INSERT INTO campaign_category(name) VALUES('뷰티');
+INSERT INTO campaign_category(name) VALUES('숙박');
+INSERT INTO campaign_category(name) VALUES('문화');
+INSERT INTO campaign_category(name) VALUES('배달');
+INSERT INTO campaign_category(name) VALUES('테이크아웃');
+INSERT INTO campaign_category(name) VALUES('기타');
+
+INSERT INTO campaign_type(name) VALUES('방문형');
+INSERT INTO campaign_type(name) VALUES('배송형');
+INSERT INTO campaign_type(name) VALUES('기자단');
+INSERT INTO campaign_type(name) VALUES('방문기자단');
 

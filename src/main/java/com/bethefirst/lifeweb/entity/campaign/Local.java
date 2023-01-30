@@ -23,4 +23,18 @@ public class Local {//지역
 	@OneToMany(mappedBy = "local")
 	private List<CampaignLocal> campaignLocalList = new ArrayList<>();//캠페인지역
 
+	private Local(String name) {
+		this.name = name;
+	}
+
+	/** 지역 생성 */
+	public static Local createLocal(String name) {
+		return new Local(name);
+	}
+
+	/** 지역 수정 */
+	public void updateLocal(String name) {
+		this.name = name;
+	}
+
 }
