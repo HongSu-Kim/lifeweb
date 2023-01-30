@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 
@@ -107,15 +108,17 @@ public class CampaignServiceImpl implements CampaignService {
 		updateCampaignDto.updateCampaign(campaign, campaignCategory, campaignType, sns);
 
 		// 캠페인지역 수정
-		Local local = localRepository.findById(updateCampaignDto.getLocalId())
-				.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 지역입니다. " + updateCampaignDto.getLocalId()));
-		//캠페인지역 insert
-		if (campaign.getCampaignLocal() == null) {
-			campaignLocalRepository.save(updateCampaignDto.getCampaignLocalDto().createCampaignLocal(campaign, local));
-		//캠페인지역 update
-		} else {
-			CampaignLocal campaignLocal = campaign.getCampaignLocal();
-			updateCampaignDto.getCampaignLocalDto().updateCampaignLocal(campaignLocal, local);
+		if (updateCampaignDto.getLocalId() != null) {
+			Local local = localRepository.findById(updateCampaignDto.getLocalId())
+					.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 지역입니다. " + updateCampaignDto.getLocalId()));
+			//캠페인지역 insert
+			if (campaign.getCampaignLocal() == null) {
+				campaignLocalRepository.save(updateCampaignDto.getCampaignLocalDto().createCampaignLocal(campaign, local));
+			//캠페인지역 update
+			} else {
+				CampaignLocal campaignLocal = campaign.getCampaignLocal();
+				updateCampaignDto.getCampaignLocalDto().updateCampaignLocal(campaignLocal, local);
+			}
 		}
 
 		// 캠페인이미지 수정
@@ -123,33 +126,39 @@ public class CampaignServiceImpl implements CampaignService {
 		imageUtil.store(updateCampaignDto.getUploadFileList(), imageFolder)
 				.forEach(fileName -> campaignImageRepository.save(new CampaignImage(campaign, fileName)));
 		//캠페인이미지 delete
-		campaign.getCampaignImageList().stream().filter(campaignImage -> {
-			for (Long campaignImageId : updateCampaignDto.getCampaignImageId()) {
-				if (campaignImage.getId().equals(campaignImageId)) return false;
-			}
-			return true;
-		}).forEach(campaignImageId -> campaignImageRepository.deleteById(campaignId));
+		if (!CollectionUtils.isEmpty(campaign.getCampaignImageList())) {
+			campaign.getCampaignImageList().stream().filter(campaignImage -> {
+				for (Long campaignImageId : updateCampaignDto.getCampaignImageId()) {
+					if (campaignImage.getId().equals(campaignImageId)) return false;
+				}
+				return true;
+			}).forEach(campaignImageId -> campaignImageRepository.deleteById(campaignId));
+		}
 
 		// 신청서질문 수정
-		List<ApplicationQuestion> applicationQuestionList = campaign.getApplicationQuestionList();
-		List<ApplicationQuestionDto> applicationQuestionDtoList = updateCampaignDto.getApplicationQuestionDtoList();
 		//신청서질문 insert
-		applicationQuestionDtoList.stream().filter(applicationQuestionDto -> applicationQuestionDto.getId() == 0)
-				.forEach(applicationQuestionDto -> applicationQuestionRepository.save(applicationQuestionDto.createApplicationQuestion(campaign)));
-		
-		for (ApplicationQuestion applicationQuestion : applicationQuestionList) {
-			boolean result = false;
-			for (ApplicationQuestionDto applicationQuestionDto : applicationQuestionDtoList) {
-				//신청서질문 update
-				if (applicationQuestionDto.getId().equals(applicationQuestion.getId())) {
-					applicationQuestionDto.updateApplicationQuestion(applicationQuestion);
-					result = true;
-					break;
+		if (!CollectionUtils.isEmpty(updateCampaignDto.getApplicationQuestionDtoList())) {
+			updateCampaignDto.getApplicationQuestionDtoList().stream().filter(applicationQuestionDto -> applicationQuestionDto.getId() == 0)
+					.forEach(applicationQuestionDto -> applicationQuestionRepository.save(applicationQuestionDto.createApplicationQuestion(campaign)));
+		}
+
+		if (!CollectionUtils.isEmpty(campaign.getApplicationQuestionList())) {
+			for (ApplicationQuestion applicationQuestion : campaign.getApplicationQuestionList()) {
+				boolean result = false;
+				if (!CollectionUtils.isEmpty(updateCampaignDto.getApplicationQuestionDtoList())) {
+					for (ApplicationQuestionDto applicationQuestionDto : updateCampaignDto.getApplicationQuestionDtoList()) {
+						//신청서질문 update
+						if (applicationQuestionDto.getId().equals(applicationQuestion.getId())) {
+							applicationQuestionDto.updateApplicationQuestion(applicationQuestion);
+							result = true;
+							break;
+						}
+					}
 				}
-			}
-			//신청서질문 delete
-			if (!result) {
-				applicationQuestionRepository.delete(applicationQuestion);
+				//신청서질문 delete
+				if (!result) {
+					applicationQuestionRepository.delete(applicationQuestion);
+				}
 			}
 		}
 
