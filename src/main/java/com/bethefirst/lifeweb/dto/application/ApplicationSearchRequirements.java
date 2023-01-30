@@ -8,8 +8,7 @@ import org.springframework.data.domain.Pageable;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-// 신청서 검색 조건
-public class ApplicationSearchRequirements {
+public class ApplicationSearchRequirements {//신청서 검색 조건
 
 	private Pageable pageable;//페이징
 	private Long memberId;//맴버
