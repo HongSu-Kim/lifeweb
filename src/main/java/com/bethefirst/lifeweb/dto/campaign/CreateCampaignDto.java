@@ -2,6 +2,7 @@ package com.bethefirst.lifeweb.dto.campaign;
 
 import com.bethefirst.lifeweb.entity.campaign.QuestionType;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,23 +18,23 @@ import java.util.List;
 @NoArgsConstructor
 public class CreateCampaignDto {
 
-	@NotBlank(message = "카테고리는 필수 입력 값입니다.")
-	private Long categoryId;//카테고리명
+	@NotNull(message = "카테고리는 필수 입력 값입니다.")
+	private Long categoryId;//카테고리
 
-	@NotBlank(message = "타입은 필수 입력 값입니다.")
-	private Long typeId;//타입이름
+	@NotNull(message = "타입은 필수 입력 값입니다.")
+	private Long typeId;//타입
 
-	@NotBlank(message = "SNS는 필수 입력 값입니다.")
+	@NotNull(message = "SNS는 필수 입력 값입니다.")
 	private Long snsId;//SNS
 
 
-	@NotBlank(message = "스페셜은 필수 입력 값입니다.")
+	@NotNull(message = "스페셜은 필수 입력 값입니다.")
 	private Boolean special;//스페셜
 	
 	@NotBlank(message = "제목은 필수 입력 값입니다.")
 	private String title;//제목
 
-	@NotBlank(message = "대표이미지는 필수 입력 값입니다.")
+	@NotNull(message = "대표이미지는 필수 입력 값입니다.")
 	private MultipartFile uploadFile;//대표이미지 파일
 	private String fileName;//대표이미지
 
@@ -46,30 +47,30 @@ public class CreateCampaignDto {
 	@NotBlank(message = "가이드라인은 필수 입력 값입니다.")
 	private String guideline;//가이드라인
 
-	@NotBlank(message = "키워드는 필수 입력 값입니다.")
+	@NotNull(message = "키워드는 필수 입력 값입니다.")
 	private List<String> keywords;//키워드
 
 	@NotBlank(message = "신청시작일은 필수 입력 값입니다.")
 	@Pattern(regexp = "\\d{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$",
 			message = "날짜형식에 맞게 입력해주세요(yyyy-mm-dd)")
-	private LocalDate applicationStartDate;//신청시작일
+	private String applicationStartDate;//신청시작일
 
 	@NotBlank(message = "신청종료일은 필수 입력 값입니다.")
 	@Pattern(regexp = "\\d{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$",
 			message = "날짜형식에 맞게 입력해주세요(yyyy-mm-dd)")
-	private LocalDate applicationEndDate;//신청종료일
+	private String applicationEndDate;//신청종료일
 
 	@NotBlank(message = "등록시작일은 필수 입력 값입니다.")
 	@Pattern(regexp = "\\d{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$",
 			message = "날짜형식에 맞게 입력해주세요(yyyy-mm-dd)")
-	private LocalDate filingStartDate;//등록시작일
+	private String filingStartDate;//등록시작일
 
 	@NotBlank(message = "등록종료일은 필수 입력 값입니다.")
 	@Pattern(regexp = "\\d{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$",
 			message = "날짜형식에 맞게 입력해주세요(yyyy-mm-dd)")
-	private LocalDate filingEndDate;//등록종료일
+	private String filingEndDate;//등록종료일
 
-	@NotBlank(message = "모집인원은 필수 입력 값입니다.")
+	@NotNull(message = "모집인원은 필수 입력 값입니다.")
 	private Integer headcount;//모집인원
 
 

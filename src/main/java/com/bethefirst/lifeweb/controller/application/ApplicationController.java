@@ -7,6 +7,7 @@ import com.bethefirst.lifeweb.dto.application.UpdateApplicationDto;
 import com.bethefirst.lifeweb.exception.UnauthorizedException;
 import com.bethefirst.lifeweb.service.application.interfaces.ApplicationService;
 import com.bethefirst.lifeweb.util.security.SecurityUtil;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -22,7 +23,7 @@ public class ApplicationController {
 
 	/** 신청서 생성 */
 	@PostMapping
-	public void create(CreateApplicationDto createApplicationDto) {
+	public void create(@Valid @RequestBody CreateApplicationDto createApplicationDto) {
 
 		Long memberId = SecurityUtil.getCurrentMemberId()
 				.orElseThrow(() -> new UnauthorizedException("Security Context에 인증 정보가 없습니다."));
@@ -38,13 +39,13 @@ public class ApplicationController {
 
 	/** 신청서 리스트 조회 */
 	@GetMapping
-	public Page<ApplicationDto> list(ApplicationSearchRequirements searchRequirements) {
+	public Page<ApplicationDto> list(@RequestBody ApplicationSearchRequirements searchRequirements) {
 		return applicationService.getApplicationDtoList(searchRequirements);
 	}
 
 	/** 신청서 수정 */
 	@PutMapping("/{applicationId}")
-	public void update(@PathVariable Long applicationId, UpdateApplicationDto updateApplicationDto) {
+	public void update(@PathVariable Long applicationId, @Valid @RequestBody UpdateApplicationDto updateApplicationDto) {
 		applicationService.updateApplication(applicationId, updateApplicationDto);
 	}
 

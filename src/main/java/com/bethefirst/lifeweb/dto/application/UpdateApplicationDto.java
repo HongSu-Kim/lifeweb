@@ -1,6 +1,6 @@
 package com.bethefirst.lifeweb.dto.application;
 
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -13,7 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 public class UpdateApplicationDto {
 
-	@NotBlank(message = "신청서ID는 필수 입력 값입니다.")
+	@NotNull(message = "신청서ID는 필수 입력 값입니다.")
 	private Long applicationId;//신청서ID
 	private String memo;//메모
 
