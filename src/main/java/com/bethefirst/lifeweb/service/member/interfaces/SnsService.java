@@ -1,6 +1,7 @@
 package com.bethefirst.lifeweb.service.member.interfaces;
 
 import com.bethefirst.lifeweb.dto.member.request.SnsCreateDto;
+import com.bethefirst.lifeweb.dto.member.request.SnsUpdateDto;
 
 public interface SnsService {
 
@@ -8,7 +9,7 @@ public interface SnsService {
     void createSns(SnsCreateDto snsCreateDto);
 
     /** SNS 수정 */
-//    void updateSns(SnsUpdateDto snsUpdateDto, Long snsId);
+    void updateSns(SnsUpdateDto snsUpdateDto, Long snsId);
 
     /** SNS 삭제 */
 

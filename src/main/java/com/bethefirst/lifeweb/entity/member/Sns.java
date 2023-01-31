@@ -29,4 +29,8 @@ public class Sns {//SNS
 	public Sns(String name) {
 		this.name = name;
 	}
+
+	public void updateSns(String name){
+		this.name = name;
+	}
 }

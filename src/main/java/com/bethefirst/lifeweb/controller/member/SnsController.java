@@ -1,6 +1,7 @@
 package com.bethefirst.lifeweb.controller.member;
 
 import com.bethefirst.lifeweb.dto.member.request.SnsCreateDto;
+import com.bethefirst.lifeweb.dto.member.request.SnsUpdateDto;
 import com.bethefirst.lifeweb.service.member.interfaces.SnsService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -20,5 +21,15 @@ public class SnsController {
     @PostMapping
     public void create(@Valid @RequestBody SnsCreateDto snsCreateDto){
         snsService.createSns(snsCreateDto);
+
+
     }
+
+    @ResponseStatus(HttpStatus.OK)
+    @PutMapping("/{snsId}")
+    public void update(@PathVariable Long snsId,
+                       @Valid @RequestBody SnsUpdateDto snsUpdateDto){
+        snsService.updateSns(snsUpdateDto , snsId);
+    }
+
 }
