@@ -1,5 +1,6 @@
 package com.bethefirst.lifeweb.controller.member;
 
+import com.bethefirst.lifeweb.dto.member.SnsDto;
 import com.bethefirst.lifeweb.dto.member.request.SnsCreateDto;
 import com.bethefirst.lifeweb.dto.member.request.SnsUpdateDto;
 import com.bethefirst.lifeweb.service.member.interfaces.SnsService;
@@ -41,5 +42,17 @@ public class SnsController {
     public void delete(@PathVariable Long snsId){
         snsService.deleteSns(snsId);
     }
+
+    /** SNS 단건조회 */
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/{snsId}")
+    public SnsDto getSns(@PathVariable Long snsId){
+        return snsService.getSns(snsId);
+    }
+    
+
+
+
+
 
 }
