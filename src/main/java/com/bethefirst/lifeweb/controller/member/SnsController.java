@@ -17,6 +17,7 @@ public class SnsController {
 
     private final SnsService snsService;
 
+    /** SNS 등록 */
     @ResponseStatus(HttpStatus.OK)
     @PostMapping
     public void create(@Valid @RequestBody SnsCreateDto snsCreateDto){
@@ -25,11 +26,20 @@ public class SnsController {
 
     }
 
+    /** SNS 수정 */
     @ResponseStatus(HttpStatus.OK)
     @PutMapping("/{snsId}")
     public void update(@PathVariable Long snsId,
                        @Valid @RequestBody SnsUpdateDto snsUpdateDto){
         snsService.updateSns(snsUpdateDto , snsId);
+    }
+
+
+    /** SNS 삭제 */
+    @ResponseStatus(HttpStatus.OK)
+    @DeleteMapping("/{snsId}")
+    public void delete(@PathVariable Long snsId){
+        snsService.deleteSns(snsId);
     }
 
 }

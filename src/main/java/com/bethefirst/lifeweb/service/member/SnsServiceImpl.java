@@ -35,4 +35,12 @@ public class SnsServiceImpl implements SnsService {
 
         snsUpdateDto.updateSns(sns);
     }
+
+    @Override
+    public void deleteSns(Long snsId) {
+        Sns sns = snsRepository.findById(snsId).orElseThrow(() ->
+                new IllegalArgumentException("존재하지 않는 snsId 입니다. " + String.valueOf(snsId)));
+
+        snsRepository.delete(sns);
+    }
 }

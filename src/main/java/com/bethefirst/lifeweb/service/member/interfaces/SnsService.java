@@ -12,6 +12,7 @@ public interface SnsService {
     void updateSns(SnsUpdateDto snsUpdateDto, Long snsId);
 
     /** SNS 삭제 */
+    void deleteSns(Long snsId);
 
     /** SNS 단건조회 */
 
