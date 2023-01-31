@@ -16,4 +16,6 @@ public interface ApplicationRepository extends JpaRepository<Application, Long>,
 //	@EntityGraph(attributePaths = { "member", "campaign", "applicationAnswerList" })
 	Optional<Application> findById(Long applicationId);
 
+	/** 회원ID와 캠페인ID가 같은 신청서를 조회 */
+	Optional<Application> findByMember_IdAndCampaign_Id(Long memberId,Long campaignId);
 }

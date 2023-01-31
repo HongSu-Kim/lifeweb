@@ -1,5 +1,7 @@
 package com.bethefirst.lifeweb.entity.member;
 
+import com.bethefirst.lifeweb.entity.application.Application;
+import com.bethefirst.lifeweb.entity.campaign.Campaign;
 import com.bethefirst.lifeweb.entity.review.Review;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -47,6 +49,8 @@ public class Member {//회원
 	@OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE, orphanRemoval = true)
 	private List<Review> reviewList = new ArrayList<>(); //회원 리뷰
 
+	@OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE, orphanRemoval = true)
+	private List<Application> applicationList = new ArrayList<>(); //회원 신청서
 
 	protected Member(Role role, String email, String pwd, String nickname) {
 
@@ -102,5 +106,11 @@ public class Member {//회원
 	//비밀번호 변경, 회원 탈퇴 시, 비밀번호를 확인하며, 이때 비밀번호의 일치여부를 판단하는 메서드입니다.
 	public boolean matchPassword(PasswordEncoder passwordEncoder, String checkPassword){
 		return passwordEncoder.matches(checkPassword, getPwd());
+	}
+
+	/** 캠페인과 같은 신청서를 찾는 메소드 */
+	public Application findApplication(Campaign campaign){
+		return applicationList.stream().filter(application -> application.getCampaign().equals(campaign))
+				.findFirst().get();
 	}
 }
