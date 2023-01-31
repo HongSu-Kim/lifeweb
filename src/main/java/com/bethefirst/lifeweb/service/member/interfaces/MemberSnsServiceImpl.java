@@ -1,6 +1,6 @@
 package com.bethefirst.lifeweb.service.member.interfaces;
 
-import com.bethefirst.lifeweb.dto.member.MemberSnsDto;
+import com.bethefirst.lifeweb.dto.member.request.CreateMemberSnsDto;
 import com.bethefirst.lifeweb.entity.member.Member;
 import com.bethefirst.lifeweb.entity.member.MemberSns;
 import com.bethefirst.lifeweb.entity.member.Sns;
@@ -29,24 +29,24 @@ public class MemberSnsServiceImpl implements MemberSnsService{
 
     /** 회원 SNS 등록 **/
     @Override
-    public void createMemberSns(MemberSnsDto memberSnsDto, Long memberId) {
+    public void createMemberSns(CreateMemberSnsDto createMemberSnsDto, Long memberId) {
         //회원 유효성 검사
         Member member = memberRepository.findById(memberId).orElseThrow(()
                 -> new IllegalArgumentException("존재하지 않는 회원입니다. " + memberId));
 
         //URL 유효성 검사
-        if(memberSnsRepository.existsBySnsUrl(memberSnsDto.getSnsUrl()))
-            throw new IllegalArgumentException("이미 등록되어 있는 URL 입니다. " + memberSnsDto.getSnsUrl());
+        if(memberSnsRepository.existsBySnsUrl(createMemberSnsDto.getSnsUrl()))
+            throw new IllegalArgumentException("이미 등록되어 있는 URL 입니다. " + createMemberSnsDto.getSnsUrl());
 
         //SNS 유효성 검사
-        Sns sns = snsRepository.findByName(memberSnsDto.getSnsName()).orElseThrow(() ->
-                new IllegalArgumentException("존재하지 않는 SNS 이름 입니다. " + memberSnsDto.getSnsUrl()));
+        Sns sns = snsRepository.findById(createMemberSnsDto.getSnsId()).orElseThrow(() ->
+                new IllegalArgumentException("존재하지 않는 SNS 이름 입니다. " + createMemberSnsDto.getSnsUrl()));
 
         //SNS URL 검사
-        inspectionUrl(memberSnsDto.getSnsUrl());
+        inspectionUrl(createMemberSnsDto.getSnsUrl());
 
         //memberSNS 생성
-        MemberSns memberSns = MemberSns.createMemberSns(member, sns, memberSnsDto.getSnsUrl());
+        MemberSns memberSns = MemberSns.createMemberSns(member, sns, createMemberSnsDto.getSnsUrl());
 
         //DB에 저장
         memberSnsRepository.save(memberSns);

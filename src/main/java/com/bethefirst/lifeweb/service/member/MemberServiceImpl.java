@@ -1,14 +1,11 @@
 package com.bethefirst.lifeweb.service.member;
 
-import com.bethefirst.lifeweb.dto.member.JoinDto;
-import com.bethefirst.lifeweb.dto.member.MemberSnsDto;
-import com.bethefirst.lifeweb.dto.member.MemberUpdateDto;
+import com.bethefirst.lifeweb.dto.member.request.JoinDto;
+import com.bethefirst.lifeweb.dto.member.request.MemberUpdateDto;
+import com.bethefirst.lifeweb.dto.member.request.PasswordDto;
+import com.bethefirst.lifeweb.dto.member.response.MemberInfoDto;
 import com.bethefirst.lifeweb.entity.member.Member;
-import com.bethefirst.lifeweb.entity.member.MemberSns;
-import com.bethefirst.lifeweb.entity.member.Sns;
 import com.bethefirst.lifeweb.repository.member.MemberRepository;
-import com.bethefirst.lifeweb.repository.member.MemberSnsRepository;
-import com.bethefirst.lifeweb.repository.member.SnsRepository;
 import com.bethefirst.lifeweb.service.member.interfaces.MemberService;
 import com.bethefirst.lifeweb.util.ImageUtil;
 import lombok.RequiredArgsConstructor;
@@ -19,9 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.Optional;
 
 
 @Service
@@ -34,8 +28,6 @@ public class MemberServiceImpl implements MemberService {
 	@Value("${image-folder.member}")
 	private String imageFolder;
 	private final MemberRepository memberRepository;
-	private final SnsRepository snsRepository;
-	private final MemberSnsRepository memberSnsRepository;
 	private final PasswordEncoder passwordEncoder;
 	private final ImageUtil imageUtil;
 
@@ -67,7 +59,7 @@ public class MemberServiceImpl implements MemberService {
 				-> new IllegalArgumentException("존재하지 않는 회원입니다. " + memberId));
 
 		//DB에 수정 된 회원정보 저장
-		member.updateMemberByUpdateDto(memberUpdateDto);
+		memberUpdateDto.updateMember(member);
 
 
 	}
@@ -92,48 +84,27 @@ public class MemberServiceImpl implements MemberService {
 
 	}
 
-	/** 회원 SNS 수정 */
+	/** 회원 비밀번호 변경 */
 	@Override
-	public void updateMemberSnsList(List<MemberSnsDto> memberSnsDtoList, Long memberId) {
+	public void updatePassword(PasswordDto passwordDto, Long memberId) {
+
+		// DTO의 새 비밀번호와 확인용 비밀번호 일치하는지 검사
+		if(!passwordDto.getNewPassword().equals(passwordDto.getConfirmPassword())){
+			throw new IllegalArgumentException("새 비밀번호와 비밀번호 확인이 일치하지 않습니다.");
+		}
+
+		//회원 유효성 검사
 		Member member = memberRepository.findById(memberId).orElseThrow(()
 				-> new IllegalArgumentException("존재하지 않는 회원입니다. " + memberId));
 
-		updateMemberSnsList(memberSnsDtoList, member);
+		//새로운 비밀번호를 DB에 저장
+		passwordDto.updatePassword(passwordEncoder, member);
+
 	}
 
-
-	/** DTO에 파일 이름이 있으면 파일을 저장후 저장된 파일이름을 반환합니다 */
-	private Optional<String> getSavedFileNameAfterSaveFile(MultipartFile memberFileName) {
-		String storeFileName = null;
-		if(memberFileName != null) {
-			storeFileName = imageUtil.store(memberFileName, imageFolder);
-		}
-
-		return Optional.ofNullable(storeFileName);
+	@Override
+	public MemberInfoDto getInfo(Long memberId) {
+		return null;
 	}
 
-
-	/** 넘어온 snsDto를 확인 후 DB에 수정,삭제,등록합니다. */
-	private void updateMemberSnsList(List<MemberSnsDto> memberSnsDtoList, Member member) {
-
-		memberSnsDtoList.forEach(memberSnsDto -> {
-			if(memberSnsDto.getSnsId() == 0 || memberSnsDto.getSnsId() == null){
-				Sns sns = snsRepository.findByName(memberSnsDto.getSnsName()).orElseThrow(() -> {
-					throw new IllegalArgumentException("잘못된 SNS 입니다.");
-				});
-				MemberSns createMemberSns = MemberSns.createMemberSns(member, sns, memberSnsDto.getSnsUrl());
-				memberSnsRepository.save(createMemberSns);
-			}else{
-				member.getMemberSnsList().forEach(memberSns -> {
-
-					if(memberSns.getSns().getId() == memberSnsDto.getSnsId()){
-						memberSns.updateMemberSnsByUpdateDto(memberSnsDto.getSnsUrl());
-					}else if(memberSnsDto.getSnsUrl() == null){
-						memberSnsRepository.delete(memberSns);
-					}
-
-				});
-			}
-		});
-	}
 }
