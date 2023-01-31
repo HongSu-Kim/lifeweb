@@ -3,6 +3,7 @@ package com.bethefirst.lifeweb.service.application;
 import com.bethefirst.lifeweb.dto.application.*;
 import com.bethefirst.lifeweb.entity.application.Application;
 import com.bethefirst.lifeweb.entity.application.ApplicationAnswer;
+import com.bethefirst.lifeweb.entity.application.ApplicationStatus;
 import com.bethefirst.lifeweb.entity.campaign.ApplicationQuestion;
 import com.bethefirst.lifeweb.entity.campaign.Campaign;
 import com.bethefirst.lifeweb.entity.member.Member;
@@ -118,6 +119,14 @@ public class ApplicationServiceImpl implements ApplicationService {
 			}
 		}
 
+	}
+
+	/** 신청서 상태 수정 */
+	@Override
+	public void updateStatus(Long applicationId, ApplicationStatus status) {
+		applicationRepository.findById(applicationId)
+				.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 신청서입니다. " + applicationId))
+				.updateApplicationStatus(status);
 	}
 
 	/** 신청서 삭제 */

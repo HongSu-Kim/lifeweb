@@ -15,7 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 public class ApplicationQuestionDto {
 
-	private Long id;//질문
+	private Long id;//질문ID
 	private String question;//질문
 	private QuestionType type;//유형
 	private List<String> items;//항목
