@@ -4,10 +4,13 @@ import com.bethefirst.lifeweb.dto.application.ApplicationDto;
 import com.bethefirst.lifeweb.dto.application.ApplicationSearchRequirements;
 import com.bethefirst.lifeweb.dto.application.CreateApplicationDto;
 import com.bethefirst.lifeweb.dto.application.UpdateApplicationDto;
+import com.bethefirst.lifeweb.entity.application.ApplicationStatus;
+import com.bethefirst.lifeweb.entity.campaign.CampaignStatus;
 import com.bethefirst.lifeweb.exception.UnauthorizedException;
 import com.bethefirst.lifeweb.service.application.interfaces.ApplicationService;
 import com.bethefirst.lifeweb.util.security.SecurityUtil;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -47,6 +50,12 @@ public class ApplicationController {
 	@PutMapping("/{applicationId}")
 	public void update(@PathVariable Long applicationId, @Valid @RequestBody UpdateApplicationDto updateApplicationDto) {
 		applicationService.updateApplication(applicationId, updateApplicationDto);
+	}
+
+	/** 신청서 상태 수정 */
+	@PutMapping("/{applicationId}/status")
+	public void update(@PathVariable Long applicationId, @Valid @NotEmpty(message = "상태는 필수 입력 값입니다.") ApplicationStatus status) {
+		applicationService.updateStatus(applicationId, status);
 	}
 
 	/** 신청서 삭제 */

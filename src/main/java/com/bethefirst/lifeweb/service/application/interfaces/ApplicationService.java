@@ -4,6 +4,7 @@ import com.bethefirst.lifeweb.dto.application.ApplicationDto;
 import com.bethefirst.lifeweb.dto.application.ApplicationSearchRequirements;
 import com.bethefirst.lifeweb.dto.application.CreateApplicationDto;
 import com.bethefirst.lifeweb.dto.application.UpdateApplicationDto;
+import com.bethefirst.lifeweb.entity.application.ApplicationStatus;
 import org.springframework.data.domain.Page;
 
 public interface ApplicationService {
@@ -19,6 +20,9 @@ public interface ApplicationService {
 
 	/** 신청서 수정 */
 	void updateApplication(Long applicationId, UpdateApplicationDto updateApplicationDto);
+
+	/** 신청서 상태 수정 */
+	void updateStatus(Long applicationId, ApplicationStatus status);
 
 	/** 신청서 삭제 */
 	void deleteApplication(Long applicationId);

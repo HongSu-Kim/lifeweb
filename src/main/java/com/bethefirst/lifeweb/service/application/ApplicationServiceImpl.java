@@ -3,6 +3,7 @@ package com.bethefirst.lifeweb.service.application;
 import com.bethefirst.lifeweb.dto.application.*;
 import com.bethefirst.lifeweb.entity.application.Application;
 import com.bethefirst.lifeweb.entity.application.ApplicationAnswer;
+import com.bethefirst.lifeweb.entity.application.ApplicationStatus;
 import com.bethefirst.lifeweb.entity.campaign.ApplicationQuestion;
 import com.bethefirst.lifeweb.entity.campaign.Campaign;
 import com.bethefirst.lifeweb.entity.member.Member;
@@ -17,6 +18,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
+
+import java.util.List;
 
 @Service
 @Transactional
@@ -45,11 +49,23 @@ public class ApplicationServiceImpl implements ApplicationService {
 		applicationRepository.save(application);
 
 		// 신청서답변 저장
-		for (ApplicationQuestion applicationQuestion : campaign.getApplicationQuestionList()) {
-			for (ApplicationAnswerDto applicationAnswerDto : createApplicationDto.getApplicationAnswerDtoList()) {
-				if (applicationAnswerDto.getId().equals(applicationQuestion.getId())) {
-					applicationAnswerRepository.save(applicationAnswerDto.createApplicationAnswer(application, applicationQuestion));
-					break;
+		List<ApplicationQuestion> applicationQuestionList = campaign.getApplicationQuestionList();
+		List<ApplicationAnswerDto> applicationAnswerDtoList = createApplicationDto.getApplicationAnswerDtoList();
+
+		if (!CollectionUtils.isEmpty(applicationQuestionList)) {
+			// 신청서답변의 입력값이 부족한 경우
+			if (applicationQuestionList.size() > createApplicationDto.getApplicationQuestionId().size()) {
+				throw new IllegalArgumentException("신청서질문ID는 필수 입력 값입니다.");
+			} else if (applicationQuestionList.size() > createApplicationDto.getAnswer().size()) {
+				throw new IllegalArgumentException("답변은 필수 입력 값입니다.");
+			}
+
+			for (ApplicationQuestion applicationQuestion : applicationQuestionList) {
+				for (ApplicationAnswerDto applicationAnswerDto : applicationAnswerDtoList) {
+					if (applicationAnswerDto.getId().equals(applicationQuestion.getId())) {
+						applicationAnswerRepository.save(applicationAnswerDto.createApplicationAnswer(application, applicationQuestion));
+						break;
+					}
 				}
 			}
 		}
@@ -82,15 +98,35 @@ public class ApplicationServiceImpl implements ApplicationService {
 		application.updateApplication(updateApplicationDto.getMemo());
 
 		// 신청서답변 수정
-		for (ApplicationAnswer applicationAnswer : application.getApplicationAnswerList()) {
-			for (ApplicationAnswerDto applicationAnswerDto : updateApplicationDto.getApplicationAnswerDtoList()) {
-				if (applicationAnswerDto.getId().equals(applicationAnswer.getId())) {
-					applicationAnswer.updateApplicationAnswer(applicationAnswerDto.getAnswer());
-					break;
+		List<ApplicationAnswer> applicationAnswerList = application.getApplicationAnswerList();
+		List<ApplicationAnswerDto> applicationAnswerDtoList = updateApplicationDto.getApplicationAnswerDtoList();
+
+		if (!CollectionUtils.isEmpty(applicationAnswerList)) {
+			// 신청서답변의 입력값이 부족한 경우
+			if (applicationAnswerList.size() > updateApplicationDto.getApplicationQuestionId().size()) {
+				throw new IllegalArgumentException("신청서질문ID는 필수 입력 값입니다.");
+			} else if (applicationAnswerList.size() > updateApplicationDto.getAnswer().size()) {
+				throw new IllegalArgumentException("답변은 필수 입력 값입니다.");
+			}
+
+			for (ApplicationAnswer applicationAnswer : applicationAnswerList) {
+				for (ApplicationAnswerDto applicationAnswerDto : applicationAnswerDtoList) {
+					if (applicationAnswerDto.getId().equals(applicationAnswer.getId())) {
+						applicationAnswer.updateApplicationAnswer(applicationAnswerDto.getAnswer());
+						break;
+					}
 				}
 			}
 		}
 
+	}
+
+	/** 신청서 상태 수정 */
+	@Override
+	public void updateStatus(Long applicationId, ApplicationStatus status) {
+		applicationRepository.findById(applicationId)
+				.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 신청서입니다. " + applicationId))
+				.updateApplicationStatus(status);
 	}
 
 	/** 신청서 삭제 */
