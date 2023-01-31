@@ -4,6 +4,8 @@ import com.bethefirst.lifeweb.dto.member.SnsDto;
 import com.bethefirst.lifeweb.dto.member.request.SnsCreateDto;
 import com.bethefirst.lifeweb.dto.member.request.SnsUpdateDto;
 
+import java.util.List;
+
 public interface SnsService {
 
     /** SNS 등록 */
@@ -19,4 +21,5 @@ public interface SnsService {
     SnsDto getSns(Long snsId);
 
     /** SNS 전체조회 */
+    List<SnsDto> getSnsList();
 }

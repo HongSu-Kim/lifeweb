@@ -10,6 +10,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/sns")
 @RequiredArgsConstructor
@@ -49,7 +51,17 @@ public class SnsController {
     public SnsDto getSns(@PathVariable Long snsId){
         return snsService.getSns(snsId);
     }
-    
+
+    /** SNS 전체조회 */
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping
+    public List<SnsDto> getSnsList(){
+        return snsService.getSnsList();
+    }
+
+
+
+
 
 
 

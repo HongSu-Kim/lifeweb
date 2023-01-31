@@ -11,6 +11,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -57,7 +60,11 @@ public class SnsServiceImpl implements SnsService {
 
     }
 
-
+    /** SNS 전체조회 */
+    @Override
+    public List<SnsDto> getSnsList() {
+        return snsRepository.findAll().stream().map(SnsDto::new).collect(Collectors.toList());
+    }
 
 
 }
