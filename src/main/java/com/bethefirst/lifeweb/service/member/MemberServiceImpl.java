@@ -3,7 +3,6 @@ package com.bethefirst.lifeweb.service.member;
 import com.bethefirst.lifeweb.dto.member.request.JoinDto;
 import com.bethefirst.lifeweb.dto.member.request.MemberUpdateDto;
 import com.bethefirst.lifeweb.dto.member.request.PasswordDto;
-import com.bethefirst.lifeweb.dto.member.response.MemberInfoDto;
 import com.bethefirst.lifeweb.entity.member.Member;
 import com.bethefirst.lifeweb.repository.member.MemberRepository;
 import com.bethefirst.lifeweb.service.member.interfaces.MemberService;
@@ -102,9 +101,13 @@ public class MemberServiceImpl implements MemberService {
 
 	}
 
+	/** 회원 탈퇴 */
 	@Override
-	public MemberInfoDto getInfo(Long memberId) {
-		return null;
+	public void withdraw(Long memberId) {
+		Member member = memberRepository.findById(memberId).orElseThrow(() ->
+				new IllegalArgumentException("존재하지 않는 회원입니다."));
+
+		memberRepository.delete(member);
 	}
 
 }

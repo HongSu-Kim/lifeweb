@@ -76,6 +76,16 @@ public class MemberController {
         return new ResponseEntity<>(memberInfoDto, httpHeaders, HttpStatus.OK);
     }
 
+    /** 회원 탈퇴 */
+    @DeleteMapping
+    @ResponseStatus(HttpStatus.OK)
+    public void withdraw(){
+        Long currentMemberId = SecurityUtil.getCurrentMemberId().orElseThrow(()
+                -> new UnauthorizedException("Security Context에 인증 정보가 없습니다."));
+
+        memberService.withdraw(currentMemberId);
+    }
+
     /** 이미지 수정 */
     @PutMapping("/images")
     @ResponseStatus(HttpStatus.OK)

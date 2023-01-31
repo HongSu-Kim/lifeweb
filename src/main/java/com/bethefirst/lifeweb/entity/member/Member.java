@@ -1,5 +1,6 @@
 package com.bethefirst.lifeweb.entity.member;
 
+import com.bethefirst.lifeweb.entity.review.Review;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -40,9 +41,11 @@ public class Member {//회원
 	private int point;//포인트
 
 
-	@OneToMany(mappedBy = "member")
+	@OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE, orphanRemoval = true)
 	private List<MemberSns> memberSnsList = new ArrayList<>();//회원SNS
 
+	@OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE, orphanRemoval = true)
+	private List<Review> reviewList = new ArrayList<>(); //회원 리뷰
 
 
 	protected Member(Role role, String email, String pwd, String nickname) {
