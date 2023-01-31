@@ -51,4 +51,9 @@ public class Application {//신청서
 		this.memo = memo;
 	}
 
+	/** 신청서 상태 수정 */
+	public void updateApplicationStatus(ApplicationStatus status) {
+		this.status = status;
+	}
+
 }

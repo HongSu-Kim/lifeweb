@@ -85,10 +85,10 @@ public class UpdateCampaignDto {
 	private String visitNotice;//방문주의사항
 
 
-	private List<Long> campaignImageId;//이미지
-	private List<MultipartFile> uploadFileList;//이미지
+	private List<Long> campaignImageId = new ArrayList<>();//이미지
+	private List<MultipartFile> uploadFileList = new ArrayList<>();//이미지
 
-	private List<Long> applicationQuestionId;//질문ID
+	private List<Long> applicationQuestionId = new ArrayList<>();//질문ID
 	private List<String> question;//질문
 	private List<QuestionType> type;//유형
 	private List<List<String>> items;//항목
@@ -98,7 +98,7 @@ public class UpdateCampaignDto {
 	}
 	public List<ApplicationQuestionDto> getApplicationQuestionDtoList() {
 		List<ApplicationQuestionDto> list = new ArrayList<>();
-		for (int i = 0; i < question.size(); i++) {
+		for (int i = 0; i < applicationQuestionId.size(); i++) {
 			list.add(new ApplicationQuestionDto(applicationQuestionId.get(i), question.get(i), type.get(i),
 					type.get(i) == QuestionType.RADIO || type.get(i) == QuestionType.CHECKBOX ? items.get(i) : null));
 		}
