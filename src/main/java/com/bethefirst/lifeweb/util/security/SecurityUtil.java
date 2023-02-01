@@ -26,9 +26,8 @@ public class SecurityUtil {
         try{
             CustomUser springSecurityUser = (CustomUser) authentication.getPrincipal();
             memberId = springSecurityUser.getMemberId();
-            log.info("캐스팅 되었습니다");
         }catch (IllegalArgumentException e){
-            log.info("캐스팅 실패");
+            log.debug("캐스팅 실패");
         }
 
         return Optional.ofNullable(memberId);

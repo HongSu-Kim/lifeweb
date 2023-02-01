@@ -26,4 +26,11 @@ public class Sns {//SNS
 	@OneToMany(mappedBy = "sns")
 	private List<Campaign> campaignList = new ArrayList<>();//캠페인
 
+	public Sns(String name) {
+		this.name = name;
+	}
+
+	public void updateSns(String name){
+		this.name = name;
+	}
 }

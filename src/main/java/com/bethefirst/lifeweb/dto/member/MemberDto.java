@@ -1,5 +1,6 @@
 package com.bethefirst.lifeweb.dto.member;
 
+import com.bethefirst.lifeweb.dto.member.response.MemberSnsDto;
 import com.bethefirst.lifeweb.entity.member.Member;
 import com.bethefirst.lifeweb.entity.member.Role;
 import com.fasterxml.jackson.annotation.JsonProperty;

@@ -1,4 +1,4 @@
-package com.bethefirst.lifeweb.dto.member;
+package com.bethefirst.lifeweb.dto.member.request;
 
 import com.bethefirst.lifeweb.entity.member.Role;
 import jakarta.validation.constraints.Email;

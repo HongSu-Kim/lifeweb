@@ -1,6 +1,7 @@
 package com.bethefirst.lifeweb.config.security;
 
 import com.bethefirst.lifeweb.dto.CustomUser;
+import com.bethefirst.lifeweb.repository.member.MemberRepository;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -29,7 +30,7 @@ public class TokenProvider implements InitializingBean {
     private final String secret;
     private final long tokenValidityInMilliseconds;
     private Key key;
-
+    private MemberRepository memberRepository;
 
     public TokenProvider(
             @Value("${jwt.secret}") String secret,
@@ -56,7 +57,7 @@ public class TokenProvider implements InitializingBean {
 
         return Jwts.builder()
                 .setSubject(authentication.getName())
-                .claim(MEMBER_ID_KEY, customUser.getMemberId())
+                .claim(MEMBER_ID_KEY, customUser.getMember().getId())
                 .claim(AUTHORITIES_KEY, authorities)
                 .signWith(key, SignatureAlgorithm.HS512)
                 .setExpiration(validity)
