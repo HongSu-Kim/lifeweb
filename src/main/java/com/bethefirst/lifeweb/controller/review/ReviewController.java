@@ -32,14 +32,14 @@ public class ReviewController {
 
 	/** 리뷰 삭제 */
 	@ResponseStatus(HttpStatus.OK)
-	@DeleteMapping("{/reviewId}")
+	@DeleteMapping("/{reviewId}")
 	public void delete(@PathVariable Long reviewId){
 		reviewService.deleteReview(reviewId);
 	}
 
 	/** 리뷰 수정 */
 	@ResponseStatus(HttpStatus.OK)
-	@PutMapping("{/reviewId}")
+	@PutMapping("/{reviewId}")
 	public void update(@PathVariable Long reviewId,
 					   @RequestBody ReviewUpdateDto reviewUpdateDto){
 		reviewService.updateReview(reviewUpdateDto, reviewId);
