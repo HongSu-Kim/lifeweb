@@ -58,6 +58,13 @@ public class ReviewServiceImpl implements ReviewService {
 	/** 리뷰 삭제 */
 	@Override
 	public void deleteReview(Long reviewId) {
-		
+		Review review = reviewRepository.findById(reviewId).orElseThrow(() ->
+				new IllegalArgumentException("존재하지 않는 리뷰입니다. " + reviewId));
+
+		reviewRepository.delete(review);
+
 	}
+
+
+
 }
