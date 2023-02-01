@@ -30,7 +30,4 @@ public class Review {//리뷰
 	private String reviewUrl;//리뷰주소
 	private LocalDateTime created;//등록일
 
-	@Enumerated(EnumType.STRING)
-	private ReviewStatus status;//상태
-
 }

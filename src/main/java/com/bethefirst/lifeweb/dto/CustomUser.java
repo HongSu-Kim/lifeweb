@@ -1,5 +1,6 @@
 package com.bethefirst.lifeweb.dto;
 
+import com.bethefirst.lifeweb.entity.member.Member;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
@@ -9,6 +10,10 @@ import java.util.Collection;
 
 public class CustomUser extends User {
 
+
+    @Getter
+    @Setter
+    private Member member;
 
     @Getter
     @Setter

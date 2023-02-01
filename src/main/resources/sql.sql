@@ -153,7 +153,6 @@ CREATE TABLE review (
     campaign_id	BIGINT	        NOT NULL,
     review_url	VARCHAR(255)	NOT NULL,
     created	    DATETIME	    DEFAULT NOW(),
-    status	    VARCHAR(10)	    NOT NULL,
     CONSTRAINT PK_REVIEW PRIMARY KEY (review_id),
     CONSTRAINT FK_REVIEW_MEMBER FOREIGN KEY (member_id) REFERENCES member (member_id),
     CONSTRAINT FK_REVIEW_CAMPAIGN FOREIGN KEY (campaign_id) REFERENCES campaign (campaign_id)

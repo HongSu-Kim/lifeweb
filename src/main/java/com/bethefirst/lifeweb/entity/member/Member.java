@@ -1,6 +1,6 @@
 package com.bethefirst.lifeweb.entity.member;
 
-import com.bethefirst.lifeweb.dto.member.MemberUpdateDto;
+import com.bethefirst.lifeweb.entity.review.Review;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -41,9 +41,11 @@ public class Member {//회원
 	private int point;//포인트
 
 
-	@OneToMany(mappedBy = "member")
+	@OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE, orphanRemoval = true)
 	private List<MemberSns> memberSnsList = new ArrayList<>();//회원SNS
 
+	@OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE, orphanRemoval = true)
+	private List<Review> reviewList = new ArrayList<>(); //회원 리뷰
 
 
 	protected Member(Role role, String email, String pwd, String nickname) {
@@ -70,17 +72,18 @@ public class Member {//회원
 
 
 	//== 정보 수정 == /
-	public void updateMemberByUpdateDto(MemberUpdateDto memberUpdateDto){
+	public void updateMember(String name, String nickname, String gender, LocalDate birth,
+							 String tel, String postcode, String address, String detailAddress, String extraAddress){
 
-		this.name = memberUpdateDto.getName() == null ? null : memberUpdateDto.getName();
-		this.nickname = memberUpdateDto.getNickname() == null ? null : memberUpdateDto.getNickname();
-		this.gender = memberUpdateDto.getGender() == null ? null : memberUpdateDto.getGender();
-		this.birth = memberUpdateDto.getBirth() == null ? null : memberUpdateDto.getBirth();
-		this.tel = memberUpdateDto.getTel() == null ? null : memberUpdateDto.getTel();
-		this.postcode = memberUpdateDto.getPostcode() == null ? null : memberUpdateDto.getPostcode();
-		this.address = memberUpdateDto.getAddress() == null ? null : memberUpdateDto.getAddress();
-		this.detailAddress = memberUpdateDto.getDetailAddress() == null ? null : memberUpdateDto.getDetailAddress();
-		this.extraAddress = memberUpdateDto.getExtraAddress() == null ? null : memberUpdateDto.getExtraAddress();
+		this.name = name;
+		this.nickname = tel;
+		this.gender = gender;
+		this.birth = birth;
+		this.tel = tel;
+		this.postcode = postcode;
+		this.address = address;
+		this.detailAddress = detailAddress;
+		this.extraAddress = extraAddress;
 
 	}
 
