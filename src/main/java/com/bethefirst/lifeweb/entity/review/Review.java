@@ -37,4 +37,8 @@ public class Review {//리뷰
 		this.created = LocalDateTime.now();
 	}
 
+	public void updateReview(String reviewUrl){
+		this.reviewUrl = reviewUrl;
+	}
+
 }

@@ -1,12 +1,12 @@
 package com.bethefirst.lifeweb.service.review;
 
 import com.bethefirst.lifeweb.dto.review.reqeust.ReviewCreateDto;
+import com.bethefirst.lifeweb.dto.review.reqeust.ReviewUpdateDto;
 import com.bethefirst.lifeweb.entity.application.Application;
 import com.bethefirst.lifeweb.entity.application.ApplicationStatus;
 import com.bethefirst.lifeweb.entity.campaign.Campaign;
 import com.bethefirst.lifeweb.entity.member.Member;
 import com.bethefirst.lifeweb.entity.review.Review;
-import com.bethefirst.lifeweb.repository.application.ApplicationRepository;
 import com.bethefirst.lifeweb.repository.campaign.CampaignRepository;
 import com.bethefirst.lifeweb.repository.member.MemberRepository;
 import com.bethefirst.lifeweb.repository.review.ReviewRepository;
@@ -26,7 +26,6 @@ public class ReviewServiceImpl implements ReviewService {
 
 	private final ReviewRepository reviewRepository;
 	private final MemberRepository memberRepository;
-	private final ApplicationRepository applicationRepository;
 	private final CampaignRepository campaignRepository;
 
 
@@ -50,7 +49,7 @@ public class ReviewServiceImpl implements ReviewService {
 		if(campaign.getFilingStartDate().isBefore(LocalDate.now())){
 			throw new IllegalArgumentException("아직 리뷰 등록 기간이 아닙니다.");
 		}
-		Review review = new Review(member, campaign, reviewCreateDto.getReviewUrl());
+		Review review = reviewCreateDto.createReview(member, campaign);
 
 		reviewRepository.save(review);
 	}
@@ -65,6 +64,14 @@ public class ReviewServiceImpl implements ReviewService {
 
 	}
 
+	/** 리뷰 수정 */
+	@Override
+	public void updateReview(ReviewUpdateDto reviewUpdateDto, Long reviewId) {
+		Review review = reviewRepository.findById(reviewId).orElseThrow(() ->
+				new IllegalArgumentException("존재하지 않는 리뷰입니다. " + reviewId));
+
+		reviewUpdateDto.updateReview(review);
+	}
 
 
 }

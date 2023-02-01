@@ -1,6 +1,7 @@
 package com.bethefirst.lifeweb.controller.review;
 
 import com.bethefirst.lifeweb.dto.review.reqeust.ReviewCreateDto;
+import com.bethefirst.lifeweb.dto.review.reqeust.ReviewUpdateDto;
 import com.bethefirst.lifeweb.exception.UnauthorizedException;
 import com.bethefirst.lifeweb.service.review.interfaces.ReviewService;
 import com.bethefirst.lifeweb.util.security.SecurityUtil;
@@ -35,5 +36,15 @@ public class ReviewController {
 	public void delete(@PathVariable Long reviewId){
 		reviewService.deleteReview(reviewId);
 	}
-	
+
+	/** 리뷰 수정 */
+	@ResponseStatus(HttpStatus.OK)
+	@PutMapping("{/reviewId}")
+	public void update(@PathVariable Long reviewId,
+					   @RequestBody ReviewUpdateDto reviewUpdateDto){
+		reviewService.updateReview(reviewUpdateDto, reviewId);
+	}
+
+
+
 }
