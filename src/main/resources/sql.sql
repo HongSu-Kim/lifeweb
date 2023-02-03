@@ -183,3 +183,116 @@ INSERT INTO campaign_type(name) VALUES('배송형');
 INSERT INTO campaign_type(name) VALUES('기자단');
 INSERT INTO campaign_type(name) VALUES('방문기자단');
 
+-- 회원 DB
+INSERT INTO member (role, email, pwd, name, nickname, gender, birth, tel) VALUES
+('USER', 'test1@naver.com', '$2a$12$rV476b82BNuz4PFTzJfCaOV7OhBeZZXr9s4zHCFT6MD5llAmka4Wi', '테스트이름1', '테스트닉네임1', '남자', now(), '01000000001'),
+('USER', 'test2@naver.com', '$2a$12$oPS02PZ6PKhUt8vy3MMm6.zCBN4Zcj0Ae3YQEQZ2dv26OKpzpZtc2', '테스트이름2', '테스트닉네임2', '여자', now(), '01000000002'),
+('USER', 'test3@naver.com', '$2a$12$gM5myqWV3crcI.mpjy9VI.8A7GTCJh90SZfnVfoxYgYgFSq7pe02u', '테스트이름3', '테스트닉네임3', '남자', now(), '01000000003'),
+('USER', 'test4@naver.com', '$2a$12$pmyj4ZrfEZkFUS/9d2ogOeQsVG0bwRqNH7ftAOorrfRC03H5Uc1z2', '테스트이름4', '테스트닉네임4', '여자', now(), '01000000004'),
+('USER', 'test5@naver.com', '$2a$12$zbscNN9fHaxjd5jBYjIFYecJUA2E2y0Yp6miQYhwjLk9TfBunwIQy', '테스트이름5', '테스트닉네임5', '남자', now(), '01000000005'),
+('USER', 'test6@naver.com', '$2a$12$w5tuXgZa/Ogq2aW4CxkaeusWY6cUa7SrBSQEPa8NKycmBo/O/ANke', '테스트이름6', '테스트닉네임6', '여자', now(), '01000000006'),
+('USER', 'test7@naver.com', '$2a$12$jDVUHVwTIyP2FpwFpC4hu.mWCxWI0zOFudVR/K5.N/ebF5WPbtqky', '테스트이름7', '테스트닉네임7', '남자', now(), '01000000007'),
+('USER', 'test8@naver.com', '$2a$12$2ruUSmSrFyMPwEQ7JVqpze73G1F9MnewTsSVdK43p1d0Atngw3pPG', '테스트이름8', '테스트닉네임8', '여자', now(), '01000000008'),
+('USER', 'test9@naver.com', '$2a$12$MDjQmnqZn9WbcwIp7yqmhe19CQnhp6FxhfDmvFBzVCL.QCxncPBne', '테스트이름9', '테스트닉네임9', '남자', now(), '01000000009'),
+('USER', 'test10@naver.com', '$2a$12$.dLIbKLBJ7uDLyqOkBs6GO0qR3zAp0XODuJIkMMLdh1zZdFYyYHjq', '테스트이름10', '테스트닉네임10', '여자', now(), '01000000010');
+
+-- 회원 SNS DB
+-- 네이버
+INSERT INTO member_sns (member_id, sns_id, sns_url) VALUES
+(1, 1, 'https://blog.naver.com/songsong14'),
+(2, 1, 'https://blog.naver.com/kccpe'),
+(3, 1, 'https://blog.naver.com/rladnjstjd55'),
+(4, 1, 'https://blog.naver.com/daisy_review'),
+(5, 1, 'https://blog.naver.com/swkim3499'),
+(6, 1, 'https://blog.naver.com/kudoseed'),
+(7, 1, 'https://blog.naver.com/no_comm'),
+(8, 1, 'https://blog.naver.com/pitteos'),
+(9, 1, 'https://blog.naver.com/haru__1'),
+(10, 1, 'https://blog.naver.com/01048720226');
+
+-- 인스타그램
+INSERT INTO member_sns (member_id, sns_id, sns_url) VALUES
+(1, 2, 'https://www.instagram.com/chorong_v_v/'),
+(2, 2, 'https://www.instagram.com/poodlemylife/'),
+(3, 2, 'https://www.instagram.com/boriharu_store/'),
+(4, 2, 'https://www.instagram.com/taepung._.ari/'),
+(5, 2, 'https://www.instagram.com/gogo_ato0.0/'),
+(6, 2, 'https://www.instagram.com/nadle_nezz/');
+
+-- 유투브
+INSERT INTO member_sns (member_id, sns_id, sns_url) VALUES
+(7, 3, 'https://www.youtube.com/@1min_music'),
+(8, 3, 'https://www.youtube.com/@sugirit'),
+(9, 3, 'https://www.youtube.com/@KoreanSongs7');
+
+-- 리뷰 (캠페인 1번은 블로그 2번은 인스타 3번은 유튜브여야 함)
+INSERT INTO review (member_id, campaign_id, review_url) VALUES
+(1, 1, 'https://blog.naver.com/songsong14/222301042183'),
+(2, 1, 'https://blog.naver.com/songsong14/222862327183'),
+(3, 1, 'https://blog.naver.com/songsong14/222973249245'),
+(4, 1, 'https://blog.naver.com/songsong14/222973249245'),
+(5, 1, 'https://blog.naver.com/songsong14/222973244513'),
+(6, 1, 'https://blog.naver.com/songsong14/222973147532'),
+(7, 1, 'https://blog.naver.com/songsong14/222992447251'),
+(8, 1, 'https://blog.naver.com/songsong14/222992447251'),
+(9, 1, 'https://blog.naver.com/songsong14/222989910602'),
+(10, 1, 'https://blog.naver.com/songsong14/222982921850'),
+(1, 2, 'https://www.instagram.com/p/CoKer7gr3Mq/'),
+(2, 2, 'https://www.instagram.com/p/CoIEizrpexY/'),
+(3, 2, 'https://www.instagram.com/p/CoID2aop92r/'),
+(4, 2, 'https://www.instagram.com/p/Cn_1yc_L7j-/'),
+(5, 2, 'https://www.instagram.com/p/Cn4LH40rZ3W/'),
+(6, 2, 'https://www.instagram.com/p/Cn4KEp9LAwz/'),
+(7, 2, 'https://www.instagram.com/p/CnTMW2mBLnp/'),
+(8, 2, 'https://www.instagram.com/p/Cm_VCQwJXYA/'),
+(9, 2, 'https://www.instagram.com/p/Cm39vk7L9LI/'),
+(10, 2, 'https://www.instagram.com/p/Cm3k8lVL62s/'),
+(1, 3, 'https://www.youtube.com/watch?v=bhJoZmAXuF'),
+(2, 3, 'https://www.youtube.com/watch?v=ddsvjQ_S3wU'),
+(3, 3, 'https://www.youtube.com/watch?v=WexRskfMaLQ'),
+(4, 3, 'https://www.youtube.com/watch?v=9F9a_fFx45o'),
+(5, 3, 'https://www.youtube.com/watch?v=xvzKNy0-VZw'),
+(6, 3, 'https://www.youtube.com/watch?v=JYJ4OfB6ztc'),
+(7, 3, 'https://www.youtube.com/watch?v=9aHLkpOhvO8'),
+(8, 3, 'https://www.youtube.com/watch?v=IV_fNz4ojlI'),
+(9, 3, 'https://www.youtube.com/watch?v=S7cvx-swESk'),
+(10, 3, 'https://www.youtube.com/watch?v=PfvQplooctA'),
+(1, 1, '리뷰주소1'),
+(1, 2, '리뷰주소2'),
+(1, 3, '리뷰주소3'),
+(1, 4, '리뷰주소4'),
+(1, 5, '리뷰주소5'),
+(1, 6, '리뷰주소6'),
+(1, 7, '리뷰주소7'),
+(1, 8, '리뷰주소8'),
+(1, 9, '리뷰주소9'),
+(1, 10, '리뷰주소10'),
+(2, 1, '리뷰주소1'),
+(2, 2, '리뷰주소2'),
+(2, 3, '리뷰주소3'),
+(2, 4, '리뷰주소4'),
+(2, 5, '리뷰주소5'),
+(2, 6, '리뷰주소6'),
+(2, 7, '리뷰주소7'),
+(2, 8, '리뷰주소8'),
+(2, 9, '리뷰주소9'),
+(2, 10, '리뷰주소10'),
+(3, 1, '리뷰주소1'),
+(3, 2, '리뷰주소2'),
+(3, 3, '리뷰주소3'),
+(3, 4, '리뷰주소4'),
+(3, 5, '리뷰주소5'),
+(4, 1, '리뷰주소1'),
+(4, 2, '리뷰주소2'),
+(4, 3, '리뷰주소3'),
+(4, 4, '리뷰주소4'),
+(4, 5, '리뷰주소5'),
+(4, 6, '리뷰주소6'),
+(4, 7, '리뷰주소7'),
+(4, 8, '리뷰주소8'),
+(5, 1, '리뷰주소1'),
+(4, 3, '리뷰주소3'),
+(4, 5, '리뷰주소5'),
+(4, 7, '리뷰주소7');
+
+
