@@ -183,18 +183,20 @@ INSERT INTO campaign_type(name) VALUES('배송형');
 INSERT INTO campaign_type(name) VALUES('기자단');
 INSERT INTO campaign_type(name) VALUES('방문기자단');
 
+
 -- 회원 DB
-INSERT INTO member (role, email, pwd, name, nickname, gender, birth, tel) VALUES
-('USER', 'test1@naver.com', '$2a$12$rV476b82BNuz4PFTzJfCaOV7OhBeZZXr9s4zHCFT6MD5llAmka4Wi', '테스트이름1', '테스트닉네임1', '남자', now(), '01000000001'),
-('USER', 'test2@naver.com', '$2a$12$oPS02PZ6PKhUt8vy3MMm6.zCBN4Zcj0Ae3YQEQZ2dv26OKpzpZtc2', '테스트이름2', '테스트닉네임2', '여자', now(), '01000000002'),
-('USER', 'test3@naver.com', '$2a$12$gM5myqWV3crcI.mpjy9VI.8A7GTCJh90SZfnVfoxYgYgFSq7pe02u', '테스트이름3', '테스트닉네임3', '남자', now(), '01000000003'),
-('USER', 'test4@naver.com', '$2a$12$pmyj4ZrfEZkFUS/9d2ogOeQsVG0bwRqNH7ftAOorrfRC03H5Uc1z2', '테스트이름4', '테스트닉네임4', '여자', now(), '01000000004'),
-('USER', 'test5@naver.com', '$2a$12$zbscNN9fHaxjd5jBYjIFYecJUA2E2y0Yp6miQYhwjLk9TfBunwIQy', '테스트이름5', '테스트닉네임5', '남자', now(), '01000000005'),
-('USER', 'test6@naver.com', '$2a$12$w5tuXgZa/Ogq2aW4CxkaeusWY6cUa7SrBSQEPa8NKycmBo/O/ANke', '테스트이름6', '테스트닉네임6', '여자', now(), '01000000006'),
-('USER', 'test7@naver.com', '$2a$12$jDVUHVwTIyP2FpwFpC4hu.mWCxWI0zOFudVR/K5.N/ebF5WPbtqky', '테스트이름7', '테스트닉네임7', '남자', now(), '01000000007'),
-('USER', 'test8@naver.com', '$2a$12$2ruUSmSrFyMPwEQ7JVqpze73G1F9MnewTsSVdK43p1d0Atngw3pPG', '테스트이름8', '테스트닉네임8', '여자', now(), '01000000008'),
-('USER', 'test9@naver.com', '$2a$12$MDjQmnqZn9WbcwIp7yqmhe19CQnhp6FxhfDmvFBzVCL.QCxncPBne', '테스트이름9', '테스트닉네임9', '남자', now(), '01000000009'),
-('USER', 'test10@naver.com', '$2a$12$.dLIbKLBJ7uDLyqOkBs6GO0qR3zAp0XODuJIkMMLdh1zZdFYyYHjq', '테스트이름10', '테스트닉네임10', '여자', now(), '01000000010');
+-- 비밀번호는 a123123x# x = 회원 1번부터 1 2 3 ... 회원1번 -> a1231231# 회원2번 -> a1231232#
+INSERT INTO member (role, email, pwd, name, nickname, gender, birth, tel, postcode, address, detail_address, extra_address) VALUES
+('ADMIN', 'test1@naver.com', '$2a$12$rV476b82BNuz4PFTzJfCaOV7OhBeZZXr9s4zHCFT6MD5llAmka4Wi', '테스트이름1', '테스트닉네임1', '남자', now(), '01000000001', '11900', '경기 구리시 갈매동 215-56', '1층', ''),
+('USER', 'test2@naver.com', '$2a$12$oPS02PZ6PKhUt8vy3MMm6.zCBN4Zcj0Ae3YQEQZ2dv26OKpzpZtc2', '테스트이름2', '테스트닉네임2', '여자', now(), '01000000002', '12202', '경기 남양주시 와부읍 월문리 293-4', '2층', ''),
+('USER', 'test3@naver.com', '$2a$12$gM5myqWV3crcI.mpjy9VI.8A7GTCJh90SZfnVfoxYgYgFSq7pe02u', '테스트이름3', '테스트닉네임3', '남자', now(), '01000000003', '13544', '경기 성남시 분당구 대장동 403-7', '3층', ''),
+('USER', 'test4@naver.com', '$2a$12$pmyj4ZrfEZkFUS/9d2ogOeQsVG0bwRqNH7ftAOorrfRC03H5Uc1z2', '테스트이름4', '테스트닉네임4', '여자', now(), '01000000004', '13540', '경기 성남시 분당구 하산운동 362-5', '4층', ''),
+('USER', 'test5@naver.com', '$2a$12$zbscNN9fHaxjd5jBYjIFYecJUA2E2y0Yp6miQYhwjLk9TfBunwIQy', '테스트이름5', '테스트닉네임5', '남자', now(), '01000000005', '13450', '경기 성남시 수정구 금토동 179-5', '5층', ''),
+('USER', 'test6@naver.com', '$2a$12$w5tuXgZa/Ogq2aW4CxkaeusWY6cUa7SrBSQEPa8NKycmBo/O/ANke', '테스트이름6', '테스트닉네임6', '여자', now(), '01000000006', '13103', '경기 성남시 수정구 심곡동 396-155', '6층', ''),
+('USER', 'test7@naver.com', '$2a$12$jDVUHVwTIyP2FpwFpC4hu.mWCxWI0zOFudVR/K5.N/ebF5WPbtqky', '테스트이름7', '테스트닉네임7', '남자', now(), '01000000007', '08826', '서울 관악구 신림동 산 56-1', '7층', ''),
+('USER', 'test8@naver.com', '$2a$12$2ruUSmSrFyMPwEQ7JVqpze73G1F9MnewTsSVdK43p1d0Atngw3pPG', '테스트이름8', '테스트닉네임8', '여자', now(), '01000000008', '08825', '서울 관악구 신림동 211-11', '8층', ''),
+('USER', 'test9@naver.com', '$2a$12$MDjQmnqZn9WbcwIp7yqmhe19CQnhp6FxhfDmvFBzVCL.QCxncPBne', '테스트이름9', '테스트닉네임9', '남자', now(), '01000000009', '34303', '대전 대덕구 문평동 400-4', '9층', ''),
+('USER', 'test10@naver.com', '$2a$12$.dLIbKLBJ7uDLyqOkBs6GO0qR3zAp0XODuJIkMMLdh1zZdFYyYHjq', '테스트이름10', '테스트닉네임10', '여자', now(), '01000000010', '34335', '대전 대덕구 상서동 산 66-11', '10층', '');
 
 -- 회원 SNS DB
 -- 네이버
@@ -257,19 +259,13 @@ INSERT INTO review (member_id, campaign_id, review_url) VALUES
 (8, 3, 'https://www.youtube.com/watch?v=IV_fNz4ojlI'),
 (9, 3, 'https://www.youtube.com/watch?v=S7cvx-swESk'),
 (10, 3, 'https://www.youtube.com/watch?v=PfvQplooctA'),
-(1, 1, '리뷰주소1'),
-(1, 2, '리뷰주소2'),
-(1, 3, '리뷰주소3'),
-(1, 4, '리뷰주소4'),
-(1, 5, '리뷰주소5'),
-(1, 6, '리뷰주소6'),
-(1, 7, '리뷰주소7'),
-(1, 8, '리뷰주소8'),
-(1, 9, '리뷰주소9'),
+(1, 4, '리뷰주소2'),
+(1, 5, '리뷰주소3'),
+(1, 6, '리뷰주소4'),
+(1, 7, '리뷰주소5'),
+(1, 8, '리뷰주소6'),
+(1, 9, '리뷰주소7'),
 (1, 10, '리뷰주소10'),
-(2, 1, '리뷰주소1'),
-(2, 2, '리뷰주소2'),
-(2, 3, '리뷰주소3'),
 (2, 4, '리뷰주소4'),
 (2, 5, '리뷰주소5'),
 (2, 6, '리뷰주소6'),
@@ -277,21 +273,13 @@ INSERT INTO review (member_id, campaign_id, review_url) VALUES
 (2, 8, '리뷰주소8'),
 (2, 9, '리뷰주소9'),
 (2, 10, '리뷰주소10'),
-(3, 1, '리뷰주소1'),
-(3, 2, '리뷰주소2'),
-(3, 3, '리뷰주소3'),
 (3, 4, '리뷰주소4'),
 (3, 5, '리뷰주소5'),
-(4, 1, '리뷰주소1'),
-(4, 2, '리뷰주소2'),
-(4, 3, '리뷰주소3'),
 (4, 4, '리뷰주소4'),
 (4, 5, '리뷰주소5'),
 (4, 6, '리뷰주소6'),
 (4, 7, '리뷰주소7'),
 (4, 8, '리뷰주소8'),
-(5, 1, '리뷰주소1'),
-(4, 3, '리뷰주소3'),
 (4, 5, '리뷰주소5'),
 (4, 7, '리뷰주소7');
 
