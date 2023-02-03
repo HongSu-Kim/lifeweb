@@ -44,7 +44,7 @@ public class MemberController {
     /** 회원정보 수정 */
     @PutMapping("/{memberId}")
     @ResponseStatus(HttpStatus.OK)
-    public void updateMember(@PathVariable Long memberId,
+    public void update(@PathVariable Long memberId,
                              @Valid @RequestBody MemberUpdateDto memberUpdateDto) {
 
         Long currentMemberId = SecurityUtil.getCurrentMemberId().orElseThrow(()
