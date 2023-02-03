@@ -1,7 +1,9 @@
 package com.bethefirst.lifeweb.service.review;
 
 import com.bethefirst.lifeweb.dto.review.reqeust.ReviewCreateDto;
+import com.bethefirst.lifeweb.dto.review.reqeust.ReviewSearchRequirements;
 import com.bethefirst.lifeweb.dto.review.reqeust.ReviewUpdateDto;
+import com.bethefirst.lifeweb.dto.review.response.ReviewDto;
 import com.bethefirst.lifeweb.entity.application.Application;
 import com.bethefirst.lifeweb.entity.application.ApplicationStatus;
 import com.bethefirst.lifeweb.entity.campaign.Campaign;
@@ -13,6 +15,8 @@ import com.bethefirst.lifeweb.repository.review.ReviewRepository;
 import com.bethefirst.lifeweb.service.review.interfaces.ReviewService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -71,6 +75,13 @@ public class ReviewServiceImpl implements ReviewService {
 				new IllegalArgumentException("존재하지 않는 리뷰입니다. " + reviewId));
 
 		reviewUpdateDto.updateReview(review);
+	}
+
+	/** 검색조건에 따른 리뷰 전체 조회 */
+	@Transactional(readOnly = true)
+	@Override
+	public Page<ReviewDto> getReviewList(ReviewSearchRequirements requirements, Pageable pageable) {
+		return reviewRepository.findAllBySearchRequirements(requirements, pageable).map(ReviewDto::new);
 	}
 
 
