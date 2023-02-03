@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.function.Function;
 
 @Repository
-public class QueryDsl4RepositorySupport {
+public abstract class QueryDsl4RepositorySupport {
 
     private final Class domainClass;
     private Querydsl querydsl;
