@@ -88,7 +88,7 @@ CREATE TABLE campaign (
     filing_start_date	    DATE	        NOT NULL,
     filing_end_date	        DATE	        NOT NULL,
     headcount	            INT	            NOT NULL,
-    status                  VARCHAR(10)	    DEFAULT 'STAND',
+    status                  VARCHAR(20)	    DEFAULT 'STAND',
     CONSTRAINT PK_CAMPAIGN PRIMARY KEY (campaign_id),
     CONSTRAINT FK_CAMPAIGN_CAMPAIGN_CATEGORY FOREIGN KEY (campaign_category_id) REFERENCES campaign_category (campaign_category_id),
     CONSTRAINT FK_CAMPAIGN_CAMPAIGN_TYPE FOREIGN KEY (campaign_type_id) REFERENCES campaign_type (campaign_type_id),
@@ -253,14 +253,14 @@ INSERT INTO campaign (campaign_category_id, campaign_type_id, sns_id, special, t
  DATE_SUB(NOW(), INTERVAL 15 DAY), DATE_SUB(NOW(), INTERVAL 8 DAY), DATE_SUB(NOW(), INTERVAL 7 DAY), DATE_SUB(NOW(), INTERVAL 1 DAY), 10, 'COMPLETE'),
 -- APPLICATION : 11 ~ 12
 (1, 1, 1, FALSE, '테스트 제목11', '테스트 대표이미지11.jpg', '테스트 제공내역11', DATE_SUB(NOW(), INTERVAL 11 DAY), '테스트 리뷰주의사항11', '테스트 가이드라인11', '테스트 키워드11#테스트 캠페인11#테스트11',
- DATE_SUB(NOW(), INTERVAL 10 DAY), DATE_SUB(NOW(), INTERVAL 3 DAY), DATE_SUB(NOW(), INTERVAL 2 DAY), DATE_ADD(NOW(), INTERVAL 5 DAY), 10, 'PROGRESS'),
+ DATE_SUB(NOW(), INTERVAL 10 DAY), DATE_SUB(NOW(), INTERVAL 3 DAY), DATE_SUB(NOW(), INTERVAL 2 DAY), DATE_ADD(NOW(), INTERVAL 5 DAY), 10, 'APPLICATION'),
 (1, 1, 2, TRUE, '테스트 제목12', '테스트 대표이미지12.jpg', '테스트 제공내역12', DATE_SUB(NOW(), INTERVAL 11 DAY), '테스트 리뷰주의사항12', '테스트 가이드라인12', '테스트 키워드12#테스트 캠페인12#테스트12',
- DATE_SUB(NOW(), INTERVAL 10 DAY), DATE_SUB(NOW(), INTERVAL 3 DAY), DATE_SUB(NOW(), INTERVAL 2 DAY), DATE_ADD(NOW(), INTERVAL 5 DAY), 10, 'PROGRESS'),
+ DATE_SUB(NOW(), INTERVAL 10 DAY), DATE_SUB(NOW(), INTERVAL 3 DAY), DATE_SUB(NOW(), INTERVAL 2 DAY), DATE_ADD(NOW(), INTERVAL 5 DAY), 10, 'APPLICATION'),
 -- FILING : 13 ~ 14
 (1, 1, 3, FALSE, '테스트 제목13', '테스트 대표이미지13.jpg', '테스트 제공내역13', DATE_SUB(NOW(), INTERVAL 5 DAY), '테스트 리뷰주의사항13', '테스트 가이드라인13', '테스트 키워드13#테스트 캠페인13#테스트13',
- DATE_SUB(NOW(), INTERVAL 4 DAY), DATE_ADD(NOW(), INTERVAL 3 DAY), DATE_ADD(NOW(), INTERVAL 4 DAY), DATE_ADD(NOW(), INTERVAL 11 DAY), 10, 'PROGRESS'),
+ DATE_SUB(NOW(), INTERVAL 4 DAY), DATE_ADD(NOW(), INTERVAL 3 DAY), DATE_ADD(NOW(), INTERVAL 4 DAY), DATE_ADD(NOW(), INTERVAL 11 DAY), 10, 'FILING'),
 (1, 1, 1, TRUE, '테스트 제목14', '테스트 대표이미지14.jpg', '테스트 제공내역14', DATE_SUB(NOW(), INTERVAL 5 DAY), '테스트 리뷰주의사항14', '테스트 가이드라인14', '테스트 키워드14#테스트 캠페인14#테스트14',
- DATE_SUB(NOW(), INTERVAL 4 DAY), DATE_ADD(NOW(), INTERVAL 3 DAY), DATE_ADD(NOW(), INTERVAL 4 DAY), DATE_ADD(NOW(), INTERVAL 11 DAY), 10, 'PROGRESS'),
+ DATE_SUB(NOW(), INTERVAL 4 DAY), DATE_ADD(NOW(), INTERVAL 3 DAY), DATE_ADD(NOW(), INTERVAL 4 DAY), DATE_ADD(NOW(), INTERVAL 11 DAY), 10, 'FILING'),
 -- STAND : 15 ~ 16
 (1, 1, 1, FALSE, '테스트 제목15', '테스트 대표이미지15.jpg', '테스트 제공내역15', NOW(), '테스트 리뷰주의사항15', '테스트 가이드라인15', '테스트 키워드15#테스트 캠페인15#테스트15',
  DATE_ADD(NOW(), INTERVAL 1 DAY), DATE_ADD(NOW(), INTERVAL 8 DAY), DATE_ADD(NOW(), INTERVAL 9 DAY), DATE_ADD(NOW(), INTERVAL 15 DAY), 10, 'STAND'),
