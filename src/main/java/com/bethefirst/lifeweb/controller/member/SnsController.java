@@ -48,14 +48,14 @@ public class SnsController {
     /** SNS 단건조회 */
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{snsId}")
-    public SnsDto getSns(@PathVariable Long snsId){
+    public SnsDto detail(@PathVariable Long snsId){
         return snsService.getSns(snsId);
     }
 
     /** SNS 전체조회 */
     @ResponseStatus(HttpStatus.OK)
     @GetMapping
-    public List<SnsDto> getSnsList(){
+    public List<SnsDto> list(){
         return snsService.getSnsList();
     }
 

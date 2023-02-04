@@ -30,4 +30,15 @@ public class Review {//리뷰
 	private String reviewUrl;//리뷰주소
 	private LocalDateTime created;//등록일
 
+	public Review(Member member, Campaign campaign, String reviewUrl) {
+		this.member = member;
+		this.campaign = campaign;
+		this.reviewUrl = reviewUrl;
+		this.created = LocalDateTime.now();
+	}
+
+	public void updateReview(String reviewUrl){
+		this.reviewUrl = reviewUrl;
+	}
+
 }
