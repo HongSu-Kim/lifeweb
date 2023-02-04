@@ -73,10 +73,6 @@ public class UpdateCampaignDto {
 	@NotNull(message = "모집인원은 필수 입력 값입니다.")
 	private Integer headcount;//모집인원
 
-	@NotNull(message = "상태는 필수 입력 값입니다.")
-	private CampaignStatus status;//상태
-
-
 	private Long localId;//지역
 
 	private String address;//주소
@@ -113,8 +109,7 @@ public class UpdateCampaignDto {
 //				applicationStartDate, applicationEndDate,
 //				filingStartDate, filingEndDate,
 				LocalDate.parse(applicationStartDate), LocalDate.parse(applicationEndDate),
-				LocalDate.parse(filingStartDate), LocalDate.parse(filingEndDate),
-				headcount, status);
+				LocalDate.parse(filingStartDate), LocalDate.parse(filingEndDate), headcount);
 	}
 
 }

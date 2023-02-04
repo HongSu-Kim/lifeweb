@@ -5,12 +5,12 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public enum CampaignStatus {//상태-stand,progress,complete,stop
+public enum CampaignStatus {//상태-stand,application,filing,complete
 
 	STAND("대기"),//대기
-	PROGRESS("진행"),//진행
-    COMPLETE("완료"),//완료
-	STOP("중지");//중지
+	APPLICATION("신청"),//신청
+	FILING("등록"),//등록
+    COMPLETE("완료");//완료
 
 	private String value;
 
