@@ -1,8 +1,8 @@
 package com.bethefirst.lifeweb.controller.review;
 
-import com.bethefirst.lifeweb.dto.review.reqeust.ReviewCreateDto;
+import com.bethefirst.lifeweb.dto.review.reqeust.CreateReviewDto;
 import com.bethefirst.lifeweb.dto.review.reqeust.ReviewSearchRequirements;
-import com.bethefirst.lifeweb.dto.review.reqeust.ReviewUpdateDto;
+import com.bethefirst.lifeweb.dto.review.reqeust.UpdateReviewDto;
 import com.bethefirst.lifeweb.dto.review.response.ReviewDto;
 import com.bethefirst.lifeweb.exception.UnauthorizedException;
 import com.bethefirst.lifeweb.service.review.interfaces.ReviewService;
@@ -29,11 +29,11 @@ public class ReviewController {
 	/** 리뷰 등록 */
 	@ResponseStatus(HttpStatus.OK)
 	@PostMapping
-	public void create(@Valid @RequestBody ReviewCreateDto reviewCreateDto){
+	public void create(@Valid @RequestBody CreateReviewDto createReviewDto){
 		Long currentMemberId = SecurityUtil.getCurrentMemberId().orElseThrow(()
 				-> new UnauthorizedException("Security Context에 인증 정보가 없습니다."));
 
-		reviewService.createReview(reviewCreateDto, currentMemberId);
+		reviewService.createReview(createReviewDto, currentMemberId);
 	}
 
 	/** 리뷰 삭제 */
@@ -47,8 +47,8 @@ public class ReviewController {
 	@ResponseStatus(HttpStatus.OK)
 	@PutMapping("/{reviewId}")
 	public void update(@PathVariable Long reviewId,
-					   @RequestBody ReviewUpdateDto reviewUpdateDto){
-		reviewService.updateReview(reviewUpdateDto, reviewId);
+					   @RequestBody UpdateReviewDto updateReviewDto){
+		reviewService.updateReview(updateReviewDto, reviewId);
 	}
 
 	/** 리뷰 전체 조회 */

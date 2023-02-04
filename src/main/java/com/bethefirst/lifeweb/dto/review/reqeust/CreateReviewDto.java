@@ -8,7 +8,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class ReviewCreateDto {
+public class CreateReviewDto {
 
     private Long campaignId;
     private String reviewUrl;

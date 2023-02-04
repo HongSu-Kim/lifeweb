@@ -13,7 +13,7 @@ import java.time.LocalDate;
 @Setter
 @EqualsAndHashCode
 @Slf4j
-public class MemberUpdateDto {
+public class UpdateMemberDto {
 
     private String name;
     private String nickname;

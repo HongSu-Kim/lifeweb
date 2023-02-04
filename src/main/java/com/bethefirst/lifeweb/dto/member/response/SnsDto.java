@@ -1,4 +1,4 @@
-package com.bethefirst.lifeweb.dto.member;
+package com.bethefirst.lifeweb.dto.member.response;
 
 import com.bethefirst.lifeweb.entity.member.Sns;
 import lombok.Getter;

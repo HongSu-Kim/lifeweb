@@ -1,8 +1,8 @@
 package com.bethefirst.lifeweb.controller.member;
 
-import com.bethefirst.lifeweb.dto.member.SnsDto;
-import com.bethefirst.lifeweb.dto.member.request.SnsCreateDto;
-import com.bethefirst.lifeweb.dto.member.request.SnsUpdateDto;
+import com.bethefirst.lifeweb.dto.member.response.SnsDto;
+import com.bethefirst.lifeweb.dto.member.request.CreateSnsDto;
+import com.bethefirst.lifeweb.dto.member.request.UpdateSnsDto;
 import com.bethefirst.lifeweb.service.member.interfaces.SnsService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -23,8 +23,8 @@ public class SnsController {
     /** SNS 등록 */
     @ResponseStatus(HttpStatus.OK)
     @PostMapping
-    public void create(@Valid @RequestBody SnsCreateDto snsCreateDto){
-        snsService.createSns(snsCreateDto);
+    public void create(@Valid @RequestBody CreateSnsDto createSnsDto){
+        snsService.createSns(createSnsDto);
 
 
     }
@@ -33,8 +33,8 @@ public class SnsController {
     @ResponseStatus(HttpStatus.OK)
     @PutMapping("/{snsId}")
     public void update(@PathVariable Long snsId,
-                       @Valid @RequestBody SnsUpdateDto snsUpdateDto){
-        snsService.updateSns(snsUpdateDto , snsId);
+                       @Valid @RequestBody UpdateSnsDto updateSnsDto){
+        snsService.updateSns(updateSnsDto, snsId);
     }
 
 

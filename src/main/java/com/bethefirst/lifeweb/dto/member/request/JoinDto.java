@@ -1,13 +1,14 @@
 package com.bethefirst.lifeweb.dto.member.request;
 
-import com.bethefirst.lifeweb.entity.member.Role;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
+@Setter
 @NoArgsConstructor
 public class JoinDto {
 
