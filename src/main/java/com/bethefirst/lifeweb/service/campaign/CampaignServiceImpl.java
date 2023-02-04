@@ -38,7 +38,7 @@ public class CampaignServiceImpl implements CampaignService {
 
 	/** 캠페인 생성 */
 	@Override
-	public void createCampaign(CreateCampaignDto createCampaignDto) {
+	public Long createCampaign(CreateCampaignDto createCampaignDto) {
 
 		// 캠페인 저장
 		CampaignCategory campaignCategory = campaignCategoryRepository.findById(createCampaignDto.getCategoryId())
@@ -52,7 +52,7 @@ public class CampaignServiceImpl implements CampaignService {
 
 		Campaign campaign = createCampaignDto.createCampaign(campaignCategory, campaignType, sns);
 
-		campaignRepository.save(campaign);
+		Long campaignId = campaignRepository.save(campaign).getId();
 
 		// 캠페인지역 저장
 		if (createCampaignDto.getLocalId() != null) {
@@ -72,6 +72,7 @@ public class CampaignServiceImpl implements CampaignService {
 		createCampaignDto.getApplicationQuestionDtoList()
 				.forEach(applicationQuestionDto -> applicationQuestionRepository.save(applicationQuestionDto.createApplicationQuestion(campaign)));
 
+		return campaignId;
 	}
 
 	/** 캠페인 조회 */

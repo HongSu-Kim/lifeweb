@@ -23,8 +23,8 @@ public class CampaignController {
 
 	/** 캠페인 생성 */
 	@PostMapping
-	public void create(@Valid CreateCampaignDto createCampaignDto) {
-		campaignService.createCampaign(createCampaignDto);
+	public Long create(@Valid CreateCampaignDto createCampaignDto) {
+		return campaignService.createCampaign(createCampaignDto);
 	}
 
 	/** 캠페인 조회 */
