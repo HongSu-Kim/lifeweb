@@ -97,6 +97,12 @@ public class CampaignServiceImpl implements CampaignService {
 		// 캠페인 수정
 		Campaign campaign = campaignRepository.findById(campaignId)
 				.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 캠페인입니다. " + campaignId));
+
+		// 상태가 대기 일때만 수정 가능
+		if(!campaign.getStatus().equals(CampaignStatus.STAND)) {
+			throw new IllegalArgumentException("대기상태에서만 캠페인 수정이 가능합니다.");
+		}
+
 		CampaignCategory campaignCategory = campaignCategoryRepository.findById(updateCampaignDto.getCategoryId())
 				.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 카테고리입니다. " + updateCampaignDto.getCategoryId()));
 		CampaignType campaignType = campaignTypeRepository.findById(updateCampaignDto.getTypeId())
