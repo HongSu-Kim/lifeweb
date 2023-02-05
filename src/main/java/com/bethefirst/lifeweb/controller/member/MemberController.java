@@ -4,6 +4,7 @@ import com.bethefirst.lifeweb.config.security.JwtFilter;
 import com.bethefirst.lifeweb.config.security.TokenProvider;
 import com.bethefirst.lifeweb.dto.jwt.TokenDto;
 import com.bethefirst.lifeweb.dto.member.request.*;
+import com.bethefirst.lifeweb.dto.review.reqeust.ExistNicknameDto;
 import com.bethefirst.lifeweb.exception.UnauthorizedException;
 import com.bethefirst.lifeweb.service.member.interfaces.MemberService;
 import com.bethefirst.lifeweb.service.member.interfaces.MemberSnsService;
@@ -132,9 +133,8 @@ public class MemberController {
 
     /** 닉네임 중복 체크 */
     @PostMapping("/nickname")
-    public void existNickname(@RequestBody String nickname){
-        memberService.existsNickname(nickname);
+    public void existNickname(@RequestBody ExistNicknameDto nicknameDto){
+        memberService.existsNickname(nicknameDto.getNickname());
     }
-
 
 }
