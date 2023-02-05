@@ -113,7 +113,7 @@ public class MemberServiceImpl implements MemberService {
 	/** 닉네임 중복 체크 */
 	@Override
 	public void existsNickname(String nickname) {
-		if(!memberRepository.existsByNickname(nickname))
+		if(memberRepository.existsByNickname(nickname))
 			throw new IllegalArgumentException("이미 존재하는 닉네임 입니다.");
 	}
 
