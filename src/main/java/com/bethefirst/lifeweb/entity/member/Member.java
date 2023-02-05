@@ -80,7 +80,7 @@ public class Member {//회원
 							 String tel, String postcode, String address, String detailAddress, String extraAddress){
 
 		this.name = name;
-		this.nickname = tel;
+		this.nickname = nickname;
 		this.gender = gender;
 		this.birth = birth;
 		this.tel = tel;
