@@ -1,8 +1,8 @@
 package com.bethefirst.lifeweb.service.member;
 
 import com.bethefirst.lifeweb.dto.member.request.JoinDto;
-import com.bethefirst.lifeweb.dto.member.request.UpdateMemberDto;
 import com.bethefirst.lifeweb.dto.member.request.PasswordDto;
+import com.bethefirst.lifeweb.dto.member.request.UpdateMemberDto;
 import com.bethefirst.lifeweb.entity.member.Member;
 import com.bethefirst.lifeweb.repository.member.MemberRepository;
 import com.bethefirst.lifeweb.service.member.interfaces.MemberService;
@@ -74,7 +74,7 @@ public class MemberServiceImpl implements MemberService {
 		String storeName = imageUtil.store(memberFileName, imageFolder);
 
 		//기존에 파일저장소에 있던 파일을 삭제합니다.
-		if(storeName != null){
+		if(storeName == null){
 			imageUtil.delete(member.getFileName(), imageFolder);
 		}
 
