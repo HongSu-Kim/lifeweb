@@ -10,7 +10,7 @@ import org.springframework.data.domain.Page;
 public interface CampaignService {
 
 	/** 캠페인 생성 */
-	void createCampaign(CreateCampaignDto createCampaignDto);
+	Long createCampaign(CreateCampaignDto createCampaignDto);
 
 	/** 캠페인 조회 */
 	CampaignDto getCampaignDto(Long campaignId);
@@ -23,6 +23,5 @@ public interface CampaignService {
 
 	/** 캠페인 상태 변경 */
 	void updateStatus(Long campaignId, CampaignStatus status);
-
 
 }

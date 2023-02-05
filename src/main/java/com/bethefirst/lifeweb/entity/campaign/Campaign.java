@@ -96,8 +96,7 @@ public class Campaign {//캠페인
 							   Boolean special, String title, String fileName, String provision,
 							   String reviewNotice, String guideline, String keywords,
 							   LocalDate applicationStartDate, LocalDate applicationEndDate,
-							   LocalDate filingStartDate, LocalDate filingEndDate,
-							   Integer headcount, CampaignStatus status) {
+							   LocalDate filingStartDate, LocalDate filingEndDate, Integer headcount) {
 
 		this.campaignCategory = campaignCategory;
 		this.campaignType = campaignType;
@@ -115,7 +114,6 @@ public class Campaign {//캠페인
 		this.filingStartDate = filingStartDate;
 		this.filingEndDate = filingEndDate;
 		this.headcount = headcount;
-		this.status = status;
 
 	}
 

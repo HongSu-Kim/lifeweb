@@ -12,7 +12,7 @@ public interface CampaignRepository extends JpaRepository<Campaign, Long>, Campa
 
 	/** 캠페인 조회 */
 	@Override
-	@EntityGraph(attributePaths = { "campaignCategory", "campaignType" })
+	@EntityGraph(attributePaths = { "campaignCategory", "campaignType", "sns", "campaignLocal.local" })
 	Optional<Campaign> findById(Long campaignId);
 
 }

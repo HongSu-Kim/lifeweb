@@ -3,6 +3,7 @@ package com.bethefirst.lifeweb.config.security;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -69,12 +70,8 @@ public class SecurityConfig {
 
                 // 요청 접근제한 설정
                 .authorizeHttpRequests(authorize -> authorize
-						.requestMatchers(
-								"/sns", "/sns/**",
-								"/campaign-categories", "/campaign-categories/**",
-								"/campaign-types", "/campaign-types/**",
-								"/locals", "/locals/**"
-						).hasRole("ADMIN") // admin만 접근가능합니다.
+						.requestMatchers(HttpMethod.POST,"/sns", "/campaign-categories", "/campaign-types", "/locals").hasRole("ADMIN")
+						.requestMatchers("/sns/**", "/campaign-categories/**", "/campaign-types/**", "/locals/**").hasRole("ADMIN")
                 		.anyRequest().permitAll())
 
                 // 스프링시큐리티가 동작하기 전 토큰작업이 먼저 실행됩니다

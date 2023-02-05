@@ -6,6 +6,7 @@ import com.bethefirst.lifeweb.entity.application.ApplicationAnswer;
 import com.bethefirst.lifeweb.entity.application.ApplicationStatus;
 import com.bethefirst.lifeweb.entity.campaign.ApplicationQuestion;
 import com.bethefirst.lifeweb.entity.campaign.Campaign;
+import com.bethefirst.lifeweb.entity.campaign.CampaignStatus;
 import com.bethefirst.lifeweb.entity.member.Member;
 import com.bethefirst.lifeweb.repository.application.ApplicationAnswerRepository;
 import com.bethefirst.lifeweb.repository.application.ApplicationRepository;
@@ -90,11 +91,18 @@ public class ApplicationServiceImpl implements ApplicationService {
 	/** 신청서 수정 */
 	@Override
 	public void updateApplication(Long applicationId, UpdateApplicationDto updateApplicationDto) {
-
-		// 신청서 수정
+		
 		Application application = applicationRepository.findById(applicationId)
 				.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 신청서입니다. " + applicationId));
 
+		//  캠페인 상태 != 신청 || 신청서 상태 == 선정 일 떄 수정 불가
+		if (!application.getCampaign().getStatus().equals(CampaignStatus.APPLICATION)) {
+			throw new IllegalArgumentException("캠페인 신청기간에만 수정할 수 있습니다");
+		} else if (application.getStatus().equals(ApplicationStatus.SELECT)) {
+			throw new IllegalArgumentException("선정된 신청서는 수정할 수 없습니다.");
+		}
+
+		// 신청서 수정
 		application.updateApplication(updateApplicationDto.getMemo());
 
 		// 신청서답변 수정
