@@ -10,8 +10,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.net.URI;
 
 @RestController
 @RequestMapping("campaigns")
@@ -23,8 +29,16 @@ public class CampaignController {
 
 	/** 캠페인 생성 */
 	@PostMapping
-	public Long create(@Valid CreateCampaignDto createCampaignDto) {
-		return campaignService.createCampaign(createCampaignDto);
+	public ResponseEntity<?> create(@Valid CreateCampaignDto createCampaignDto) {
+
+		// 캠페인 생성
+		Long campaignId = campaignService.createCampaign(createCampaignDto);
+
+		// Location 설정
+		HttpHeaders headers = new HttpHeaders();
+		headers.setLocation(URI.create("/campaigns/" + campaignId));
+
+		return new ResponseEntity<>(headers, HttpStatus.CREATED);
 	}
 
 	/** 캠페인 조회 */
@@ -36,15 +50,24 @@ public class CampaignController {
 	/** 캠페인 리스트 조회 */
 	@GetMapping
 	public Page<CampaignDto> readAll(CampaignSearchRequirements searchRequirements,
-									 @PageableDefault Pageable pageable) {
+									 @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
 		searchRequirements.setPageable(pageable);
-		return campaignService.getCampaignDtoList(searchRequirements);
+		return campaignService.getCampaignDtoPage(searchRequirements);
 	}
 
 	/** 캠페인 수정 */
 	@PutMapping("/{campaignId}")
-	public void update(@PathVariable Long campaignId, @Valid UpdateCampaignDto updateCampaignDto) {
+	public ResponseEntity<?> update(@PathVariable Long campaignId,
+									@Valid UpdateCampaignDto updateCampaignDto) {
+
+		// 캠페인 수정
 		campaignService.updateCampaign(campaignId, updateCampaignDto);
+
+		// Location 설정
+		HttpHeaders headers = new HttpHeaders();
+		headers.setLocation(URI.create("/campaigns/" + campaignId));
+
+		return new ResponseEntity<>(headers, HttpStatus.CREATED);
 	}
 	
 //	/** 캠페인 상태 변경 */
