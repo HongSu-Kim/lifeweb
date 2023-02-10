@@ -1,7 +1,6 @@
 package com.bethefirst.lifeweb.entity.member;
 
 import com.bethefirst.lifeweb.entity.application.Application;
-import com.bethefirst.lifeweb.entity.campaign.Campaign;
 import com.bethefirst.lifeweb.entity.review.Review;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -108,9 +107,4 @@ public class Member {//회원
 		return passwordEncoder.matches(checkPassword, getPwd());
 	}
 
-	/** 캠페인과 같은 신청서를 찾는 메소드 */
-	public Application findApplication(Campaign campaign){
-		return applicationList.stream().filter(application -> application.getCampaign().equals(campaign))
-				.findFirst().get();
-	}
 }
