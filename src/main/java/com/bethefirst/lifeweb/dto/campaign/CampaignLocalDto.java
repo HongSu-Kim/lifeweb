@@ -3,6 +3,7 @@ package com.bethefirst.lifeweb.dto.campaign;
 import com.bethefirst.lifeweb.entity.campaign.Campaign;
 import com.bethefirst.lifeweb.entity.campaign.CampaignLocal;
 import com.bethefirst.lifeweb.entity.campaign.Local;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -10,6 +11,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class CampaignLocalDto {
 
 	private Long localId;//지역ID
