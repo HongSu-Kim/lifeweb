@@ -2,6 +2,10 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.0.1'
 	id 'io.spring.dependency-management' version '1.1.0'
+	//REST Docs
+	id "org.asciidoctor.jvm.convert" version "3.3.2"
+	//Querydsl
+//	id "com.ewerk.gradle.plugins.querydsl" version "1.0.10"
 }
 
 group = 'com.bethefirst'
@@ -9,6 +13,7 @@ version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '17'
 
 configurations {
+	asciidoctorExtensions // dependencies 에서 적용한 것 추가
 	compileOnly {
 		extendsFrom annotationProcessor
 	}
@@ -23,6 +28,8 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-security'//security
 	implementation 'org.springframework.boot:spring-boot-starter-web'//web
 	implementation 'org.springframework.boot:spring-boot-starter-validation'//validation
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+	implementation 'org.jetbrains:annotations:20.1.0'
 	compileOnly 'org.projectlombok:lombok'//lombok
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'//devtools
 	runtimeOnly 'com.mysql:mysql-connector-j'//mysql
@@ -30,7 +37,7 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'//test
 	testImplementation 'org.springframework.security:spring-security-test'//security test
 
-	//querydsl
+	//Querydsl
 	implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
 	annotationProcessor "com.querydsl:querydsl-apt:${dependencyManagement.importedProperties['querydsl.version']}:jakarta"
 //	annotationProcessor 'com.querydsl:querydsl-apt:5.0.0:jakarta'
@@ -41,8 +48,90 @@ dependencies {
 	implementation group: 'io.jsonwebtoken', name: 'jjwt-api', version: '0.11.5'
 	runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.11.5'
 	runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.11.5'
+
+	//REST Docs
+	asciidoctorExtensions 'org.springframework.restdocs:spring-restdocs-asciidoctor'//.adoc 파일을 HTML로 만들어 export
+	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+	testCompileOnly 'org.projectlombok:lombok'//테스트 의존성 추가
+	testAnnotationProcessor 'org.projectlombok:lombok'//테스트 의존성 추가
+
 }
 
 tasks.named('test') {
 	useJUnitPlatform()
+}
+
+//// === Querydsl 빌드 옵션 (선택사항) ===
+//def querydslDir = "$buildDir/generated/querydsl"
+//
+//querydsl {
+//	jpa = true
+//	querydslSourcesDir = querydslDir
+//}
+//
+//sourceSets {
+//	main.java.srcDir querydslDir
+//}
+//
+//configurations {
+//	querydsl.extendsFrom compileClasspath
+//}
+//
+//compileQuerydsl {
+//	options.annotationProcessorPath = configurations.querydsl
+//}
+
+
+//===== REST Docs =====
+ext {
+	// 아래서 사용할 변수 선언
+	snippetsDir = file('build/generated-snippets')
+}
+
+test {
+	// 위에서 작성한 snippetsDir 디렉토리를 test의 output으로 구성하는 설정 -> 스니펫 조각들이 build/generated-snippets로 출력
+	outputs.dir snippetsDir
+	useJUnitPlatform()
+}
+
+// asciidoctor 설정
+asciidoctor {
+	dependsOn test // test 작업 이후에 작동하도록 하는 설정
+	configurations 'asciidoctorExtensions' // 위에서 작성한 configuration 적용
+	inputs.dir snippetsDir // snippetsDir 를 입력으로 구성
+
+	// source가 없으면 .adoc파일을 전부 html로 만들어버림
+	// source 지정시 특정 adoc만 HTML로 만든다.
+	sources{
+		include("**/index.adoc","**/common/*.adoc")
+	}
+
+	// 특정 .adoc에 다른 adoc 파일을 가져와서(include) 사용하고 싶을 경우 경로를 baseDir로 맞춰주는 설정입니다.
+	// 개별 adoc으로 운영한다면 필요 없는 옵션입니다.
+	baseDirFollowsSourceFile()
+}
+
+// asciidoctor가 실행될 때 static/docs 폴더 비우기
+asciidoctor.doFirst {
+	delete file('src/main/resources/static/docs')
+}
+
+//build의 bootJar 시 asciidoctor에 의존하여 /static/docs에 index.html이 생성된다.
+bootJar {
+	dependsOn asciidoctor
+	from("${asciidoctor.outputDir}") {
+		into 'static/docs'
+	}
+}
+
+// asccidoctor 작업 이후 생성된 HTML 파일을 static/docs 로 copy
+task copyDocument(type: Copy) {
+	dependsOn asciidoctor
+	from file("build/docs/asciidoc")
+	into file("src/main/resources/static/docs")
+}
+
+// build 시 codyDocument 실행
+build {
+	dependsOn copyDocument
 }
