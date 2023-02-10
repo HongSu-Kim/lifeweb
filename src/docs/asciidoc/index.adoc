@@ -1,0 +1,28 @@
+= lifeweb API
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+:sectlinks:
+
+include::Sns-API.adoc[]
+
+include::Member-API.adoc[]
+
+include::Local-API.adoc[]
+
+include::CampaignCategory-API.adoc[]
+
+include::CampaignType-API.adoc[]
+
+include::Campaign-API.adoc[]
+
+include::Application-API.adoc[]
+
+include::Review-API.adoc[]
+
+
+
+
+

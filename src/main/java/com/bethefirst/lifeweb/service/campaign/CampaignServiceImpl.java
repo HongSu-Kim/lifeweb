@@ -86,7 +86,7 @@ public class CampaignServiceImpl implements CampaignService {
 	/** 캠페인 리스트 조회 */
 	@Transactional(readOnly = true)
 	@Override
-	public Page<CampaignDto> getCampaignDtoList(CampaignSearchRequirements searchRequirements) {
+	public Page<CampaignDto> getCampaignDtoPage(CampaignSearchRequirements searchRequirements) {
 		return campaignRepository.findAllBySearchRequirements(searchRequirements).map(CampaignDto::new);
 	}
 

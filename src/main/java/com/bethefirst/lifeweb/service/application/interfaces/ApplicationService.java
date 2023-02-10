@@ -10,7 +10,7 @@ import org.springframework.data.domain.Page;
 public interface ApplicationService {
 
 	/** 신청서 생성 */
-	void createApplication(Long memberId, CreateApplicationDto createApplicationDto);
+	Long createApplication(Long memberId, CreateApplicationDto createApplicationDto);
 
 	/** 신청서 조회 */
 	ApplicationDto getApplicationDto(Long applicationId);

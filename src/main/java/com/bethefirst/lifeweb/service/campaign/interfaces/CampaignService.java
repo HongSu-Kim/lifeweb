@@ -16,7 +16,7 @@ public interface CampaignService {
 	CampaignDto getCampaignDto(Long campaignId);
 
 	/** 캠페인 리스트 조회 */
-	Page<CampaignDto> getCampaignDtoList(CampaignSearchRequirements searchRequirements);
+	Page<CampaignDto> getCampaignDtoPage(CampaignSearchRequirements searchRequirements);
 
 	/** 캠페인 수정 */
 	void updateCampaign(Long campaignId, UpdateCampaignDto campaignDto);
