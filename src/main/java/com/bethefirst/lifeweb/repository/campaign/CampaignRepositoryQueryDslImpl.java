@@ -40,7 +40,7 @@ public class CampaignRepositoryQueryDslImpl implements CampaignRepositoryQueryDs
 				.join(campaign.campaignType, campaignType).fetchJoin()
 				.join(campaign.sns, sns).fetchJoin()
 				.leftJoin(campaign.campaignLocal, campaignLocal).fetchJoin()
-				.leftJoin(campaign.campaignLocal.local, local).fetchJoin()
+				.leftJoin(campaignLocal.local, local).fetchJoin()
 				.where(
 						categoryIdEq(searchRequirements.getCategoryId()),
 						typeIdEq(searchRequirements.getTypeId()),
@@ -74,13 +74,13 @@ public class CampaignRepositoryQueryDslImpl implements CampaignRepositoryQueryDs
 	/** 정렬 설정 */
 	private OrderSpecifier<?> orderBy(Pageable pageable) {
 
-		PathBuilder<Campaign> orderByExpression = new PathBuilder<>(Campaign.class, "campaign");
-
 		for (Sort.Order o : pageable.getSort()) {
+			PathBuilder<Campaign> orderByExpression = new PathBuilder<>(Campaign.class, "campaign");
 			return new OrderSpecifier(o.isAscending() ? Order.ASC : Order.DESC, orderByExpression.get(o.getProperty()));
 		}
 
-		return new OrderSpecifier(Order.DESC, orderByExpression.get("id"));
+//		return new OrderSpecifier(Order.DESC, orderByExpression.get("id"));
+		return null;
 	}
 
 	/** 카테고리 */
