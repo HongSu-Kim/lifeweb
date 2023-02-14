@@ -1,28 +1,30 @@
 package com.bethefirst.lifeweb.dto.campaign;
 
+import com.bethefirst.lifeweb.dto.member.SnsDto;
 import com.bethefirst.lifeweb.entity.campaign.Campaign;
 import com.bethefirst.lifeweb.entity.campaign.CampaignImage;
 import com.bethefirst.lifeweb.entity.campaign.CampaignStatus;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class CampaignDto {
 
 	private Long id;//캠페인ID
 
-	private String categoryName;//카테고리명
-	private String typeName;//타입이름
-	private String snsName;//SNS
+	private CampaignCategoryDto campaignCategoryDto;//카테고리
+	private CampaignTypeDto campaignTypeDto;//타입
+	private SnsDto snsDto;//SNS
 
 	private Boolean special;//스페셜
 	private String title;//제목
@@ -31,7 +33,7 @@ public class CampaignDto {
 	private LocalDateTime created;//등록일
 	private String reviewNotice;//리뷰주의사항
 	private String guideline;//가이드라인
-	private List<String> keywords;//키워드
+	private String keywords;//키워드
 	private LocalDate applicationStartDate;//신청시작일
 	private LocalDate applicationEndDate;//신청종료일
 	private LocalDate filingStartDate;//등록시작일
@@ -47,9 +49,9 @@ public class CampaignDto {
 
 		id = campaign.getId();
 
-		categoryName = campaign.getCampaignCategory().getName();
-		typeName = campaign.getCampaignType().getName();
-		snsName = campaign.getSns().getName();
+		campaignCategoryDto = new CampaignCategoryDto(campaign.getCampaignCategory());
+		campaignTypeDto = new CampaignTypeDto(campaign.getCampaignType());
+		snsDto = new SnsDto(campaign.getSns());
 
 		special = campaign.getSpecial();
 		title = campaign.getTitle();
@@ -58,7 +60,7 @@ public class CampaignDto {
 		created = campaign.getCreated();
 		reviewNotice = campaign.getReviewNotice();
 		guideline = campaign.getGuideline();
-		keywords = Arrays.asList(campaign.getKeywords().split("#"));
+		keywords = campaign.getKeywords();
 		applicationStartDate = campaign.getApplicationStartDate();
 		applicationEndDate = campaign.getApplicationEndDate();
 		filingStartDate = campaign.getFilingStartDate();

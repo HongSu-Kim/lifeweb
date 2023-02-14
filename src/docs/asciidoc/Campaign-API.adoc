@@ -1,0 +1,18 @@
+[[Campaign-API]]
+== Campaign API
+
+[[Campaign-생성]]
+=== Campaign 생성
+operation::campaign-controller-test/캠페인_생성[snippets='http-request,request-parts,http-response,response-headers']
+
+[[Campaign-단일-조회]]
+=== Campaign 단일 조회
+operation::campaign-controller-test/캠페인_조회[snippets='http-request,path-parameters,http-response,response-fields']
+
+[[Campaign-리스트-조회]]
+=== Campaign 리스트 조회
+operation::campaign-controller-test/캠페인_리스트_조회[snippets='http-request,query-parameters,http-response,response-fields']
+
+[[Campaign-수정]]
+=== Campaign 수정
+operation::campaign-controller-test/캠페인_수정[snippets='http-request,path-parameters,request-parts,http-response,response-headers']

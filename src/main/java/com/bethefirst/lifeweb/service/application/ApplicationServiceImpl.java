@@ -37,7 +37,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 
 	/** 신청서 생성 */
 	@Override
-	public void createApplication(Long memberId, CreateApplicationDto createApplicationDto) {
+	public Long createApplication(Long memberId, CreateApplicationDto createApplicationDto) {
 		
 		// 신청서 저장
 		Member member = memberRepository.findById(memberId)
@@ -47,7 +47,7 @@ public class ApplicationServiceImpl implements ApplicationService {
 
 		Application application = createApplicationDto.createApplication(member, campaign);
 
-		applicationRepository.save(application);
+		Long applicationId = applicationRepository.save(application).getId();
 
 		// 신청서답변 저장
 		List<ApplicationQuestion> applicationQuestionList = campaign.getApplicationQuestionList();
@@ -70,7 +70,8 @@ public class ApplicationServiceImpl implements ApplicationService {
 				}
 			}
 		}
-		
+
+		return applicationId;
 	}
 
 	/** 신청서 조회 */

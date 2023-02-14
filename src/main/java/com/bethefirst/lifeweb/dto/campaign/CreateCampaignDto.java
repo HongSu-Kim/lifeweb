@@ -5,6 +5,7 @@ import com.bethefirst.lifeweb.entity.member.Sns;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -17,6 +18,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class CreateCampaignDto {
 
 	@NotNull(message = "카테고리는 필수 입력 값입니다.")
@@ -48,8 +50,8 @@ public class CreateCampaignDto {
 	@NotBlank(message = "가이드라인은 필수 입력 값입니다.")
 	private String guideline;//가이드라인
 
-	@NotNull(message = "키워드는 필수 입력 값입니다.")
-	private List<String> keywords;//키워드
+	@NotBlank(message = "키워드는 필수 입력 값입니다.")
+	private String keywords;//키워드
 
 	@NotBlank(message = "신청시작일은 필수 입력 값입니다.")
 	@Pattern(regexp = "\\d{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$",
@@ -86,7 +88,7 @@ public class CreateCampaignDto {
 
 	private List<String> question = new ArrayList<>();//질문
 	private List<QuestionType> type;//유형
-	private List<List<String>> items;//항목
+	private List<String> items;//항목
 
 	public CampaignLocalDto getCampaignLocalDto() {
 		return new CampaignLocalDto(localId, address, latitude, longitude, visitNotice);
@@ -105,7 +107,7 @@ public class CreateCampaignDto {
 	public Campaign createCampaign(CampaignCategory campaignCategory, CampaignType campaignType, Sns sns) {
 		return new Campaign(campaignCategory, campaignType, sns,
 				special, title, fileName, provision,
-				reviewNotice, guideline, String.join("#", keywords),
+				reviewNotice, guideline, keywords,
 //				applicationStartDate, applicationEndDate,
 //				filingStartDate, filingEndDate, headcount);
 				LocalDate.parse(applicationStartDate), LocalDate.parse(applicationEndDate),
