@@ -9,7 +9,7 @@ import java.util.List;
 public interface SnsService {
 
     /** SNS 등록 */
-    void createSns(CreateSnsDto createSnsDto);
+    Long createSns(CreateSnsDto createSnsDto);
 
     /** SNS 수정 */
     void updateSns(UpdateSnsDto updateSnsDto, Long snsId);

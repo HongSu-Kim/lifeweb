@@ -24,10 +24,11 @@ public class SnsServiceImpl implements SnsService {
 
     /** SNS 등록 */
     @Override
-    public void createSns(CreateSnsDto createSnsDto) {
+    public Long createSns(CreateSnsDto createSnsDto) {
 
         Sns sns = createSnsDto.createSns();
-        snsRepository.save(sns);
+        return snsRepository.save(sns).getId();
+
 
     }
 

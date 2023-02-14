@@ -3,6 +3,7 @@ package com.bethefirst.lifeweb.service.member;
 import com.bethefirst.lifeweb.dto.member.request.JoinDto;
 import com.bethefirst.lifeweb.dto.member.request.PasswordDto;
 import com.bethefirst.lifeweb.dto.member.request.UpdateMemberDto;
+import com.bethefirst.lifeweb.dto.member.response.MemberInfoDto;
 import com.bethefirst.lifeweb.entity.member.Member;
 import com.bethefirst.lifeweb.repository.member.MemberRepository;
 import com.bethefirst.lifeweb.service.member.interfaces.MemberService;
@@ -110,11 +111,22 @@ public class MemberServiceImpl implements MemberService {
 		memberRepository.delete(member);
 	}
 
+
+	/** 회원 단건조회 */
+	@Override
+	public MemberInfoDto getMember(Long memberId) {
+		Member member = memberRepository.findById(memberId).orElseThrow(() ->
+				new IllegalArgumentException("존재하지 않는 회원입니다."));
+
+		return new MemberInfoDto(member);
+	}
 	/** 닉네임 중복 체크 */
 	@Override
 	public void existsNickname(String nickname) {
 		if(memberRepository.existsByNickname(nickname))
 			throw new IllegalArgumentException("이미 존재하는 닉네임 입니다.");
 	}
+
+
 
 }
