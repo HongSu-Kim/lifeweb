@@ -50,14 +50,13 @@ public class MemberController {
     public ResponseEntity<?> update(@PathVariable(required = false) Long memberId,
                              @Valid @RequestBody UpdateMemberDto updateMemberDto) {
 
-
-        Long currentMemberId = SecurityUtil.getCurrentMemberId().orElseThrow(()
-                -> new UnauthorizedException("Security Context에 인증 정보가 없습니다."));
+        //패스베리어블과 로그인된 회원 Id 검증
+        Long currentMemberId = validationPathVariable(memberId);
 
         memberService.updateMemberInfo(updateMemberDto, currentMemberId);
 
         HttpHeaders headers = new HttpHeaders();
-        headers.setLocation(URI.create("/members/" + memberId));
+        headers.setLocation(URI.create("/members/" + currentMemberId));
         return new ResponseEntity<>(headers, HttpStatus.CREATED);
 
     }
@@ -79,10 +78,10 @@ public class MemberController {
     }
 
     /** 회원 탈퇴 */
-    @DeleteMapping()
-    public ResponseEntity<?> withdraw(){
-        Long currentMemberId = SecurityUtil.getCurrentMemberId().orElseThrow(()
-                -> new UnauthorizedException("Security Context에 인증 정보가 없습니다."));
+    @DeleteMapping("/{memberId}")
+    public ResponseEntity<?> withdraw(@PathVariable Long memberId){
+        //패스베리어블과 로그인된 회원 Id 검증
+        Long currentMemberId = validationPathVariable(memberId);
 
         memberService.withdraw(currentMemberId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -93,8 +92,8 @@ public class MemberController {
     @GetMapping("/{memberId}")
     public MemberInfoDto read(@PathVariable Long memberId){
 
-        Long currentMemberId = SecurityUtil.getCurrentMemberId().orElseThrow(()
-                -> new UnauthorizedException("Security Context에 인증 정보가 없습니다."));
+        //패스베리어블과 로그인된 회원 Id 검증
+        Long currentMemberId = validationPathVariable(memberId);
 
         return memberService.getMember(currentMemberId);
 
@@ -163,4 +162,18 @@ public class MemberController {
         memberService.existsNickname(nicknameDto.getNickname());
     }
 
+    /** security context에서 회원을 조회후 pathVariable로 넘어온 id와 일치하는지 검증 후
+     * 로그인 된 회원 아이디를 반환합니다.
+     */
+    private Long validationPathVariable(Long memberId) {
+        Long currentMemberId = SecurityUtil.getCurrentMemberId().orElseThrow(()
+                -> new UnauthorizedException("Security Context에 인증 정보가 없습니다."));
+
+        if(memberId != currentMemberId ){
+            new UnauthorizedException("로그인된 회원과 memberId가 일치하지 않습니다.");
+        }
+        return currentMemberId;
+    }
 }
+
+
