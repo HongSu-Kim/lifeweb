@@ -1,6 +1,7 @@
 package com.bethefirst.lifeweb.config;
 
 import com.bethefirst.lifeweb.dto.ErrorResult;
+import com.bethefirst.lifeweb.exception.UnauthorizedException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindException;
@@ -24,6 +25,12 @@ public class ExControllerAdvice {
 		StringBuilder message = new StringBuilder();
 		e.getBindingResult().getFieldErrors().forEach(fieldError -> message.append(fieldError.getDefaultMessage()));
 		return new ErrorResult("BindException" , message.toString());
+	}
+
+	@ResponseStatus(HttpStatus.UNAUTHORIZED)
+	@ExceptionHandler
+	public ErrorResult illegalExHandler(UnauthorizedException e){
+		return new ErrorResult("UnauthorizedException" , e.getMessage());
 	}
 
 	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
