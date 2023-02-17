@@ -1,6 +1,7 @@
 package com.bethefirst.lifeweb.config;
 
 import com.bethefirst.lifeweb.dto.ErrorResult;
+import com.bethefirst.lifeweb.exception.ForbiddenException;
 import com.bethefirst.lifeweb.exception.UnauthorizedException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -29,8 +30,14 @@ public class ExControllerAdvice {
 
 	@ResponseStatus(HttpStatus.UNAUTHORIZED)
 	@ExceptionHandler
-	public ErrorResult illegalExHandler(UnauthorizedException e){
+	public ErrorResult UnauthorizedExHandler(UnauthorizedException e){
 		return new ErrorResult("UnauthorizedException" , e.getMessage());
+	}
+
+	@ResponseStatus(HttpStatus.FORBIDDEN)
+	@ExceptionHandler
+	public ErrorResult ForbiddenExHandler(ForbiddenException e){
+		return new ErrorResult("ForbiddenException" , e.getMessage());
 	}
 
 	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -40,10 +47,10 @@ public class ExControllerAdvice {
 	}
 
 	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    @ExceptionHandler
-    public ErrorResult exceptionHandler(Exception e){
-        return new ErrorResult("Exception" , e.getMessage());
-    }
+	@ExceptionHandler
+	public ErrorResult exceptionHandler(Exception e){
+		return new ErrorResult("Exception" , e.getMessage());
+	}
 	
 }
 
