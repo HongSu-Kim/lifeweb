@@ -4,13 +4,13 @@ import com.bethefirst.lifeweb.dto.review.reqeust.CreateReviewDto;
 import com.bethefirst.lifeweb.dto.review.reqeust.ReviewSearchRequirements;
 import com.bethefirst.lifeweb.dto.review.reqeust.UpdateReviewDto;
 import com.bethefirst.lifeweb.dto.review.response.ReviewDto;
-import com.bethefirst.lifeweb.entity.application.Application;
-import com.bethefirst.lifeweb.entity.application.ApplicationStatus;
+import com.bethefirst.lifeweb.entity.application.Applicant;
+import com.bethefirst.lifeweb.entity.application.ApplicantStatus;
 import com.bethefirst.lifeweb.entity.campaign.Campaign;
 import com.bethefirst.lifeweb.entity.campaign.CampaignStatus;
 import com.bethefirst.lifeweb.entity.member.Member;
 import com.bethefirst.lifeweb.entity.review.Review;
-import com.bethefirst.lifeweb.repository.application.ApplicationRepository;
+import com.bethefirst.lifeweb.repository.application.ApplicantRepository;
 import com.bethefirst.lifeweb.repository.campaign.CampaignRepository;
 import com.bethefirst.lifeweb.repository.member.MemberRepository;
 import com.bethefirst.lifeweb.repository.review.ReviewRepository;
@@ -50,7 +50,7 @@ public class ReviewServiceImpl implements ReviewService {
 	private final ReviewRepository reviewRepository;
 	private final MemberRepository memberRepository;
 	private final CampaignRepository campaignRepository;
-	private final ApplicationRepository applicationRepository;
+	private final ApplicantRepository applicantRepository;
 	private final SeleniumUtil seleniumUtil;
 	private static final String TITLE = "title";
 	private static final String IMG = "imgSrc";
@@ -68,11 +68,11 @@ public class ReviewServiceImpl implements ReviewService {
 		Campaign campaign = campaignRepository.findById(createReviewDto.getCampaignId()).orElseThrow(()
 				-> new IllegalArgumentException("존재하지 않는 캠페인 입니다 " + createReviewDto.getCampaignId()));
 
-		Application application = applicationRepository.findByMember_IdAndCampaign_Id(memberId, createReviewDto.getCampaignId()).orElseThrow(() ->
+		Applicant applicant = applicantRepository.findByMemberIdAndApplicationCampaignId(memberId, createReviewDto.getCampaignId()).orElseThrow(() ->
 				new IllegalArgumentException("해당 캠페인에 신청서가 존재하지 않습니다. "));
 
 		//선정된 캠페인인 맞는지 확인합니다.
-		if(application.getStatus() != ApplicationStatus.SELECT){
+		if(applicant.getStatus() != ApplicantStatus.SELECT){
 			throw new IllegalArgumentException("선정되지 않은 캠페인입니다.");
 		}
 
@@ -96,6 +96,7 @@ public class ReviewServiceImpl implements ReviewService {
 				new IllegalArgumentException("존재하지 않는 리뷰입니다. " + reviewId));
 
 		reviewRepository.delete(review);
+
 	}
 
 	/** 리뷰 수정 */

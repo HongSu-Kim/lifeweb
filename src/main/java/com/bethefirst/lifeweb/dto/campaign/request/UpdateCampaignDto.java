@@ -1,5 +1,8 @@
-package com.bethefirst.lifeweb.dto.campaign;
+package com.bethefirst.lifeweb.dto.campaign.request;
 
+import com.bethefirst.lifeweb.dto.application.response.ApplicationQuestionDto;
+import com.bethefirst.lifeweb.dto.campaign.response.CampaignLocalDto;
+import com.bethefirst.lifeweb.entity.application.QuestionType;
 import com.bethefirst.lifeweb.entity.campaign.*;
 import com.bethefirst.lifeweb.entity.member.Sns;
 import jakarta.validation.constraints.NotBlank;

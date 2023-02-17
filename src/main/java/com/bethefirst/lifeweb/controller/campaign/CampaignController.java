@@ -1,10 +1,13 @@
 package com.bethefirst.lifeweb.controller.campaign;
 
-import com.bethefirst.lifeweb.dto.campaign.CampaignDto;
-import com.bethefirst.lifeweb.dto.campaign.CampaignSearchRequirements;
-import com.bethefirst.lifeweb.dto.campaign.CreateCampaignDto;
-import com.bethefirst.lifeweb.dto.campaign.UpdateCampaignDto;
+import com.bethefirst.lifeweb.dto.campaign.response.CampaignDto;
+import com.bethefirst.lifeweb.dto.campaign.request.CampaignSearchRequirements;
+import com.bethefirst.lifeweb.dto.campaign.request.CreateCampaignDto;
+import com.bethefirst.lifeweb.dto.campaign.request.UpdateCampaignDto;
+import com.bethefirst.lifeweb.exception.ForbiddenException;
+import com.bethefirst.lifeweb.exception.UnauthorizedException;
 import com.bethefirst.lifeweb.service.campaign.interfaces.CampaignService;
+import com.bethefirst.lifeweb.util.security.SecurityUtil;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +21,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("campaigns")
@@ -51,6 +55,16 @@ public class CampaignController {
 	@GetMapping
 	public Page<CampaignDto> readAll(CampaignSearchRequirements searchRequirements,
 									 @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
+
+		if (searchRequirements.getMemberId() != null) {
+			Optional<Long> currentMemberId = SecurityUtil.getCurrentMemberId();
+			Long memberId = currentMemberId
+					.orElseThrow(() -> new UnauthorizedException("Security Context에 인증 정보가 없습니다."));
+			if (!searchRequirements.getMemberId().equals(memberId)) {
+				throw new ForbiddenException("권한 없음");
+			}
+		}
+
 		searchRequirements.setPageable(pageable);
 		return campaignService.getCampaignDtoPage(searchRequirements);
 	}
