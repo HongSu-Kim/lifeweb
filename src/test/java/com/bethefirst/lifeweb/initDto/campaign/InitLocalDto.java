@@ -1,7 +1,6 @@
 package com.bethefirst.lifeweb.initDto.campaign;
 
-import com.bethefirst.lifeweb.dto.campaign.CampaignCategoryDto;
-import com.bethefirst.lifeweb.dto.campaign.LocalDto;
+import com.bethefirst.lifeweb.dto.campaign.response.LocalDto;
 
 import java.util.Arrays;
 import java.util.List;
