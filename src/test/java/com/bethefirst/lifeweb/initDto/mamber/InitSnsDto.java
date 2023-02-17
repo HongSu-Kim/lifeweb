@@ -1,6 +1,6 @@
 package com.bethefirst.lifeweb.initDto.mamber;
 
-import com.bethefirst.lifeweb.dto.member.SnsDto;
+import com.bethefirst.lifeweb.dto.member.response.SnsDto;
 
 import java.util.Arrays;
 import java.util.List;
