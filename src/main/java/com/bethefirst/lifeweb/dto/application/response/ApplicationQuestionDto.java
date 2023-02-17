@@ -1,8 +1,8 @@
-package com.bethefirst.lifeweb.dto.campaign;
+package com.bethefirst.lifeweb.dto.application.response;
 
-import com.bethefirst.lifeweb.entity.campaign.ApplicationQuestion;
-import com.bethefirst.lifeweb.entity.campaign.Campaign;
-import com.bethefirst.lifeweb.entity.campaign.QuestionType;
+import com.bethefirst.lifeweb.entity.application.Application;
+import com.bethefirst.lifeweb.entity.application.ApplicationQuestion;
+import com.bethefirst.lifeweb.entity.application.QuestionType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -19,7 +19,7 @@ public class ApplicationQuestionDto {
 
 	public ApplicationQuestionDto(ApplicationQuestion applicationQuestion) {
 		id = applicationQuestion.getId();
-		question = applicationQuestion.getQuestion();
+		this.question = applicationQuestion.getQuestion();
 		type = applicationQuestion.getType();
 		items = applicationQuestion.getItems() == null ? null : applicationQuestion.getItems();
 	}
@@ -37,15 +37,15 @@ public class ApplicationQuestionDto {
 		this.items = items;
 	}
 
-	/** 신청서질문 생성 */
-	public ApplicationQuestion createApplicationQuestion(Campaign campaign) {
-		return new ApplicationQuestion(campaign, question, type,
+	/** 질문 생성 */
+	public ApplicationQuestion createApplicationQuestion(Application application) {
+		return new ApplicationQuestion(application, question, type,
 					type == QuestionType.RADIO || type == QuestionType.CHECKBOX ? items : null);
 	}
 
-	/** 신청서질문 수정 */
+	/** 질문 수정 */
 	public void updateApplicationQuestion(ApplicationQuestion applicationQuestion) {
-		applicationQuestion.updateApplicationQuestion(question, type,
+		applicationQuestion.updateApplicationQuestion(this.question, type,
 				items == null ? null : items);
 	}
 

@@ -1,22 +1,14 @@
 package com.bethefirst.lifeweb.service.application;
 
-import com.bethefirst.lifeweb.dto.application.*;
+import com.bethefirst.lifeweb.dto.application.response.ApplicationQuestionDto;
 import com.bethefirst.lifeweb.entity.application.Application;
-import com.bethefirst.lifeweb.entity.application.ApplicationAnswer;
-import com.bethefirst.lifeweb.entity.application.ApplicationStatus;
-import com.bethefirst.lifeweb.entity.campaign.ApplicationQuestion;
+import com.bethefirst.lifeweb.entity.application.ApplicationQuestion;
 import com.bethefirst.lifeweb.entity.campaign.Campaign;
-import com.bethefirst.lifeweb.entity.campaign.CampaignStatus;
-import com.bethefirst.lifeweb.entity.member.Member;
-import com.bethefirst.lifeweb.repository.application.ApplicationAnswerRepository;
+import com.bethefirst.lifeweb.repository.application.ApplicationQuestionRepository;
 import com.bethefirst.lifeweb.repository.application.ApplicationRepository;
-import com.bethefirst.lifeweb.repository.campaign.ApplicationQuestionRepository;
-import com.bethefirst.lifeweb.repository.campaign.CampaignRepository;
-import com.bethefirst.lifeweb.repository.member.MemberRepository;
 import com.bethefirst.lifeweb.service.application.interfaces.ApplicationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -30,118 +22,51 @@ import java.util.List;
 public class ApplicationServiceImpl implements ApplicationService {
 
 	private final ApplicationRepository applicationRepository;
-	private final ApplicationAnswerRepository applicationAnswerRepository;
-	private final MemberRepository memberRepository;
-	private final CampaignRepository campaignRepository;
 	private final ApplicationQuestionRepository applicationQuestionRepository;
 
-	/** 신청서 생성 */
+
+	/** 신청서 저장 */
 	@Override
-	public Long createApplication(Long memberId, CreateApplicationDto createApplicationDto) {
-		
+	public void createApplication(Campaign campaign, List<ApplicationQuestionDto> applicationQuestionDtoList) {
+
 		// 신청서 저장
-		Member member = memberRepository.findById(memberId)
-				.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다. " + memberId));
-		Campaign campaign = campaignRepository.findById(createApplicationDto.getCampaignId())
-				.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 캠페인입니다. " + createApplicationDto.getCampaignId()));
+		Application application = applicationRepository.save(new Application(campaign));
 
-		Application application = createApplicationDto.createApplication(member, campaign);
+		// 신청서질문 저장
+		applicationQuestionDtoList
+				.forEach(applicationQuestionDto -> applicationQuestionRepository.save(applicationQuestionDto.createApplicationQuestion(application)));
 
-		Long applicationId = applicationRepository.save(application).getId();
-
-		// 신청서답변 저장
-		List<ApplicationQuestion> applicationQuestionList = campaign.getApplicationQuestionList();
-		List<ApplicationAnswerDto> applicationAnswerDtoList = createApplicationDto.getApplicationAnswerDtoList();
-
-		if (!CollectionUtils.isEmpty(applicationQuestionList)) {
-			// 신청서답변의 입력값이 부족한 경우
-			if (applicationQuestionList.size() > createApplicationDto.getApplicationQuestionId().size()) {
-				throw new IllegalArgumentException("신청서질문ID는 필수 입력 값입니다.");
-			} else if (applicationQuestionList.size() > createApplicationDto.getAnswer().size()) {
-				throw new IllegalArgumentException("답변은 필수 입력 값입니다.");
-			}
-
-			for (ApplicationQuestion applicationQuestion : applicationQuestionList) {
-				for (ApplicationAnswerDto applicationAnswerDto : applicationAnswerDtoList) {
-					if (applicationAnswerDto.getId().equals(applicationQuestion.getId())) {
-						applicationAnswerRepository.save(applicationAnswerDto.createApplicationAnswer(application, applicationQuestion));
-						break;
-					}
-				}
-			}
-		}
-
-		return applicationId;
-	}
-
-	/** 신청서 조회 */
-	@Transactional(readOnly = true)
-	@Override
-	public ApplicationDto getApplicationDto(Long applicationId) {
-		return new ApplicationDto(applicationRepository.findById(applicationId)
-				.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 신청서입니다. " + applicationId)));
-	}
-
-	/** 신청서 리스트 조회 */
-	@Transactional(readOnly = true)
-	@Override
-	public Page<ApplicationDto> getApplicationDtoList(ApplicationSearchRequirements searchRequirements) {
-		return applicationRepository.findAllBySearchRequirements(searchRequirements).map(ApplicationDto::new);
 	}
 
 	/** 신청서 수정 */
 	@Override
-	public void updateApplication(Long applicationId, UpdateApplicationDto updateApplicationDto) {
-		
-		Application application = applicationRepository.findById(applicationId)
-				.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 신청서입니다. " + applicationId));
+	public void updateApplication(Application application, List<ApplicationQuestionDto> applicationQuestionDtoList) {
 
-		//  캠페인 상태 != 신청 || 신청서 상태 == 선정 일 떄 수정 불가
-		if (!application.getCampaign().getStatus().equals(CampaignStatus.APPLICATION)) {
-			throw new IllegalArgumentException("캠페인 신청기간에만 수정할 수 있습니다");
-		} else if (application.getStatus().equals(ApplicationStatus.SELECT)) {
-			throw new IllegalArgumentException("선정된 신청서는 수정할 수 없습니다.");
+		// 신청서질문 insert
+		if (!CollectionUtils.isEmpty(applicationQuestionDtoList)) {
+			applicationQuestionDtoList.stream().filter(applicationQuestionDto -> applicationQuestionDto.getId() == 0)
+					.forEach(applicationQuestionDto -> applicationQuestionRepository.save(applicationQuestionDto.createApplicationQuestion(application)));
 		}
 
-		// 신청서 수정
-		application.updateApplication(updateApplicationDto.getMemo());
-
-		// 신청서답변 수정
-		List<ApplicationAnswer> applicationAnswerList = application.getApplicationAnswerList();
-		List<ApplicationAnswerDto> applicationAnswerDtoList = updateApplicationDto.getApplicationAnswerDtoList();
-
-		if (!CollectionUtils.isEmpty(applicationAnswerList)) {
-			// 신청서답변의 입력값이 부족한 경우
-			if (applicationAnswerList.size() > updateApplicationDto.getApplicationQuestionId().size()) {
-				throw new IllegalArgumentException("신청서질문ID는 필수 입력 값입니다.");
-			} else if (applicationAnswerList.size() > updateApplicationDto.getAnswer().size()) {
-				throw new IllegalArgumentException("답변은 필수 입력 값입니다.");
-			}
-
-			for (ApplicationAnswer applicationAnswer : applicationAnswerList) {
-				for (ApplicationAnswerDto applicationAnswerDto : applicationAnswerDtoList) {
-					if (applicationAnswerDto.getId().equals(applicationAnswer.getId())) {
-						applicationAnswer.updateApplicationAnswer(applicationAnswerDto.getAnswer());
-						break;
+		if (!CollectionUtils.isEmpty(application.getApplicationQuestionList())) {
+			for (ApplicationQuestion applicationQuestion : application.getApplicationQuestionList()) {
+				boolean result = false;
+				if (!CollectionUtils.isEmpty(applicationQuestionDtoList)) {
+					for (ApplicationQuestionDto applicationQuestionDto : applicationQuestionDtoList) {
+						// 신청서질문 update
+						if (applicationQuestionDto.getId().equals(applicationQuestion.getId())) {
+							applicationQuestionDto.updateApplicationQuestion(applicationQuestion);
+							result = true;
+							break;
+						}
 					}
+				}
+				// 신청서질문 delete
+				if (!result) {
+					applicationQuestionRepository.delete(applicationQuestion);
 				}
 			}
 		}
-
-	}
-
-	/** 신청서 상태 수정 */
-	@Override
-	public void updateStatus(Long applicationId, ApplicationStatus status) {
-		applicationRepository.findById(applicationId)
-				.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 신청서입니다. " + applicationId))
-				.updateApplicationStatus(status);
-	}
-
-	/** 신청서 삭제 */
-	@Override
-	public void deleteApplication(Long applicationId) {
-		applicationRepository.deleteById(applicationId);
 	}
 
 }

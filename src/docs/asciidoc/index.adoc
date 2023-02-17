@@ -18,7 +18,7 @@ include::CampaignType-API.adoc[]
 
 include::Campaign-API.adoc[]
 
-include::Application-API.adoc[]
+include::Applicant-API.adoc[]
 
 include::Review-API.adoc[]
 

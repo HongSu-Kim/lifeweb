@@ -1,6 +1,5 @@
-package com.bethefirst.lifeweb.entity.campaign;
+package com.bethefirst.lifeweb.entity.application;
 
-import com.bethefirst.lifeweb.entity.application.ApplicationAnswer;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -20,8 +19,8 @@ public class ApplicationQuestion {//신청서질문
 	private Long id;//신청서질문ID PK
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "campaign_id")
-	private Campaign campaign;//캠페인 FK
+	@JoinColumn(name = "application_id")
+	private Application application;//신청서 FK
 
 	private String question;//질문
 
@@ -31,10 +30,10 @@ public class ApplicationQuestion {//신청서질문
 	private String items;//항목
 
 	@OneToMany(mappedBy = "applicationQuestion")
-	private List<ApplicationAnswer> applicationAnswerList = new ArrayList<>();//신청서답변
+	private List<ApplicantAnswer> applicantAnswerList = new ArrayList<>();//신청서답변
 
-	public ApplicationQuestion(Campaign campaign, String question, QuestionType type, String items) {
-		this.campaign = campaign;
+	public ApplicationQuestion(Application application, String question, QuestionType type, String items) {
+		this.application = application;
 		this.question = question;
 		this.type = type;
 		this.items = items;

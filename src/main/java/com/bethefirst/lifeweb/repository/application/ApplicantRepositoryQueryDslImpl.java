@@ -1,7 +1,7 @@
 package com.bethefirst.lifeweb.repository.application;
 
-import com.bethefirst.lifeweb.dto.application.ApplicationSearchRequirements;
-import com.bethefirst.lifeweb.entity.application.Application;
+import com.bethefirst.lifeweb.dto.application.request.ApplicantSearchRequirements;
+import com.bethefirst.lifeweb.entity.application.Applicant;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +10,7 @@ import org.springframework.data.domain.PageImpl;
 
 import java.util.List;
 
+import static com.bethefirst.lifeweb.entity.application.QApplicant.applicant;
 import static com.bethefirst.lifeweb.entity.application.QApplication.application;
 import static com.bethefirst.lifeweb.entity.campaign.QCampaign.campaign;
 import static com.bethefirst.lifeweb.entity.campaign.QCampaignCategory.campaignCategory;
@@ -20,19 +21,20 @@ import static com.bethefirst.lifeweb.entity.member.QMember.member;
 import static com.bethefirst.lifeweb.entity.member.QSns.sns;
 
 @RequiredArgsConstructor
-public class ApplicationRepositoryQueryDslImpl implements ApplicationRepositoryQueryDsl {
+public class ApplicantRepositoryQueryDslImpl implements ApplicantRepositoryQueryDsl {
 
 	private final JPAQueryFactory queryFactory;
 
-	/** 신청서 리스트 조회 */
+	/** 신청자 리스트 조회 */
 	@Override
-	public Page<Application> findAllBySearchRequirements(ApplicationSearchRequirements searchRequirements) {
+	public Page<Applicant> findAllBySearchRequirements(ApplicantSearchRequirements searchRequirements) {
 
 		// content
-		List<Application> content = queryFactory
-				.select(application)
-				.from(application)
-				.join(application.member, member).fetchJoin()
+		List<Applicant> content = queryFactory
+				.select(applicant)
+				.from(applicant)
+				.join(applicant.member, member).fetchJoin()
+				.join(applicant.application, application).fetchJoin()
 				.join(application.campaign, campaign).fetchJoin()
 				.join(campaign.campaignCategory, campaignCategory).fetchJoin()
 				.join(campaign.campaignType, campaignType).fetchJoin()
@@ -49,8 +51,8 @@ public class ApplicationRepositoryQueryDslImpl implements ApplicationRepositoryQ
 
 		// size
 		Long count = queryFactory
-				.select(application.count())
-				.from(application)
+				.select(applicant.count())
+				.from(applicant)
 				.where(
 						memberIdEq(searchRequirements.getMemberId()),
 						campaignIdEq(searchRequirements.getCampaignId())
@@ -62,12 +64,12 @@ public class ApplicationRepositoryQueryDslImpl implements ApplicationRepositoryQ
 
 	/** 맴버 */
 	private BooleanExpression memberIdEq(Long memberId) {
-		return memberId == null ? null : application.member.id.eq(memberId);
+		return memberId == null ? null : applicant.member.id.eq(memberId);
 	}
 
 	/** 캠페인 */
 	private BooleanExpression campaignIdEq(Long campaignId) {
-		return campaignId == null ? null : application.campaign.id.eq(campaignId);
+		return campaignId == null ? null : applicant.application.campaign.id.eq(campaignId);
 	}
 	
 }
