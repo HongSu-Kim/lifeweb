@@ -2,11 +2,10 @@ package com.bethefirst.lifeweb.controller.member;
 
 import com.bethefirst.lifeweb.config.security.JwtFilter;
 import com.bethefirst.lifeweb.config.security.TokenProvider;
-import com.bethefirst.lifeweb.dto.CustomUser;
 import com.bethefirst.lifeweb.dto.jwt.TokenDto;
 import com.bethefirst.lifeweb.dto.member.request.*;
 import com.bethefirst.lifeweb.dto.member.response.MemberInfoDto;
-import com.bethefirst.lifeweb.entity.member.Member;
+import com.bethefirst.lifeweb.dto.review.reqeust.ExistNicknameDto;
 import com.bethefirst.lifeweb.exception.UnauthorizedException;
 import com.bethefirst.lifeweb.service.member.interfaces.MemberService;
 import com.bethefirst.lifeweb.service.member.interfaces.MemberSnsService;
@@ -24,6 +23,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.net.URI;
+
 @RestController
 @RequestMapping("/members")
 @RequiredArgsConstructor
@@ -35,83 +36,101 @@ public class MemberController {
     private final MemberSnsService memberSnsService;
 
     /** 회원 가입 */
-    @ResponseStatus(HttpStatus.OK)
     @PostMapping
-    public void join(@Valid @RequestBody JoinDto joinDto) {
+    public ResponseEntity<?> join(@Valid @RequestBody JoinDto joinDto) {
+
         memberService.join(joinDto);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setLocation(URI.create("/members/login"));
+        return new ResponseEntity<>(headers, HttpStatus.CREATED);
     }
 
     /** 회원정보 수정 */
     @PutMapping("/{memberId}")
-    @ResponseStatus(HttpStatus.OK)
-    public void update(@PathVariable Long memberId,
-                             @Valid @RequestBody MemberUpdateDto memberUpdateDto) {
+    public ResponseEntity<?> update(@PathVariable(required = false) Long memberId,
+                             @Valid @RequestBody UpdateMemberDto updateMemberDto) {
 
-        Long currentMemberId = SecurityUtil.getCurrentMemberId().orElseThrow(()
-                -> new UnauthorizedException("Security Context에 인증 정보가 없습니다."));
+        //패스베리어블과 로그인된 회원 Id 검증
+        Long currentMemberId = validationPathVariable(memberId);
 
-        memberService.updateMemberInfo(memberUpdateDto, currentMemberId);
+        memberService.updateMemberInfo(updateMemberDto, currentMemberId);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setLocation(URI.create("/members/" + currentMemberId));
+        return new ResponseEntity<>(headers, HttpStatus.CREATED);
 
     }
 
     /** 로그인 */
     @PostMapping("/login")
-    public ResponseEntity<MemberInfoDto> login(@Valid @RequestBody LoginDto loginDto) {
+    public ResponseEntity<?> login(@Valid @RequestBody LoginDto loginDto) {
 
         UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(loginDto.getEmail(), loginDto.getPwd());
 
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        CustomUser springSecurityUser = (CustomUser) authentication.getPrincipal();
-        Member member = springSecurityUser.getMember();
-
         String jwt = tokenProvider.createToken(authentication);
 
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.add(JwtFilter.AUTHORIZATION_HEADER, "Bearer " + jwt);
-        MemberInfoDto memberInfoDto = new MemberInfoDto(member, new TokenDto(jwt));
-
-
-        return new ResponseEntity<>(memberInfoDto, httpHeaders, HttpStatus.OK);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(JwtFilter.AUTHORIZATION_HEADER, "Bearer " + jwt);
+        return new ResponseEntity<>(new TokenDto(jwt), headers, HttpStatus.OK);
     }
 
     /** 회원 탈퇴 */
-    @DeleteMapping
-    @ResponseStatus(HttpStatus.OK)
-    public void withdraw(){
-        Long currentMemberId = SecurityUtil.getCurrentMemberId().orElseThrow(()
-                -> new UnauthorizedException("Security Context에 인증 정보가 없습니다."));
+    @DeleteMapping("/{memberId}")
+    public ResponseEntity<?> withdraw(@PathVariable Long memberId){
+        //패스베리어블과 로그인된 회원 Id 검증
+        Long currentMemberId = validationPathVariable(memberId);
 
         memberService.withdraw(currentMemberId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+
+    }
+
+    /** 회원 단건 조회*/
+    @GetMapping("/{memberId}")
+    public MemberInfoDto read(@PathVariable Long memberId){
+
+        //패스베리어블과 로그인된 회원 Id 검증
+        Long currentMemberId = validationPathVariable(memberId);
+
+        return memberService.getMember(currentMemberId);
+
     }
 
     /** 이미지 수정 */
-    @PutMapping("/images")
-    @ResponseStatus(HttpStatus.OK)
-    public void updateMemberImage(MultipartFile multipartFile){
+    @PutMapping("/image")
+    public ResponseEntity<?> updateMemberImage(MultipartFile fileName){
 
         Long currentMemberId = SecurityUtil.getCurrentMemberId().orElseThrow(()
                 -> new UnauthorizedException("Security Context에 인증 정보가 없습니다."));
 
-        memberService.updateMemberImage(multipartFile,currentMemberId);
+        memberService.updateMemberImage(fileName,currentMemberId);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setLocation(URI.create("/members/" + currentMemberId));
+        return new ResponseEntity<>(headers, HttpStatus.CREATED);
     }
 
     /** 비밀번호 변경 */
-    @PutMapping("/passwords")
+    @PutMapping("/password")
     @ResponseStatus(HttpStatus.OK)
-    public void updatePassword(@RequestBody PasswordDto passwordDto){
+    public ResponseEntity<?> updatePassword(@RequestBody PasswordDto passwordDto){
 
         Long currentMemberId = SecurityUtil.getCurrentMemberId().orElseThrow(()
                 -> new UnauthorizedException("Security Context에 인증 정보가 없습니다."));
 
         memberService.updatePassword(passwordDto, currentMemberId);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setLocation(URI.create("/members/" + currentMemberId));
+        return new ResponseEntity<>(headers, HttpStatus.CREATED);
     }
 
     /** 회원 SNS 등록 */
     @PostMapping("/sns")
     @ResponseStatus(HttpStatus.OK)
-    public void create(@RequestBody CreateMemberSnsDto createMemberSnsDto){
+    public ResponseEntity<?> create(@RequestBody CreateMemberSnsDto createMemberSnsDto){
 
         //현재 로그인 된 회원 조회
         Long currentMemberId = SecurityUtil.getCurrentMemberId().orElseThrow(()
@@ -121,20 +140,40 @@ public class MemberController {
         memberSnsService.createMemberSns(createMemberSnsDto, currentMemberId);
 
 
+        return new ResponseEntity<>(HttpStatus.CREATED);
+
     }
 
 
     /** 회원 SNS 삭제 */
     @DeleteMapping("/sns/{memberSnsId}")
     @ResponseStatus(HttpStatus.OK)
-    public void delete(@PathVariable Long memberSnsId){
+    public ResponseEntity<?> delete(@PathVariable Long memberSnsId){
 
         //회원 SNS 삭제
         memberSnsService.deleteMemberSns(memberSnsId);
 
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
+    /** 닉네임 중복 체크 */
+    @PostMapping("/nickname")
+    public void existNickname(@RequestBody ExistNicknameDto nicknameDto){
+        memberService.existsNickname(nicknameDto.getNickname());
+    }
 
+    /** security context에서 회원을 조회후 pathVariable로 넘어온 id와 일치하는지 검증 후
+     * 로그인 된 회원 아이디를 반환합니다.
+     */
+    private Long validationPathVariable(Long memberId) {
+        Long currentMemberId = SecurityUtil.getCurrentMemberId().orElseThrow(()
+                -> new UnauthorizedException("Security Context에 인증 정보가 없습니다."));
 
-
+        if(memberId != currentMemberId ){
+            new UnauthorizedException("로그인된 회원과 memberId가 일치하지 않습니다.");
+        }
+        return currentMemberId;
+    }
 }
+
+

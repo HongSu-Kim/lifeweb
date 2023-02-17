@@ -1,8 +1,8 @@
 package com.bethefirst.lifeweb.service.member;
 
-import com.bethefirst.lifeweb.dto.member.SnsDto;
-import com.bethefirst.lifeweb.dto.member.request.SnsCreateDto;
-import com.bethefirst.lifeweb.dto.member.request.SnsUpdateDto;
+import com.bethefirst.lifeweb.dto.member.response.SnsDto;
+import com.bethefirst.lifeweb.dto.member.request.CreateSnsDto;
+import com.bethefirst.lifeweb.dto.member.request.UpdateSnsDto;
 import com.bethefirst.lifeweb.entity.member.Sns;
 import com.bethefirst.lifeweb.repository.member.SnsRepository;
 import com.bethefirst.lifeweb.service.member.interfaces.SnsService;
@@ -24,20 +24,21 @@ public class SnsServiceImpl implements SnsService {
 
     /** SNS 등록 */
     @Override
-    public void createSns(SnsCreateDto snsCreateDto) {
+    public Long createSns(CreateSnsDto createSnsDto) {
 
-        Sns sns = snsCreateDto.createSns();
-        snsRepository.save(sns);
+        Sns sns = createSnsDto.createSns();
+        return snsRepository.save(sns).getId();
+
 
     }
 
     /** SNS 수정 */
     @Override
-    public void updateSns(SnsUpdateDto snsUpdateDto, Long snsId) {
+    public void updateSns(UpdateSnsDto updateSnsDto, Long snsId) {
         Sns sns = snsRepository.findById(snsId).orElseThrow(() ->
                 new IllegalArgumentException("존재하지 않는 snsId 입니다. " + String.valueOf(snsId)));
 
-        snsUpdateDto.updateSns(sns);
+        updateSnsDto.updateSns(sns);
     }
 
     /** SNS 삭제 */

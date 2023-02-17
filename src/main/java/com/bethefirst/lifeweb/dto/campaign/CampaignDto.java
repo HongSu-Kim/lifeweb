@@ -1,6 +1,6 @@
 package com.bethefirst.lifeweb.dto.campaign;
 
-import com.bethefirst.lifeweb.dto.member.SnsDto;
+import com.bethefirst.lifeweb.dto.member.response.SnsDto;
 import com.bethefirst.lifeweb.entity.campaign.Campaign;
 import com.bethefirst.lifeweb.entity.campaign.CampaignImage;
 import com.bethefirst.lifeweb.entity.campaign.CampaignStatus;

@@ -1,7 +1,7 @@
 package com.bethefirst.lifeweb.dto.review.response;
 
 import com.bethefirst.lifeweb.dto.campaign.CampaignDto;
-import com.bethefirst.lifeweb.dto.member.MemberDto;
+import com.bethefirst.lifeweb.dto.member.response.MemberDto;
 import com.bethefirst.lifeweb.entity.review.Review;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

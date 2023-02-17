@@ -6,7 +6,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class ReviewUpdateDto {
+public class UpdateReviewDto {
 
     private String reviewUrl;
 

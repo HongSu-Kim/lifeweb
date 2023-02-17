@@ -6,12 +6,13 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class SnsUpdateDto {
-
+public class CreateSnsDto {
     private String snsName;
 
-    public void updateSns(Sns sns){
 
-        sns.updateSns(snsName);
+    public Sns createSns(){
+        return new Sns(snsName);
     }
+
 }
+

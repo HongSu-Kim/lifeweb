@@ -1,6 +1,5 @@
 package com.bethefirst.lifeweb.dto.member.response;
 
-import com.bethefirst.lifeweb.dto.jwt.TokenDto;
 import com.bethefirst.lifeweb.entity.member.Member;
 import lombok.Getter;
 import lombok.Setter;
@@ -27,9 +26,8 @@ public class MemberInfoDto {
     private String extraAddress;//참고사항
     private int point;//포인트
     private List<MemberSnsDto> memberSnsDtoList = new ArrayList<>();
-    private TokenDto tokenDto; //토큰
 
-    public MemberInfoDto(Member member, TokenDto tokenDto) {
+    public MemberInfoDto(Member member) {
         this.memberId = member.getId();
         this.fileName = member.getFileName() == null ? null : member.getFileName();
         this.name = member.getName() == null ? null : member.getName();
@@ -43,6 +41,5 @@ public class MemberInfoDto {
         this.extraAddress = member.getExtraAddress() == null ? null : member.getExtraAddress();
         this.point = member.getPoint();
         this.memberSnsDtoList = member.getMemberSnsList().stream().map(MemberSnsDto::new).collect(Collectors.toList());
-        this.tokenDto = tokenDto;
     }
 }

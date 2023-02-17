@@ -8,15 +8,11 @@ import com.bethefirst.lifeweb.repository.member.MemberRepository;
 import com.bethefirst.lifeweb.repository.member.MemberSnsRepository;
 import com.bethefirst.lifeweb.repository.member.SnsRepository;
 import com.bethefirst.lifeweb.service.member.interfaces.MemberSnsService;
+import com.bethefirst.lifeweb.util.UrlUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 
 @Service
 @Transactional
@@ -27,6 +23,7 @@ public class MemberSnsServiceImpl implements MemberSnsService {
     private final MemberRepository memberRepository;
     private final MemberSnsRepository memberSnsRepository;
     private final SnsRepository snsRepository;
+    private final UrlUtil urlUtil;
 
     /** 회원 SNS 등록 **/
     @Override
@@ -44,7 +41,7 @@ public class MemberSnsServiceImpl implements MemberSnsService {
                 new IllegalArgumentException("존재하지 않는 SNS 이름 입니다. " + createMemberSnsDto.getSnsUrl()));
 
         //SNS URL 검사
-        inspectionUrl(createMemberSnsDto.getSnsUrl());
+        urlUtil.inspectionUrl(createMemberSnsDto.getSnsUrl());
 
         //memberSNS 생성
         MemberSns memberSns = MemberSns.createMemberSns(member, sns, createMemberSnsDto.getSnsUrl());
@@ -65,22 +62,4 @@ public class MemberSnsServiceImpl implements MemberSnsService {
         memberSnsRepository.delete(memberSns);
     }
 
-    /** SNS URL 검사 */
-    public void inspectionUrl(String snsUrl) {
-
-        try {
-            URL url = new URL(snsUrl);
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            int responseCode = conn.getResponseCode();
-
-            if(String.valueOf(responseCode).charAt(0) == 4){
-                throw new IllegalArgumentException("존재하지 않는 URL 입니다. " + snsUrl);
-            }
-        }catch (MalformedURLException e) {
-            throw new IllegalArgumentException("URL 형식이 잘못 되었습니다. " + snsUrl);
-        } catch (IOException e) {
-            throw new RuntimeException("URL 검사에 실패 하였습니다.");
-        }
-
-    }
 }

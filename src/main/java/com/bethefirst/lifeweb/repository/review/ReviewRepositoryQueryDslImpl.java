@@ -13,7 +13,9 @@ import static com.bethefirst.lifeweb.entity.campaign.QCampaign.campaign;
 import static com.bethefirst.lifeweb.entity.campaign.QCampaignCategory.campaignCategory;
 import static com.bethefirst.lifeweb.entity.campaign.QCampaignLocal.campaignLocal;
 import static com.bethefirst.lifeweb.entity.campaign.QCampaignType.campaignType;
+import static com.bethefirst.lifeweb.entity.campaign.QLocal.local;
 import static com.bethefirst.lifeweb.entity.member.QMember.member;
+import static com.bethefirst.lifeweb.entity.member.QSns.sns;
 import static com.bethefirst.lifeweb.entity.review.QReview.review;
 import static org.springframework.util.CollectionUtils.isEmpty;
 
@@ -31,9 +33,11 @@ public class ReviewRepositoryQueryDslImpl extends QueryDsl4RepositorySupport imp
                 .selectFrom(review)
                         .join(review.member, member).fetchJoin()
                         .join(review.campaign, campaign).fetchJoin()
-                        .join(review.campaign.campaignCategory, campaignCategory).fetchJoin()
-                        .join(review.campaign.campaignType, campaignType).fetchJoin()
-                        .join(review.campaign.campaignLocal, campaignLocal).fetchJoin()
+                        .join(campaign.campaignCategory, campaignCategory).fetchJoin()
+                        .join(campaign.campaignType, campaignType).fetchJoin()
+                        .join(campaign.sns, sns).fetchJoin()
+                        .leftJoin(campaign.campaignLocal, campaignLocal).fetchJoin()
+                        .leftJoin(campaignLocal.local, local).fetchJoin()
                 .where(
                         memberIdEq(requirements.getMemberId()),
                         campaignIdEq(requirements.getCampaignId()),
@@ -62,7 +66,7 @@ public class ReviewRepositoryQueryDslImpl extends QueryDsl4RepositorySupport imp
 
     /** 회원 ID 검색조건 */
     private BooleanExpression memberIdEq(Long memberId) {
-        return memberId != null ? null : review.member.id.eq(memberId);
+        return memberId == null ? null : review.member.id.eq(memberId);
     }
 
 
