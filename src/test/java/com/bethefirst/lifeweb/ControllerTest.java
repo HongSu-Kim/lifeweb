@@ -19,11 +19,11 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import org.springframework.test.web.servlet.request.MockMultipartHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
 import java.beans.PropertyDescriptor;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -60,8 +60,8 @@ public class ControllerTest {
 
 		//Request에 DTO의 모든 속성,값 정보 추가
 		final PropertyDescriptor[] getterDescriptors = ReflectUtils.getBeanGetters(dto.getClass());
-		for(PropertyDescriptor pd : getterDescriptors) {
-			try{
+		for (PropertyDescriptor pd : getterDescriptors) {
+			try {
 				//파라미터로 전달한 인스턴스에 대해 getter함수를 호출한 값 얻어옴
 				Object invoke = pd.getReadMethod().invoke(dto);
 				if (invoke instanceof List<?>) {
@@ -93,8 +93,8 @@ public class ControllerTest {
 			Object dto) {
 
 		final PropertyDescriptor[] getterDescriptors = ReflectUtils.getBeanGetters(dto.getClass());
-		for(PropertyDescriptor pd : getterDescriptors) {
-			try{
+		for (PropertyDescriptor pd : getterDescriptors) {
+			try {
 				Object invoke = pd.getReadMethod().invoke(dto);
 
 				if (invoke instanceof List<?>) {
@@ -131,20 +131,28 @@ public class ControllerTest {
 		return multipartRequest;
 	}
 
-	protected <K, V> Map<String, String> toMap(Object dto) {
+	protected Map<String, String> toMap(Object dto) {
 
-		Map<K, V> map = (Map<K, V>) new LinkedMultiValueMap<K, V>();
+		Map map = new HashMap<>();
 
 		final PropertyDescriptor[] getterDescriptors = ReflectUtils.getBeanGetters(dto.getClass());
-		for(PropertyDescriptor pd : getterDescriptors) {
-			try{
-				map.put((K) pd.getName(), (V) String.valueOf(pd.getReadMethod().invoke(dto)));
+		for (PropertyDescriptor pd : getterDescriptors) {
+			try {
+				Object invoke = pd.getReadMethod().invoke(dto);
+				if (invoke instanceof String || invoke instanceof Number || invoke instanceof Boolean || invoke instanceof Enum<?>) {
+					map.put(pd.getName(), invoke);
+				} else {
+					List list = (List<?>) invoke;
+					if (list.get(0) instanceof String || list.get(0) instanceof Number || list.get(0) instanceof Boolean || list.get(0) instanceof Enum<?>) {
+						map.put(pd.getName(), invoke);
+					}
+				}
 			} catch (Exception e) {
 				log.error(e.toString());
 			}
 		}
 
-		return (Map<String, String>) map;
+		return map;
 	}
 
 	protected Attribute type(Object value) {

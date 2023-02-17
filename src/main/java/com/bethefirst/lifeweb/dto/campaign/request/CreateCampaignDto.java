@@ -1,14 +1,14 @@
-package com.bethefirst.lifeweb.dto.campaign;
+package com.bethefirst.lifeweb.dto.campaign.request;
 
+import com.bethefirst.lifeweb.dto.application.response.ApplicationQuestionDto;
+import com.bethefirst.lifeweb.dto.campaign.response.CampaignLocalDto;
+import com.bethefirst.lifeweb.entity.application.QuestionType;
 import com.bethefirst.lifeweb.entity.campaign.*;
 import com.bethefirst.lifeweb.entity.member.Sns;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
@@ -19,6 +19,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode
 public class CreateCampaignDto {
 
 	@NotNull(message = "카테고리는 필수 입력 값입니다.")
