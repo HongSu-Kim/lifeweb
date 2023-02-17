@@ -1,19 +1,23 @@
 
 DROP TABLE IF EXISTS review;
 
-DROP TABLE IF EXISTS application_answer;
-DROP TABLE IF EXISTS application;
+DROP TABLE IF EXISTS applicant_answer;
+DROP TABLE IF EXISTS applicant;
 
 DROP TABLE IF EXISTS application_question;
+DROP TABLE IF EXISTS application;
+
 DROP TABLE IF EXISTS campaign_image;
 DROP TABLE IF EXISTS campaign_local;
 DROP TABLE IF EXISTS campaign;
+
 DROP TABLE IF EXISTS campaign_type;
 DROP TABLE IF EXISTS campaign_category;
 DROP TABLE IF EXISTS local;
 
 DROP TABLE IF EXISTS member_sns;
 DROP TABLE IF EXISTS member;
+
 DROP TABLE IF EXISTS sns;
 
 
@@ -25,7 +29,7 @@ CREATE TABLE sns (
 
 CREATE TABLE member (
     member_id       BIGINT	        NOT NULL AUTO_INCREMENT,
-    role            VARCHAR(10)     NOT NULL,
+    role            VARCHAR(10)     DEFAULT 'USER',
     email           VARCHAR(30)	    NOT NULL,
     pwd	            VARCHAR(60)	    NOT NULL,
     file_name       VARCHAR(100)	NULL,
@@ -46,7 +50,7 @@ CREATE TABLE member_sns (
     member_sns_id   BIGINT	        NOT NULL AUTO_INCREMENT,
     member_id	    BIGINT	        NOT NULL,
     sns_id	        BIGINT	        NOT NULL,
-    sns_url         VARCHAR(255)    NOT NULL,
+    url             VARCHAR(255)    NOT NULL,
     CONSTRAINT PK_MEMBER_SNS PRIMARY KEY (member_sns_id),
     CONSTRAINT FK_MEMBER_SNS_MEMBER FOREIGN KEY (member_id) REFERENCES member (member_id),
     CONSTRAINT FK_MEMBER_SNS_SNS FOREIGN KEY (sns_id) REFERENCES sns (sns_id)
@@ -76,6 +80,7 @@ CREATE TABLE campaign (
     campaign_type_id	    BIGINT	        NOT NULL,
     sns_id	                BIGINT	        NOT NULL,
     special	                BOOLEAN	        DEFAULT FALSE,
+    pick	                BOOLEAN	        DEFAULT FALSE,
     title	                VARCHAR(255)	NOT NULL,
     file_name	            VARCHAR(100)	NOT NULL,
     provision	            VARCHAR(500)	NOT NULL,
@@ -105,7 +110,7 @@ CREATE TABLE campaign_local (
     CONSTRAINT PK_CAMPAIGN_LOCAL PRIMARY KEY (campaign_id),
     CONSTRAINT FK_CAMPAIGN_LOCAL_CAMPAIGN FOREIGN KEY (campaign_id) REFERENCES campaign (campaign_id),
     CONSTRAINT FK_CAMPAIGN_LOCAL_LOCAL FOREIGN KEY (local_id) REFERENCES local (local_id)
-);;
+);
 
 CREATE TABLE campaign_image (
     campaign_image_id	BIGINT	        NOT NULL AUTO_INCREMENT,
@@ -115,46 +120,54 @@ CREATE TABLE campaign_image (
     CONSTRAINT FK_CAMPAIGN_IMAGE_CAMPAIGN FOREIGN KEY (campaign_id) REFERENCES campaign (campaign_id)
 );
 
+CREATE TABLE application (
+    application_id	    BIGINT      NOT NULL AUTO_INCREMENT,
+    campaign_id	        BIGINT      NOT NULL,
+    CONSTRAINT PK_APPLICATION PRIMARY KEY (application_id),
+    CONSTRAINT FK_APPLICATION_CAMPAIGN FOREIGN KEY (campaign_id) REFERENCES campaign (campaign_id)
+);
+
 CREATE TABLE application_question (
-    application_question_id	BIGINT	        NOT NULL AUTO_INCREMENT,
-    campaign_id	            BIGINT	        NOT NULL,
-    question	            VARCHAR(300)	NOT NULL,
+    application_question_id BIGINT	        NOT NULL AUTO_INCREMENT,
+    application_id          BIGINT	        NOT NULL,
+    question                VARCHAR(300)	NOT NULL,
     type	                VARCHAR(10)	    NOT NULL,
     items	                VARCHAR(100)	NULL,
     CONSTRAINT PK_APPLICATION_QUESTION PRIMARY KEY (application_question_id),
-    CONSTRAINT FK_APPLICATION_QUESTION_CAMPAIGN FOREIGN KEY (campaign_id) REFERENCES campaign (campaign_id)
+    CONSTRAINT FK_APPLICATION_QUESTION_APPLICATION FOREIGN KEY (application_id) REFERENCES application (application_id)
 );
 
-CREATE TABLE application (
-    application_id	BIGINT	        NOT NULL AUTO_INCREMENT,
+CREATE TABLE applicant (
+    applicant_id	BIGINT	        NOT NULL AUTO_INCREMENT,
     member_id	    BIGINT	        NOT NULL,
-    campaign_id	    BIGINT	        NOT NULL,
+    application_id	BIGINT	        NOT NULL,
     created	        DATETIME	    DEFAULT NOW(),
     memo	        VARCHAR(500)    NULL,
-    status	        VARCHAR(10)     NOT NULL,
-    CONSTRAINT PK_REVIEW_IMAGE PRIMARY KEY (application_id),
-    CONSTRAINT FK_REVIEW_IMAGE_MEMBER FOREIGN KEY (member_id) REFERENCES member (member_id),
-    CONSTRAINT FK_REVIEW_IMAGE_CAMPAIGN FOREIGN KEY (campaign_id) REFERENCES campaign (campaign_id)
+    status	        VARCHAR(10)     DEFAULT 'UNSELECT',
+    CONSTRAINT PK_APPLICANT PRIMARY KEY (applicant_id),
+    CONSTRAINT FK_APPLICANT_MEMBER FOREIGN KEY (member_id) REFERENCES member (member_id),
+    CONSTRAINT FK_APPLICANT_APPLICATION FOREIGN KEY (application_id) REFERENCES application (application_id)
 );
 
-CREATE TABLE application_answer (
-    application_answer_id	BIGINT	        NOT NULL AUTO_INCREMENT,
-    application_id	        BIGINT	        NOT NULL,
+CREATE TABLE applicant_answer (
+    applicant_answer_id	    BIGINT	        NOT NULL AUTO_INCREMENT,
+    applicant_id	        BIGINT	        NOT NULL,
     application_question_id	BIGINT	        NOT NULL,
     answer	                VARCHAR(300)	NULL,
-    CONSTRAINT PK_APPLICATION_ANSWER PRIMARY KEY (application_answer_id),
-    CONSTRAINT FK_APPLICATION_ANSWER_APPLICATION FOREIGN KEY (application_id) REFERENCES application (application_id),
-    CONSTRAINT FK_APPLICATION_ANSWER_APPLICATION_QUESTION FOREIGN KEY (application_question_id) REFERENCES application_question (application_question_id)
+    CONSTRAINT PK_APPLICANT_ANSWER PRIMARY KEY (applicant_answer_id),
+    CONSTRAINT FK_APPLICANT_ANSWER_APPLICANT FOREIGN KEY (applicant_id) REFERENCES applicant (applicant_id),
+    CONSTRAINT FK_APPLICANT_ANSWER_APPLICATION_QUESTION FOREIGN KEY (application_question_id) REFERENCES application_question (application_question_id)
 );
 
 CREATE TABLE review (
     review_id	BIGINT	        NOT NULL AUTO_INCREMENT,
     member_id	BIGINT	        NOT NULL,
     campaign_id	BIGINT	        NOT NULL,
-    review_title VARCHAR(255),
-    review_img VARCHAR(500),
-    review_url	VARCHAR(255)	NOT NULL,
+    url	        VARCHAR(255)	NOT NULL,
+    title	    VARCHAR(255)	NULL,
+    image   	VARCHAR(500)	NULL,
     created	    DATETIME	    DEFAULT NOW(),
+    status	    VARCHAR(100)	NOT NULL,
     CONSTRAINT PK_REVIEW PRIMARY KEY (review_id),
     CONSTRAINT FK_REVIEW_MEMBER FOREIGN KEY (member_id) REFERENCES member (member_id),
     CONSTRAINT FK_REVIEW_CAMPAIGN FOREIGN KEY (campaign_id) REFERENCES campaign (campaign_id)
@@ -202,7 +215,7 @@ INSERT INTO member (role, email, pwd, name, nickname, gender, birth, tel, postco
 
 -- 회원 SNS DB
 -- 네이버
-INSERT INTO member_sns (member_id, sns_id, sns_url) VALUES
+INSERT INTO member_sns (member_id, sns_id, url) VALUES
 (1, 1, 'https://blog.naver.com/songsong14'),
 (2, 1, 'https://blog.naver.com/kccpe'),
 (3, 1, 'https://blog.naver.com/rladnjstjd55'),
@@ -215,7 +228,7 @@ INSERT INTO member_sns (member_id, sns_id, sns_url) VALUES
 (10, 1, 'https://blog.naver.com/01048720226');
 
 -- 인스타그램
-INSERT INTO member_sns (member_id, sns_id, sns_url) VALUES
+INSERT INTO member_sns (member_id, sns_id, url) VALUES
 (1, 2, 'https://www.instagram.com/chorong_v_v/'),
 (2, 2, 'https://www.instagram.com/poodlemylife/'),
 (3, 2, 'https://www.instagram.com/boriharu_store/'),
@@ -224,7 +237,7 @@ INSERT INTO member_sns (member_id, sns_id, sns_url) VALUES
 (6, 2, 'https://www.instagram.com/nadle_nezz/');
 
 -- 유투브
-INSERT INTO member_sns (member_id, sns_id, sns_url) VALUES
+INSERT INTO member_sns (member_id, sns_id, url) VALUES
 (7, 3, 'https://www.youtube.com/@1min_music'),
 (8, 3, 'https://www.youtube.com/@sugirit'),
 (9, 3, 'https://www.youtube.com/@KoreanSongs7');
@@ -297,8 +310,11 @@ INSERT INTO campaign_image(campaign_id, file_name) VALUES
 (15, '이미지15_1.jpg'), (15, '이미지15_2.jpg'), (15, '이미지15_3.jpg'), (15, '이미지15_4.jpg'),
 (16, '이미지16_1.jpg');
 
+INSERT INTO application(campaign_id) VALUES
+(1), (2), (3), (4), (5), (6), (7), (8), (9), (10), (11), (12), (13), (14), (15), (16);
+
 -- 캠페인 질문
-INSERT INTO application_question(campaign_id, question, type, items) VALUES
+INSERT INTO application_question(application_id, question, type, items) VALUES
 (1, '테스트 TEXT 질문1', 'TEXT', NULL),
 (1, '테스트 RADIO 질문1', 'RADIO', '테스트 RADIO 항목1#테스트 RADIO 항목2#테스트 RADIO 항목3'),
 (1, '테스트 CHECKBOX 질문1', 'CHECKBOX', '테스트 CHECKBOX 항목1#테스트 CHECKBOX 항목2#테스트 CHECKBOX 항목3'),
@@ -316,7 +332,7 @@ INSERT INTO application_question(campaign_id, question, type, items) VALUES
 (15, '테스트 CHECKBOX 질문15', 'CHECKBOX', '테스트 CHECKBOX 항목1#테스트 CHECKBOX 항목2#테스트 CHECKBOX 항목3');
 
 -- 신청서
-INSERT INTO application(member_id, campaign_id, created, memo, status) VALUES
+INSERT INTO applicant(member_id, application_id, created, memo, status) VALUES
 -- CampaignStatus -> COMPLETE : campaign_id -> 1 ~ 10
 (1, 1, NOW(), '테스트 메모1-1', 'SELECT'), (1, 2, NOW(), '테스트 메모1-2', 'SELECT'),
 (1, 3, NOW(), '테스트 메모1-3', 'SELECT'), (1, 4, NOW(), '테스트 메모1-4', 'SELECT'),
@@ -365,7 +381,7 @@ INSERT INTO application(member_id, campaign_id, created, memo, status) VALUES
 (10, 14, NOW(), '테스트 메모1-11', 'UNSELECT'); -- 85
 
 -- 신청서 답변
-INSERT INTO application_answer(application_id, application_question_id, answer) VALUES
+INSERT INTO applicant_answer(applicant_id, application_question_id, answer) VALUES
 (1, 1, '테스트 TEXT 답변1-1'), (1, 2, '테스트 RADIO 항목1'), (1, 3, '테스트 CHECKBOX 항목1'),
 (11, 1, '테스트 TEXT 답변11-1'), (11, 2, '테스트 RADIO 항목2'), (11, 3, '테스트 CHECKBOX 항목2'),
 (21, 1, '테스트 TEXT 답변1-3'), (21, 2, '테스트 RADIO 항목3'), (21, 3, '테스트 CHECKBOX 항목3'),
@@ -417,7 +433,7 @@ INSERT INTO application_answer(application_id, application_question_id, answer) 
 (85, 14, '테스트 CHECKBOX 항목2#테스트 CHECKBOX 항목3');
 
 -- 리뷰 (캠페인 1번은 블로그 2번은 인스타 3번은 유튜브여야 함)
-INSERT INTO review (member_id, campaign_id, review_url) VALUES
+INSERT INTO review (member_id, campaign_id, url) VALUES
 (1, 1, 'https://blog.naver.com/songsong14/222301042183'),
 (2, 1, 'https://blog.naver.com/songsong14/222862327183'),
 (3, 1, 'https://blog.naver.com/songsong14/222973249245'),

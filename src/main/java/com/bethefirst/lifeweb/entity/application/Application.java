@@ -1,13 +1,11 @@
 package com.bethefirst.lifeweb.entity.application;
 
 import com.bethefirst.lifeweb.entity.campaign.Campaign;
-import com.bethefirst.lifeweb.entity.member.Member;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,39 +19,21 @@ public class Application {//신청서
 	@Column(name = "application_id")
 	private Long id;//신청서ID PK
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "member_id")
-	private Member member;//회원 FK
-
-	@ManyToOne(fetch = FetchType.LAZY)
+	@OneToOne
 	@JoinColumn(name = "campaign_id")
 	private Campaign campaign;//캠페인 FK
 
-	private String memo;//메모
-	private LocalDateTime created;//신청일
-
-	@Enumerated(EnumType.STRING)
-	private ApplicationStatus status;//상태
 
 	@OneToMany(mappedBy = "application", cascade = CascadeType.REMOVE)
-	private List<ApplicationAnswer> applicationAnswerList = new ArrayList<>();
+	private List<ApplicationQuestion> applicationQuestionList = new ArrayList<>();//신청서질문
 
-	public Application(Member member, Campaign campaign, String memo) {
-		this.member = member;
+	@OneToMany(mappedBy = "application", cascade = CascadeType.REMOVE)
+	private List<Applicant> applicantList = new ArrayList<>();//신청자
+
+
+	/** 신청서 생성 */
+	public Application(Campaign campaign) {
 		this.campaign = campaign;
-		this.memo = memo;
-		this.created = LocalDateTime.now();
-		this.status = ApplicationStatus.UNSELECT;
-	}
-
-	/** 신청서 수정 */
-	public void updateApplication(String memo) {
-		this.memo = memo;
-	}
-
-	/** 신청서 상태 수정 */
-	public void updateApplicationStatus(ApplicationStatus status) {
-		this.status = status;
 	}
 
 }

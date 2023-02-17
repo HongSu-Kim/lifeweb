@@ -1,0 +1,26 @@
+[[Applicant-API]]
+== Applicant API
+
+[[Applicant-생성]]
+=== Applicant 생성
+operation::applicant-controller-test/신청자_생성[snippets='http-request,request-fields,http-response,response-headers']
+
+[[Applicant-단일-조회]]
+=== Applicant 단일 조회
+operation::applicant-controller-test/신청자_조회[snippets='http-request,path-parameters,http-response,response-fields']
+
+[[Applicant-리스트-조회]]
+=== Applicant 리스트 조회
+operation::applicant-controller-test/신청자_리스트_조회[snippets='http-request,query-parameters,http-response,response-fields']
+
+[[Applicant-수정]]
+=== Applicant 수정
+operation::applicant-controller-test/신청자_수정[snippets='http-request,path-parameters,request-fields,http-response,response-headers']
+
+[[Applicant-상태-수정]]
+=== Applicant 상태 수정
+operation::applicant-controller-test/신청자_상태_수정[snippets='http-request,path-parameters,request-fields,http-response,response-headers']
+
+[[Applicant-삭제]]
+=== Applicant 삭제
+operation::applicant-controller-test/신청자_삭제[snippets='http-request,path-parameters,http-response']

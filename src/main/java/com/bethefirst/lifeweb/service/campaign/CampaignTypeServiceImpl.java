@@ -1,6 +1,6 @@
 package com.bethefirst.lifeweb.service.campaign;
 
-import com.bethefirst.lifeweb.dto.campaign.CampaignTypeDto;
+import com.bethefirst.lifeweb.dto.campaign.response.CampaignTypeDto;
 import com.bethefirst.lifeweb.entity.campaign.CampaignType;
 import com.bethefirst.lifeweb.repository.campaign.CampaignTypeRepository;
 import com.bethefirst.lifeweb.service.campaign.interfaces.CampaignTypeService;

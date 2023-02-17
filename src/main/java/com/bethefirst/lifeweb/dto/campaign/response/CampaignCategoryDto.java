@@ -1,4 +1,4 @@
-package com.bethefirst.lifeweb.dto.campaign;
+package com.bethefirst.lifeweb.dto.campaign.response;
 
 import com.bethefirst.lifeweb.entity.campaign.CampaignCategory;
 import lombok.AllArgsConstructor;

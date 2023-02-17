@@ -1,6 +1,6 @@
 package com.bethefirst.lifeweb.repository.campaign;
 
-import com.bethefirst.lifeweb.dto.campaign.CampaignSearchRequirements;
+import com.bethefirst.lifeweb.dto.campaign.request.CampaignSearchRequirements;
 import com.bethefirst.lifeweb.entity.campaign.Campaign;
 import org.springframework.data.domain.Page;
 

@@ -1,10 +1,14 @@
 package com.bethefirst.lifeweb.service.campaign;
 
-import com.bethefirst.lifeweb.dto.campaign.*;
+import com.bethefirst.lifeweb.dto.campaign.request.CampaignSearchRequirements;
+import com.bethefirst.lifeweb.dto.campaign.request.CreateCampaignDto;
+import com.bethefirst.lifeweb.dto.campaign.request.UpdateCampaignDto;
+import com.bethefirst.lifeweb.dto.campaign.response.CampaignDto;
 import com.bethefirst.lifeweb.entity.campaign.*;
 import com.bethefirst.lifeweb.entity.member.Sns;
 import com.bethefirst.lifeweb.repository.campaign.*;
 import com.bethefirst.lifeweb.repository.member.SnsRepository;
+import com.bethefirst.lifeweb.service.application.interfaces.ApplicationService;
 import com.bethefirst.lifeweb.service.campaign.interfaces.CampaignService;
 import com.bethefirst.lifeweb.util.ImageUtil;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +27,7 @@ import java.util.List;
 @Slf4j
 public class CampaignServiceImpl implements CampaignService {
 
+	private final ApplicationService applicationService;
 	private final CampaignRepository campaignRepository;
 	private final CampaignLocalRepository campaignLocalRepository;
 	private final CampaignCategoryRepository campaignCategoryRepository;
@@ -30,7 +35,6 @@ public class CampaignServiceImpl implements CampaignService {
 	private final LocalRepository localRepository;
 	private final CampaignImageRepository campaignImageRepository;
 	private final SnsRepository snsRepository;
-	private final ApplicationQuestionRepository applicationQuestionRepository;
 	private final ImageUtil imageUtil;
 
 	@Value("${image-folder.campaign}")
@@ -68,9 +72,10 @@ public class CampaignServiceImpl implements CampaignService {
 		//DB에 이미지이름 저장
 		fileNameList.forEach(fileName -> campaignImageRepository.save(new CampaignImage(campaign, fileName)));
 
-		// 신청서질문 저장
-		createCampaignDto.getApplicationQuestionDtoList()
-				.forEach(applicationQuestionDto -> applicationQuestionRepository.save(applicationQuestionDto.createApplicationQuestion(campaign)));
+		// 신청서, 신청서질문 저장
+		if (!createCampaignDto.getApplicationQuestionDtoList().isEmpty()) {
+			applicationService.createApplication(campaign, createCampaignDto.getApplicationQuestionDtoList());
+		}
 
 		return campaignId;
 	}
@@ -143,31 +148,7 @@ public class CampaignServiceImpl implements CampaignService {
 		}
 
 		// 신청서질문 수정
-		//신청서질문 insert
-		if (!CollectionUtils.isEmpty(updateCampaignDto.getApplicationQuestionDtoList())) {
-			updateCampaignDto.getApplicationQuestionDtoList().stream().filter(applicationQuestionDto -> applicationQuestionDto.getId() == 0)
-					.forEach(applicationQuestionDto -> applicationQuestionRepository.save(applicationQuestionDto.createApplicationQuestion(campaign)));
-		}
-
-		if (!CollectionUtils.isEmpty(campaign.getApplicationQuestionList())) {
-			for (ApplicationQuestion applicationQuestion : campaign.getApplicationQuestionList()) {
-				boolean result = false;
-				if (!CollectionUtils.isEmpty(updateCampaignDto.getApplicationQuestionDtoList())) {
-					for (ApplicationQuestionDto applicationQuestionDto : updateCampaignDto.getApplicationQuestionDtoList()) {
-						//신청서질문 update
-						if (applicationQuestionDto.getId().equals(applicationQuestion.getId())) {
-							applicationQuestionDto.updateApplicationQuestion(applicationQuestion);
-							result = true;
-							break;
-						}
-					}
-				}
-				//신청서질문 delete
-				if (!result) {
-					applicationQuestionRepository.delete(applicationQuestion);
-				}
-			}
-		}
+		applicationService.updateApplication(campaign.getApplication(), updateCampaignDto.getApplicationQuestionDtoList());
 
 	}
 

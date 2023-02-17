@@ -1,8 +1,13 @@
 package com.bethefirst.lifeweb.initDto.campaign;
 
-import com.bethefirst.lifeweb.dto.campaign.*;
+import com.bethefirst.lifeweb.dto.application.response.ApplicationQuestionDto;
+import com.bethefirst.lifeweb.dto.campaign.request.CampaignSearchRequirements;
+import com.bethefirst.lifeweb.dto.campaign.request.CreateCampaignDto;
+import com.bethefirst.lifeweb.dto.campaign.request.UpdateCampaignDto;
+import com.bethefirst.lifeweb.dto.campaign.response.CampaignDto;
+import com.bethefirst.lifeweb.dto.campaign.response.CampaignLocalDto;
 import com.bethefirst.lifeweb.entity.campaign.CampaignStatus;
-import com.bethefirst.lifeweb.entity.campaign.QuestionType;
+import com.bethefirst.lifeweb.entity.application.QuestionType;
 import com.bethefirst.lifeweb.initDto.InitMockMultipartFile;
 import com.bethefirst.lifeweb.initDto.mamber.InitSnsDto;
 import org.springframework.data.domain.*;
@@ -59,12 +64,12 @@ public class InitCampaignDto {
 
 		for (int i = 0; i < 15; i++) {
 			list.add(new CampaignDto((long) i, campaignCategoryDto.getCampaignCategoryDto(), campaignTypeDto.getCampaignTypeDto(), snsDto.getSnsDto(),
-					true, "캠페인 제목", "대표이미지.jpg", "제공내역",
+					true, false, "캠페인 제목", "대표이미지.jpg", "제공내역",
 					LocalDateTime.now(), "리뷰주의사항", "가이드라인", "keyword1#keyword2#keyword3",
 					LocalDate.now(), LocalDate.now().plusDays(7),
 					LocalDate.now().plusDays(8), LocalDate.now().plusDays(14),
 					15, CampaignStatus.STAND,
-					campaignLocalDto, imageList, applicationQuestionDtoList));
+					campaignLocalDto, imageList));
 		}
 
 		return list;
@@ -91,7 +96,7 @@ public class InitCampaignDto {
 			new ApplicationQuestionDto(2L , "복수선택 질문", QuestionType.CHECKBOX, "항목1,항목2,항목3")
 	);
 
-	private Pageable pageable = PageRequest.of(1, 10, Sort.by(Sort.Direction.DESC, "id"));
+	private Pageable pageable = PageRequest.of(1, 10, Sort.by(Sort.Direction.DESC, "created"));
 
 	private int getPage() {
 		return pageable.getPageNumber();

@@ -1,4 +1,4 @@
-package com.bethefirst.lifeweb.entity.campaign;
+package com.bethefirst.lifeweb.entity.application;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

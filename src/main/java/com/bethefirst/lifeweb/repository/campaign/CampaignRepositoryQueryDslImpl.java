@@ -1,6 +1,7 @@
 package com.bethefirst.lifeweb.repository.campaign;
 
-import com.bethefirst.lifeweb.dto.campaign.CampaignSearchRequirements;
+import com.bethefirst.lifeweb.dto.campaign.request.CampaignSearchRequirements;
+import com.bethefirst.lifeweb.entity.application.ApplicantStatus;
 import com.bethefirst.lifeweb.entity.campaign.Campaign;
 import com.bethefirst.lifeweb.entity.campaign.CampaignStatus;
 import com.querydsl.core.types.Order;
@@ -44,10 +45,13 @@ public class CampaignRepositoryQueryDslImpl implements CampaignRepositoryQueryDs
 				.where(
 						categoryIdEq(searchRequirements.getCategoryId()),
 						typeIdEq(searchRequirements.getTypeId()),
-						snsIdListIn(searchRequirements.getSnsIdList()),
+						snsIdListIn(searchRequirements.getSnsId()),
 						specialEq(searchRequirements.getSpecial()),
-						statusEq(searchRequirements.getStatus()),
-						localIdEq(searchRequirements.getLocalId())
+						pickEq(searchRequirements.getPick()),
+						campaignStatusEq(searchRequirements.getCampaignStatus()),
+						localIdEq(searchRequirements.getLocalId()),
+						applicantStatusEq(searchRequirements.getApplicantStatus()),
+						memberIdEq(searchRequirements.getMemberId())
 				)
 				.orderBy(orderBy(searchRequirements.getPageable()))
 				.offset(searchRequirements.getPageable().getOffset())
@@ -61,10 +65,13 @@ public class CampaignRepositoryQueryDslImpl implements CampaignRepositoryQueryDs
 				.where(
 						categoryIdEq(searchRequirements.getCategoryId()),
 						typeIdEq(searchRequirements.getTypeId()),
-						snsIdListIn(searchRequirements.getSnsIdList()),
+						snsIdListIn(searchRequirements.getSnsId()),
 						specialEq(searchRequirements.getSpecial()),
-						statusEq(searchRequirements.getStatus()),
-						localIdEq(searchRequirements.getLocalId())
+						pickEq(searchRequirements.getPick()),
+						campaignStatusEq(searchRequirements.getCampaignStatus()),
+						localIdEq(searchRequirements.getLocalId()),
+						applicantStatusEq(searchRequirements.getApplicantStatus()),
+						memberIdEq(searchRequirements.getMemberId())
 				)
 				.fetchOne();
 
@@ -103,14 +110,29 @@ public class CampaignRepositoryQueryDslImpl implements CampaignRepositoryQueryDs
 		return special == null ? null : campaign.special.eq(special);
 	}
 
-	/** 상태 */
-	private BooleanExpression statusEq(CampaignStatus status) {
+	/** 픽 */
+	private BooleanExpression pickEq(Boolean pick) {
+		return pick == null ? null : campaign.pick.eq(pick);
+	}
+
+	/** 캠페인 상태 */
+	private BooleanExpression campaignStatusEq(CampaignStatus status) {
 		return status == null ? null : campaign.status.eq(status);
 	}
 
 	/** 지역 */
 	private BooleanExpression localIdEq(Long localId) {
 		return localId == null ? null : campaign.campaignLocal.local.id.eq(localId);
+	}
+
+	/** 신청자 상태 */
+	private BooleanExpression applicantStatusEq(ApplicantStatus status) {
+		return status == null ? null : campaign.application.applicantList.any().status.eq(status);
+	}
+
+	/** 회원 */
+	private BooleanExpression memberIdEq(Long memberId) {
+		return memberId == null ? null : campaign.application.applicantList.any().member.id.eq(memberId);
 	}
 
 }

@@ -8,7 +8,7 @@ import java.util.Arrays;
 import java.util.List;
 public class InitMockMultipartFile {
 
-	public MockMultipartFile getMockMultipartFile() {
+	public MultipartFile getMockMultipartFile() {
 		return new MockMultipartFile("uploadFile", "imageFile.jpeg", MediaType.IMAGE_JPEG_VALUE, "<<jpeg data>>".getBytes());
 	}
 

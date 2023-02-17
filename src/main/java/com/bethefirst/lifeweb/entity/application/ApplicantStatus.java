@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public enum ApplicationStatus {//상태-select,unselect
+public enum ApplicantStatus {//상태-select,unselect
 
 	SELECT("선정"),//선정
 	UNSELECT("미선정");//미선정

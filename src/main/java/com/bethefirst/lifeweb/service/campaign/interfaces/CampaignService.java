@@ -1,9 +1,9 @@
 package com.bethefirst.lifeweb.service.campaign.interfaces;
 
-import com.bethefirst.lifeweb.dto.campaign.CampaignDto;
-import com.bethefirst.lifeweb.dto.campaign.CreateCampaignDto;
-import com.bethefirst.lifeweb.dto.campaign.CampaignSearchRequirements;
-import com.bethefirst.lifeweb.dto.campaign.UpdateCampaignDto;
+import com.bethefirst.lifeweb.dto.campaign.response.CampaignDto;
+import com.bethefirst.lifeweb.dto.campaign.request.CreateCampaignDto;
+import com.bethefirst.lifeweb.dto.campaign.request.CampaignSearchRequirements;
+import com.bethefirst.lifeweb.dto.campaign.request.UpdateCampaignDto;
 import com.bethefirst.lifeweb.entity.campaign.CampaignStatus;
 import org.springframework.data.domain.Page;
 

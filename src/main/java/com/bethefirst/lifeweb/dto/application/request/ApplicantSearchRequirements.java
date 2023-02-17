@@ -1,4 +1,4 @@
-package com.bethefirst.lifeweb.dto.application;
+package com.bethefirst.lifeweb.dto.application.request;
 
 import lombok.*;
 import org.springframework.data.domain.Pageable;
@@ -8,7 +8,8 @@ import org.springframework.data.domain.Pageable;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ApplicationSearchRequirements {//신청서 검색 조건
+@EqualsAndHashCode
+public class ApplicantSearchRequirements {//신청자 검색 조건
 
 	private Pageable pageable;//페이징
 	private Long memberId;//맴버

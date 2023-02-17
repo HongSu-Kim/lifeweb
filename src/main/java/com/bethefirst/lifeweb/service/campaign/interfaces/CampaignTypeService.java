@@ -1,6 +1,6 @@
 package com.bethefirst.lifeweb.service.campaign.interfaces;
 
-import com.bethefirst.lifeweb.dto.campaign.CampaignTypeDto;
+import com.bethefirst.lifeweb.dto.campaign.response.CampaignTypeDto;
 
 import java.util.List;
 

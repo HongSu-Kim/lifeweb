@@ -18,7 +18,7 @@ public class ImageUtil {
 
 	// 이미지 저장
 	public String store(MultipartFile multipartFile, String imageFolder) {
-		if (multipartFile.isEmpty()) {
+		if (multipartFile == null || multipartFile.isEmpty()) {
 			return null;
 		}
 
