@@ -151,6 +151,8 @@ CREATE TABLE review (
     review_id	BIGINT	        NOT NULL AUTO_INCREMENT,
     member_id	BIGINT	        NOT NULL,
     campaign_id	BIGINT	        NOT NULL,
+    review_title VARCHAR(255),
+    review_img VARCHAR(500),
     review_url	VARCHAR(255)	NOT NULL,
     created	    DATETIME	    DEFAULT NOW(),
     CONSTRAINT PK_REVIEW PRIMARY KEY (review_id),
