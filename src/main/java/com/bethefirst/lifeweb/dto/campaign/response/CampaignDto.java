@@ -1,4 +1,4 @@
-package com.bethefirst.lifeweb.dto.campaign;
+package com.bethefirst.lifeweb.dto.campaign.response;
 
 import com.bethefirst.lifeweb.dto.member.response.SnsDto;
 import com.bethefirst.lifeweb.entity.campaign.Campaign;
@@ -27,6 +27,7 @@ public class CampaignDto {
 	private SnsDto snsDto;//SNS
 
 	private Boolean special;//스페셜
+	private Boolean pick;//픽
 	private String title;//제목
 	private String fileName;//대표이미지
 	private String provision;//제공내역
@@ -43,7 +44,6 @@ public class CampaignDto {
 
 	private CampaignLocalDto campaignLocalDto;//캠페인지역
 	private List<String> imageList;//이미지
-	private List<ApplicationQuestionDto> applicationQuestionDtoList;//신청서질문
 
 	public CampaignDto(Campaign campaign) {
 
@@ -55,6 +55,7 @@ public class CampaignDto {
 
 		special = campaign.getSpecial();
 		title = campaign.getTitle();
+		pick = campaign.getPick();
 		fileName = campaign.getFileName();
 		provision = campaign.getProvision();
 		created = campaign.getCreated();
@@ -71,9 +72,6 @@ public class CampaignDto {
 		campaignLocalDto = campaign.getCampaignLocal() == null ? null : new CampaignLocalDto(campaign.getCampaignLocal());
 		imageList = campaign.getCampaignImageList()
 				.stream().map(CampaignImage::getFileName)
-				.collect(Collectors.toList());
-		applicationQuestionDtoList = campaign.getApplicationQuestionList()
-				.stream().map(ApplicationQuestionDto::new)
 				.collect(Collectors.toList());
 
 	}

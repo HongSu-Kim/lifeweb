@@ -1,5 +1,6 @@
 package com.bethefirst.lifeweb.entity.campaign;
 
+import com.bethefirst.lifeweb.entity.application.Application;
 import com.bethefirst.lifeweb.entity.member.Sns;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -35,6 +36,7 @@ public class Campaign {//캠페인
 	private Sns sns;//SNS FK
 
 	private Boolean special;//스페셜
+	private Boolean pick;//픽
 	private String title;//제목
 	private String fileName;//대표이미지
 	private String provision;//제공내역
@@ -55,14 +57,16 @@ public class Campaign {//캠페인
 	@Enumerated(EnumType.STRING)
 	private CampaignStatus status;//상태
 
+
 	@OneToOne(mappedBy = "campaign")
 	private CampaignLocal campaignLocal;//캠페인지역
 
 	@OneToMany(mappedBy = "campaign")
 	private List<CampaignImage> campaignImageList = new ArrayList<>();//캠페인이미지
 
-	@OneToMany(mappedBy = "campaign")
-	private List<ApplicationQuestion> applicationQuestionList = new ArrayList<>();//신청서질문
+	@OneToOne(mappedBy = "campaign")
+	private Application application;//신청서
+
 
 	public Campaign(CampaignCategory campaignCategory, CampaignType campaignType, Sns sns,
 					 Boolean special, String title, String fileName, String provision,
@@ -76,6 +80,7 @@ public class Campaign {//캠페인
 
 		this.special = special;
 		this.title = title;
+		this.pick = false;
 		this.fileName = fileName;
 		this.provision = provision;
 		this.created = LocalDateTime.now();

@@ -1,6 +1,6 @@
 package com.bethefirst.lifeweb.entity.member;
 
-import com.bethefirst.lifeweb.entity.application.Application;
+import com.bethefirst.lifeweb.entity.application.Applicant;
 import com.bethefirst.lifeweb.entity.review.Review;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -49,7 +49,7 @@ public class Member {//회원
 	private List<Review> reviewList = new ArrayList<>(); //회원 리뷰
 
 	@OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE, orphanRemoval = true)
-	private List<Application> applicationList = new ArrayList<>(); //회원 신청서
+	private List<Applicant> applicationList = new ArrayList<>(); //회원 신청서
 
 	protected Member(Role role, String email, String pwd, String nickname) {
 
