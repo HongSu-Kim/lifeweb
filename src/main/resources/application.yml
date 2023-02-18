@@ -12,7 +12,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/lifeweb?serverTimezone=Asia/Seoul
     username: lifeweb
-    password: a123
+    password: A123456a#
   main:
     allow-bean-definition-overriding: true
     allow-circular-references: true
