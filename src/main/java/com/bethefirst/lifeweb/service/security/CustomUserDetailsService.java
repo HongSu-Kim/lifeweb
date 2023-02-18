@@ -38,9 +38,8 @@ public class CustomUserDetailsService implements UserDetailsService {
 
         CustomUser customUser = new CustomUser(member.getEmail(),
                 member.getPwd(),
-                grantedAuthorities);
-        customUser.setMember(member);
-        customUser.setMemberId(member.getId());
+                grantedAuthorities,
+				member.getId());
         return customUser;
     }
 }

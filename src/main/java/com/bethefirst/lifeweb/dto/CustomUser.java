@@ -1,8 +1,6 @@
 package com.bethefirst.lifeweb.dto;
 
-import com.bethefirst.lifeweb.entity.member.Member;
 import lombok.Getter;
-import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 
@@ -10,17 +8,12 @@ import java.util.Collection;
 
 public class CustomUser extends User {
 
-
     @Getter
-    @Setter
-    private Member member;
-
-    @Getter
-    @Setter
     private Long memberId;
 
-    public CustomUser(String username, String password, Collection<? extends GrantedAuthority> authorities) {
+    public CustomUser(String username, String password, Collection<? extends GrantedAuthority> authorities, Long memberId) {
         super(username, password, authorities);
+		this.memberId = memberId;
     }
 
     public CustomUser(String username, String password, boolean enabled, boolean accountNonExpired, boolean credentialsNonExpired, boolean accountNonLocked, Collection<? extends GrantedAuthority> authorities) {
