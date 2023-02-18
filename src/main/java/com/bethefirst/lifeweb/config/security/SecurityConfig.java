@@ -70,8 +70,8 @@ public class SecurityConfig {
 
                 // 요청 접근제한 설정
                 .authorizeHttpRequests(authorize -> authorize
-						.requestMatchers(HttpMethod.POST,"/sns", "/campaign-categories", "/campaign-types", "/locals").hasRole("ADMIN")
-						.requestMatchers("/sns/**", "/campaign-categories/**", "/campaign-types/**", "/locals/**").hasRole("ADMIN")
+//						.requestMatchers(HttpMethod.POST,"/sns", "/campaign-categories", "/campaign-types", "/locals").hasRole("ADMIN")
+//						.requestMatchers("/sns/**", "/campaign-categories/**", "/campaign-types/**", "/locals/**").hasRole("ADMIN")
                 		.anyRequest().permitAll())
 
                 // 스프링시큐리티가 동작하기 전 토큰작업이 먼저 실행됩니다
