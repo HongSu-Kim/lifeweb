@@ -1,6 +1,7 @@
 package com.bethefirst.lifeweb.util.security;
 
 import com.bethefirst.lifeweb.dto.CustomUser;
+import com.bethefirst.lifeweb.exception.UnauthorizedException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -14,24 +15,39 @@ public class SecurityUtil {
 
     private SecurityUtil() {}
 
-    public static Optional<Long> getCurrentMemberId() {
-        final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-		if (authentication.getPrincipal().equals("anonymousUser")) {
+
+    public static Optional<Long> getCurrentMemberId() {
+        CustomUser customUser = getCustomUserFromSecurityContext();
+        return Optional.ofNullable(customUser.getMemberId());
+    }
+
+
+    public static String getCurrentAuthority(){
+        CustomUser customUser = getCustomUserFromSecurityContext();
+        return customUser.getAuthorities().stream().toList().get(0).getAuthority();
+    }
+
+    private static CustomUser getCustomUserFromSecurityContext() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication.getPrincipal().equals("anonymousUser")) {
             log.debug("Security Context에 인증 정보가 없습니다.");
-            return Optional.empty();
+            throw new UnauthorizedException("Security Context에 인증 정보가 없습니다.");
         }
 
-        Long memberId = null;
         try {
-            CustomUser springSecurityUser = (CustomUser) authentication.getPrincipal();
-            memberId = springSecurityUser.getMemberId();
+            return (CustomUser) authentication.getPrincipal();
+
         } catch (IllegalArgumentException e) {
             log.debug("캐스팅 실패");
-		}
-
-        return Optional.ofNullable(memberId);
+		}catch (Exception e){
+            log.info("예외 발생: ",e);
+        }
+        return null;
     }
+
+
 
     public static Optional<String> getCurrentMemberEmail() {
         final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -51,4 +67,7 @@ public class SecurityUtil {
 
         return Optional.ofNullable(email);
     }
+
+
+
 }
