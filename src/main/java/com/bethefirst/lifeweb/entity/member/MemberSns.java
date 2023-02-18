@@ -25,12 +25,12 @@ public class MemberSns {//SNS주소
 	@JoinColumn(name = "sns_id")
 	private Sns sns;//SNS FK
 
-	private String snsUrl;//SNS주소
+	private String url;//SNS주소
 
-	private MemberSns(Member member, Sns sns, String snsUrl) {
+	private MemberSns(Member member, Sns sns, String url) {
 		this.member = member;
 		this.sns = sns;
-		this.snsUrl = snsUrl;
+		this.url = url;
 
 	}
 
@@ -39,7 +39,7 @@ public class MemberSns {//SNS주소
 	}
 
 	public void updateMemberSnsByUpdateDto(String snsUrl){
-		this.snsUrl = snsUrl;
+		this.url = snsUrl;
 	}
 
 
