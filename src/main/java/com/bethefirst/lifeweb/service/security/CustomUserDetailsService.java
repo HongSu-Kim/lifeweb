@@ -34,7 +34,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
         /** 유저의 권한 정보를 만듭니다 */
         List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
-        grantedAuthorities.add(new SimpleGrantedAuthority(member.getRole().name()));
+        grantedAuthorities.add(new SimpleGrantedAuthority(member.getRole().getValue()));
 
         CustomUser customUser = new CustomUser(member.getEmail(),
                 member.getPwd(),
