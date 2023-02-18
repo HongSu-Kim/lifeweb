@@ -29,7 +29,7 @@ public class ReviewDto {
 		memberDto = new MemberDto(review.getMember());
 		campaignDto = new CampaignDto(review.getCampaign());
 
-		reviewUrl = review.getReviewUrl();
+		reviewUrl = review.getUrl();
 		created = review.getCreated();
 
 	}

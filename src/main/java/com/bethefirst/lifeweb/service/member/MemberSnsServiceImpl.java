@@ -33,7 +33,7 @@ public class MemberSnsServiceImpl implements MemberSnsService {
                 -> new IllegalArgumentException("존재하지 않는 회원입니다. " + memberId));
 
         //URL 유효성 검사
-        if(memberSnsRepository.existsBySnsUrl(createMemberSnsDto.getSnsUrl()))
+        if(memberSnsRepository.existsByUrl(createMemberSnsDto.getSnsUrl()))
             throw new IllegalArgumentException("이미 등록되어 있는 URL 입니다. " + createMemberSnsDto.getSnsUrl());
 
         //SNS 유효성 검사

@@ -27,23 +27,23 @@ public class Review {//리뷰
 	@JoinColumn(name = "campaign_id")
 	private Campaign campaign;//캠페인 FK
 
-	private String reviewTitle;
-	private String reviewImg;
-	private String reviewUrl;//리뷰주소
+	private String url;//리뷰주소
+	private String title;
+	private String image;
 	private LocalDateTime created;//등록일
 
-	public Review(Member member, Campaign campaign, String reviewTitle, String reviewImg, String reviewUrl) {
+	public Review(Member member, Campaign campaign, String title, String image, String url) {
 		this.member = member;
 		this.campaign = campaign;
-		this.reviewTitle = reviewTitle;
-		this.reviewImg = reviewImg;
-		this.reviewUrl = reviewUrl;
+		this.title = title;
+		this.image = image;
+		this.url = url;
 		this.created = LocalDateTime.now();
 
 	}
 
 	public void updateReview(String reviewUrl){
-		this.reviewUrl = reviewUrl;
+		this.url = reviewUrl;
 	}
 
 }
