@@ -17,18 +17,18 @@ public class SecurityUtil {
     public static Optional<Long> getCurrentMemberId() {
         final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        if (authentication == null) {
+		if (authentication.getPrincipal().equals("anonymousUser")) {
             log.debug("Security Context에 인증 정보가 없습니다.");
             return Optional.empty();
         }
 
         Long memberId = null;
-        try{
+        try {
             CustomUser springSecurityUser = (CustomUser) authentication.getPrincipal();
             memberId = springSecurityUser.getMemberId();
-        }catch (IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
             log.debug("캐스팅 실패");
-        }
+		}
 
         return Optional.ofNullable(memberId);
     }

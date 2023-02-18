@@ -57,7 +57,7 @@ public class TokenProvider implements InitializingBean {
 
         return Jwts.builder()
                 .setSubject(authentication.getName())
-                .claim(MEMBER_ID_KEY, customUser.getMember().getId())
+                .claim(MEMBER_ID_KEY, customUser.getMemberId())
                 .claim(AUTHORITIES_KEY, authorities)
                 .signWith(key, SignatureAlgorithm.HS512)
                 .setExpiration(validity)
@@ -79,8 +79,7 @@ public class TokenProvider implements InitializingBean {
 
         Long memberId = Long.parseLong(claims.get(MEMBER_ID_KEY).toString());
 
-        CustomUser principal = new CustomUser(claims.getSubject(), "", authorities);
-        principal.setMemberId(memberId);
+        CustomUser principal = new CustomUser(claims.getSubject(), "", authorities, memberId);
 
         return new UsernamePasswordAuthenticationToken(principal, token, authorities);
     }
