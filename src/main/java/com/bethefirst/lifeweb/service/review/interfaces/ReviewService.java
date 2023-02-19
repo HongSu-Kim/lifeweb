@@ -10,7 +10,7 @@ import org.springframework.data.domain.Pageable;
 public interface ReviewService {
 
     /** 리뷰 등록 */
-    void createReview(CreateReviewDto createReviewDto, Long memberId);
+    void createReview(CreateReviewDto createReviewDto);
 
     /** 리뷰 삭제 */
     void deleteReview(Long reviewId);

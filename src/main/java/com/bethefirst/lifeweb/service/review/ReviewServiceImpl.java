@@ -60,15 +60,15 @@ public class ReviewServiceImpl implements ReviewService {
 
 	/** 리뷰 등록 */
 	@Override
-	public void createReview(CreateReviewDto createReviewDto, Long memberId) {
+	public void createReview(CreateReviewDto createReviewDto) {
 
-		Member member = memberRepository.findById(memberId).orElseThrow(() ->
-				new IllegalArgumentException("존재하지 않는 회원 입니다. " + memberId));
+		Member member = memberRepository.findById(createReviewDto.getMemberId()).orElseThrow(() ->
+				new IllegalArgumentException("존재하지 않는 회원 입니다. " + createReviewDto.getMemberId()));
 
 		Campaign campaign = campaignRepository.findById(createReviewDto.getCampaignId()).orElseThrow(()
 				-> new IllegalArgumentException("존재하지 않는 캠페인 입니다 " + createReviewDto.getCampaignId()));
 
-		Applicant applicant = applicantRepository.findByMemberIdAndApplicationCampaignId(memberId, createReviewDto.getCampaignId()).orElseThrow(() ->
+		Applicant applicant = applicantRepository.findByMemberIdAndApplicationCampaignId(createReviewDto.getMemberId(), createReviewDto.getCampaignId()).orElseThrow(() ->
 				new IllegalArgumentException("해당 캠페인에 신청서가 존재하지 않습니다. "));
 
 		//선정된 캠페인인 맞는지 확인합니다.
@@ -82,7 +82,7 @@ public class ReviewServiceImpl implements ReviewService {
 		}
 
 		//URL 로 리뷰의 제목과 이미지를 크롤링 해옵니다.
-		Map<String, String> crawlingReviewData = reviewCrawling(createReviewDto.getReviewUrl());
+		Map<String, String> crawlingReviewData = reviewCrawling(createReviewDto.getUrl());
 
 		Review review = createReviewDto.createReview(member, campaign , crawlingReviewData);
 
@@ -269,7 +269,7 @@ public class ReviewServiceImpl implements ReviewService {
 		} catch (IOException ie) {
 			log.error("크롤링을 처리하던 중 IOException 발생 ", ie);
 		}catch (NullPointerException ne){
-			log.error("크롤링을 처리하던 중 css 발견하지 못했습니다. hint:(네이버 로직이 변경 됐을 수 있습니다 ", ne);
+			log.error("크롤링을 처리하던 중 css 발견하지 못했습니다. hint:(네이버 로직이 변경 됐을 수 있습니다) ", ne);
 		}
 
 		crawlingReviewData.put(TITLE, title);

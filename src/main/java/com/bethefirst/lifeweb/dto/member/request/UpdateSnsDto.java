@@ -8,10 +8,10 @@ import lombok.Setter;
 @Setter
 public class UpdateSnsDto {
 
-    private String snsName;
+    private String name; //SNS이름
 
     public void updateSns(Sns sns){
 
-        sns.updateSns(snsName);
+        sns.updateSns(name);
     }
 }

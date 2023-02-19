@@ -31,4 +31,6 @@ public interface MemberService {
     /** 닉네임 중복체크 */
     void existsNickname(String nickname);
 
+    /** 이메일 중복체크 */
+    void existsEmail(String email);
 }
