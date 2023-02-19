@@ -128,5 +128,12 @@ public class MemberServiceImpl implements MemberService {
 	}
 
 
+	/** 이메일 중복체크 */
+	@Override
+	public void existsEmail(String email) {
+		if(memberRepository.existsByEmail(email))
+			throw new IllegalArgumentException("이미 존재하는 이메일 입니다.");
+	}
+
 
 }

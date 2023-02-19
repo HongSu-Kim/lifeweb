@@ -3,9 +3,10 @@ package com.bethefirst.lifeweb.controller.member;
 import com.bethefirst.lifeweb.config.security.JwtFilter;
 import com.bethefirst.lifeweb.config.security.TokenProvider;
 import com.bethefirst.lifeweb.dto.jwt.TokenDto;
+import com.bethefirst.lifeweb.dto.member.request.DeleteMemberSnsDto;
 import com.bethefirst.lifeweb.dto.member.request.*;
 import com.bethefirst.lifeweb.dto.member.response.MemberInfoDto;
-import com.bethefirst.lifeweb.dto.review.reqeust.ExistNicknameDto;
+import com.bethefirst.lifeweb.dto.member.request.ExistNicknameDto;
 import com.bethefirst.lifeweb.service.member.interfaces.MemberService;
 import com.bethefirst.lifeweb.service.member.interfaces.MemberSnsService;
 import jakarta.validation.Valid;
@@ -120,13 +121,12 @@ public class MemberController {
     }
 
     /** 회원 SNS 등록 */
-    @PostMapping("/{memberId}/sns")
-    @PreAuthorize("isAuthenticated() and (( #memberId == principal.memberId ) or hasRole('ADMIN'))")
-    public ResponseEntity<?> create(@PathVariable Long memberId,
-                                    @RequestBody CreateMemberSnsDto createMemberSnsDto){
+    @PostMapping("/sns")
+    @PreAuthorize("isAuthenticated() and (( #createMemberSnsDto.memberId == principal.memberId ) or hasRole('ADMIN'))")
+    public ResponseEntity<?> create(@RequestBody CreateMemberSnsDto createMemberSnsDto){
 
         //회원 SNS 생성
-        memberSnsService.createMemberSns(createMemberSnsDto, memberId);
+        memberSnsService.createMemberSns(createMemberSnsDto);
 
         return new ResponseEntity<>(HttpStatus.CREATED);
 
@@ -134,10 +134,10 @@ public class MemberController {
 
 
     /** 회원 SNS 삭제 */
-    @DeleteMapping("/{memberId}/sns/{memberSnsId}")
-    @PreAuthorize("isAuthenticated() and (( #memberId == principal.memberId ) or hasRole('ADMIN'))")
-    public ResponseEntity<?> delete(@PathVariable Long memberId,
-                                    @PathVariable Long memberSnsId){
+    @DeleteMapping("/sns/{memberSnsId}")
+    @PreAuthorize("isAuthenticated() and (( #deleteMemberSnsDto.memberId == principal.memberId ) or hasRole('ADMIN'))")
+    public ResponseEntity<?> delete(@PathVariable Long memberSnsId,
+                                    @RequestBody DeleteMemberSnsDto deleteMemberSnsDto){
 
         //회원 SNS 삭제
         memberSnsService.deleteMemberSns(memberSnsId);
@@ -147,8 +147,14 @@ public class MemberController {
 
     /** 닉네임 중복 체크 */
     @PostMapping("/nickname")
-    public void existNickname(@RequestBody ExistNicknameDto nicknameDto){
+    public void existNickname(ExistNicknameDto nicknameDto){
         memberService.existsNickname(nicknameDto.getNickname());
+    }
+
+    /** 이메일 중복 체크 */
+    @PostMapping("/email")
+    public void existEmail(@RequestBody ExistEmailDto emailDto){
+        memberService.existsEmail(emailDto.getEmail());
     }
 
 
