@@ -5,12 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class CreateMemberSnsDto {
+public class DeleteMemberSnsDto {
 
     private Long memberId; //회원 PK
-    private Long snsId; //SNS PK
-    private String url;//SNS URL
-
-
-
 }

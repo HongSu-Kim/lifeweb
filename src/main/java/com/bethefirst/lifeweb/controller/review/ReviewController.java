@@ -1,12 +1,12 @@
 package com.bethefirst.lifeweb.controller.review;
 
+import com.bethefirst.lifeweb.dto.review.reqeust.DeleteReviewDto;
 import com.bethefirst.lifeweb.dto.review.reqeust.CreateReviewDto;
 import com.bethefirst.lifeweb.dto.review.reqeust.ReviewSearchRequirements;
 import com.bethefirst.lifeweb.dto.review.reqeust.UpdateReviewDto;
 import com.bethefirst.lifeweb.dto.review.response.ReviewDto;
 import com.bethefirst.lifeweb.service.review.interfaces.ReviewService;
 import com.bethefirst.lifeweb.util.UrlUtil;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -31,25 +31,24 @@ public class ReviewController {
 	private final UrlUtil urlUtil;
 
 	/** 리뷰 등록 */
-	@PostMapping("/{memberId}")
-	@PreAuthorize("isAuthenticated() and (( #memberId == principal.memberId ) or hasRole('ADMIN'))")
-	public ResponseEntity<?> create(@PathVariable Long memberId,
-									@Valid @RequestBody CreateReviewDto createReviewDto) {
+	@PostMapping
+	@PreAuthorize("isAuthenticated() and (( #createReviewDto.memberId == principal.memberId ) or hasRole('ADMIN'))")
+	public ResponseEntity<?> create(@RequestBody CreateReviewDto createReviewDto) {
 
 		//URL 유효성 검사
-		urlUtil.inspectionUrl(createReviewDto.getReviewUrl());
+		urlUtil.inspectionUrl(createReviewDto.getUrl());
 
-		reviewService.createReview(createReviewDto, memberId);
+		reviewService.createReview(createReviewDto);
 		HttpHeaders headers = new HttpHeaders();
 		headers.setLocation(URI.create("/reviews"));
 		return new ResponseEntity<>(headers, HttpStatus.CREATED);
 	}
 
 	/** 리뷰 삭제 */
-	@DeleteMapping("/{memberId}/{reviewId}")
-	@PreAuthorize("isAuthenticated() and (( #memberId == principal.memberId ) or hasRole('ADMIN'))")
-	public ResponseEntity<?> delete(@PathVariable Long memberId,
-									@PathVariable Long reviewId){
+	@DeleteMapping("/{reviewId}")
+	@PreAuthorize("isAuthenticated() and (( #deleteReviewDto.memberId == principal.memberId ) or hasRole('ADMIN'))")
+	public ResponseEntity<?> delete(@PathVariable Long reviewId,
+									@RequestBody DeleteReviewDto deleteReviewDto){
 		reviewService.deleteReview(reviewId);
 		HttpHeaders headers = new HttpHeaders();
 		headers.setLocation(URI.create("/reviews"));
@@ -58,14 +57,13 @@ public class ReviewController {
 
 	/** 리뷰 수정 */
 	@ResponseStatus(HttpStatus.OK)
-	@PutMapping("/{memberId}/{reviewId}")
-	@PreAuthorize("isAuthenticated() and (( #memberId == principal.memberId ) or hasRole('ADMIN'))")
-	public ResponseEntity<?> update(@PathVariable Long memberId,
-									@PathVariable Long reviewId,
-					   @RequestBody UpdateReviewDto updateReviewDto){
+	@PutMapping("/{reviewId}")
+	@PreAuthorize("isAuthenticated() and (( #updateReviewDto.memberId == principal.memberId ) or hasRole('ADMIN'))")
+	public ResponseEntity<?> update(@PathVariable Long reviewId,
+									@RequestBody UpdateReviewDto updateReviewDto){
 
 		//URL 유효성 검사
-		urlUtil.inspectionUrl(updateReviewDto.getReviewUrl());
+		urlUtil.inspectionUrl(updateReviewDto.getUrl());
 
 		reviewService.updateReview(updateReviewDto, reviewId);
 

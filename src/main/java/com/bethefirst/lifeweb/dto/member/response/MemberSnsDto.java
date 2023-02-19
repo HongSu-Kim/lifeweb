@@ -12,13 +12,13 @@ public class MemberSnsDto {
 
 	private Long snsId; //SNS PK
 	private Long memberSnsId; //회원 SNS PK
-	private String snsName; //SNS 이름
+	private String name; //SNS 이름
 	private String url;//SNS주소
 
 	public MemberSnsDto(MemberSns memberSns) {
 		this.snsId = memberSns.getSns().getId() == null ? null : memberSns.getSns().getId() ;
 		this.memberSnsId = memberSns.getId() == null ? null : memberSns.getId();
-		this.snsName = memberSns.getSns().getName() == null ? null : memberSns.getSns().getName();
+		this.name = memberSns.getSns().getName() == null ? null : memberSns.getSns().getName();
 		this.url = memberSns.getUrl() == null ? null : memberSns.getUrl();
 	}
 

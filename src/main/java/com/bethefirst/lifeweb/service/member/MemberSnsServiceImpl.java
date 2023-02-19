@@ -27,24 +27,24 @@ public class MemberSnsServiceImpl implements MemberSnsService {
 
     /** 회원 SNS 등록 **/
     @Override
-    public void createMemberSns(CreateMemberSnsDto createMemberSnsDto, Long memberId) {
+    public void createMemberSns(CreateMemberSnsDto createMemberSnsDto) {
         //회원 유효성 검사
-        Member member = memberRepository.findById(memberId).orElseThrow(()
-                -> new IllegalArgumentException("존재하지 않는 회원입니다. " + memberId));
+        Member member = memberRepository.findById(createMemberSnsDto.getMemberId()).orElseThrow(()
+                -> new IllegalArgumentException("존재하지 않는 회원입니다. " + createMemberSnsDto.getMemberId()));
 
         //URL 유효성 검사
-        if(memberSnsRepository.existsByUrl(createMemberSnsDto.getSnsUrl()))
-            throw new IllegalArgumentException("이미 등록되어 있는 URL 입니다. " + createMemberSnsDto.getSnsUrl());
+        if(memberSnsRepository.existsByUrl(createMemberSnsDto.getUrl()))
+            throw new IllegalArgumentException("이미 등록되어 있는 URL 입니다. " + createMemberSnsDto.getUrl());
 
         //SNS 유효성 검사
         Sns sns = snsRepository.findById(createMemberSnsDto.getSnsId()).orElseThrow(() ->
-                new IllegalArgumentException("존재하지 않는 SNS 이름 입니다. " + createMemberSnsDto.getSnsUrl()));
+                new IllegalArgumentException("존재하지 않는 SNS 이름 입니다. " + createMemberSnsDto.getUrl()));
 
         //SNS URL 검사
-        urlUtil.inspectionUrl(createMemberSnsDto.getSnsUrl());
+        urlUtil.inspectionUrl(createMemberSnsDto.getUrl());
 
         //memberSNS 생성
-        MemberSns memberSns = MemberSns.createMemberSns(member, sns, createMemberSnsDto.getSnsUrl());
+        MemberSns memberSns = MemberSns.createMemberSns(member, sns, createMemberSnsDto.getUrl());
 
         //DB에 저장
         memberSnsRepository.save(memberSns);
