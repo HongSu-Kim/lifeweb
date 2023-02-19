@@ -15,13 +15,14 @@ public class CreateReviewDto {
     private static final String TITLE = "title";
     private static final String IMG = "imgSrc";
 
-    private Long campaignId;
-    private String reviewUrl;
+    private Long campaignId; //캠페인 PK
+    private Long memberId; //회원 PK
+    private String url; //리뷰 URL
 
     public Review createReview(Member member, Campaign campaign, Map<String, String> crawlingReviewData){
         
         return new Review(member, campaign, crawlingReviewData.get(TITLE),
-                crawlingReviewData.get(IMG), reviewUrl);
+                crawlingReviewData.get(IMG), url);
     }
 
 }

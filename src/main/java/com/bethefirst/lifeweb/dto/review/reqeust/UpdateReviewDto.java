@@ -8,10 +8,12 @@ import lombok.Setter;
 @Setter
 public class UpdateReviewDto {
 
-    private String reviewUrl;
+    private Long memberId; //회원 PK
+    private String url; //리뷰 URL
+
 
 
     public void updateReview(Review review){
-        review.updateReview(reviewUrl);
+        review.updateReview(url);
     }
 }

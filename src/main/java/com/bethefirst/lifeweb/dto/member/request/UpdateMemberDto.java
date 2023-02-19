@@ -15,15 +15,15 @@ import java.time.LocalDate;
 @Slf4j
 public class UpdateMemberDto {
 
-    private String name;
-    private String nickname;
-    private String gender;
-    private LocalDate birth;
-    private String tel;
-    private String postcode;
-    private String address;
-    private String detailAddress;
-    private String extraAddress;
+    private String name; //회원이름
+    private String nickname; //회원 닉네임
+    private String gender; //성별
+    private LocalDate birth; //생일
+    private String tel; //전화번호
+    private String postcode; //우편번호
+    private String address; //주소
+    private String detailAddress; //상세주소
+    private String extraAddress; ////참고사항
 
     public void updateMember(Member member){
         member.updateMember(name, nickname, gender, birth,

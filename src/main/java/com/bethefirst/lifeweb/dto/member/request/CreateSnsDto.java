@@ -7,11 +7,11 @@ import lombok.Setter;
 @Getter
 @Setter
 public class CreateSnsDto {
-    private String snsName;
+    private String name; //SNS 이름
 
 
     public Sns createSns(){
-        return new Sns(snsName);
+        return new Sns(name);
     }
 
 }
