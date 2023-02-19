@@ -17,9 +17,9 @@ public class SecurityUtil {
 
 
 
-    public static Optional<Long> getCurrentMemberId() {
+    public static Long getCurrentMemberId() {
         CustomUser customUser = getCustomUserFromSecurityContext();
-        return Optional.ofNullable(customUser.getMemberId());
+        return customUser.getMemberId();
     }
 
 
@@ -32,19 +32,15 @@ public class SecurityUtil {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication.getPrincipal().equals("anonymousUser")) {
-            log.debug("Security Context에 인증 정보가 없습니다.");
             throw new UnauthorizedException("Security Context에 인증 정보가 없습니다.");
         }
 
-        try {
-            return (CustomUser) authentication.getPrincipal();
-
-        } catch (IllegalArgumentException e) {
-            log.debug("캐스팅 실패");
-		}catch (Exception e){
-            log.info("예외 발생: ",e);
+        if(authentication.getPrincipal() instanceof CustomUser){
+          return (CustomUser)authentication.getPrincipal();
+        }else{
+            throw new RuntimeException("CustomUser 캐스팅에 실패 하였습니다.");
         }
-        return null;
+
     }
 
 
