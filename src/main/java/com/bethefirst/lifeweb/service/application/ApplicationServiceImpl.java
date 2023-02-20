@@ -1,5 +1,7 @@
 package com.bethefirst.lifeweb.service.application;
 
+import com.bethefirst.lifeweb.dto.application.request.CreateApplicationQuestionDto;
+import com.bethefirst.lifeweb.dto.application.response.ApplicationDto;
 import com.bethefirst.lifeweb.dto.application.response.ApplicationQuestionDto;
 import com.bethefirst.lifeweb.entity.application.Application;
 import com.bethefirst.lifeweb.entity.application.ApplicationQuestion;
@@ -38,6 +40,13 @@ public class ApplicationServiceImpl implements ApplicationService {
 
 	}
 
+	/** 신청서 조회 */
+	@Override
+	public ApplicationDto getApplicationDto(Long applicationId) {
+		return new ApplicationDto(applicationRepository.findById(applicationId)
+				.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 신청서입니다. " + applicationId)));
+	}
+
 	/** 신청서 수정 */
 	@Override
 	public void updateApplication(Application application, List<ApplicationQuestionDto> applicationQuestionDtoList) {
@@ -67,6 +76,20 @@ public class ApplicationServiceImpl implements ApplicationService {
 				}
 			}
 		}
+
+	}
+
+	/** 신청서 질문 추가 */
+	@Override
+	public void createApplicationQuestion(Long applicationId, CreateApplicationQuestionDto createApplicationQuestionDto) {
+
+		Application application = applicationRepository.findById(applicationId)
+				.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 신청서입니다. " + applicationId));
+
+		// 신청서질문 저장
+		createApplicationQuestionDto.getApplicationQuestionDtoList()
+				.forEach(applicationQuestionDto -> applicationQuestionRepository.save(applicationQuestionDto.createApplicationQuestion(application)));
+
 	}
 
 }
