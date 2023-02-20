@@ -1,9 +1,9 @@
 package com.bethefirst.lifeweb.initDto.campaign;
 
-import com.bethefirst.lifeweb.dto.application.response.ApplicationQuestionDto;
 import com.bethefirst.lifeweb.dto.campaign.request.CampaignSearchRequirements;
 import com.bethefirst.lifeweb.dto.campaign.request.CreateCampaignDto;
 import com.bethefirst.lifeweb.dto.campaign.request.UpdateCampaignDto;
+import com.bethefirst.lifeweb.dto.campaign.request.UpdateCampaignPickDto;
 import com.bethefirst.lifeweb.dto.campaign.response.CampaignDto;
 import com.bethefirst.lifeweb.dto.campaign.response.CampaignLocalDto;
 import com.bethefirst.lifeweb.entity.campaign.CampaignStatus;
@@ -32,7 +32,7 @@ public class InitCampaignDto {
 				LocalDate.now().toString().substring(0, 10), LocalDate.now().plusDays(7).toString().substring(0, 10),
 				LocalDate.now().plusDays(8).toString().substring(0, 10), LocalDate.now().plusDays(14).toString().substring(0, 10),
 				15, 1L, "address", "37.4954841", "127.0333574", "visitNotice",
-				mockMultipartFile.getMultipartFileList(), Arrays.asList("테스트 질문1", "테스트 질문2"), Arrays.asList(QuestionType.TEXT, QuestionType.CHECKBOX), Arrays.asList(null, "111,222,333"));
+				mockMultipartFile.getMultipartFileList(), Arrays.asList("테스트 질문1", "테스트 질문2"), Arrays.asList(QuestionType.TEXT, QuestionType.CHECKBOX), Arrays.asList("", "111,222,333"));
 	}
 
 	public CampaignDto getCampaignDto() {
@@ -86,15 +86,14 @@ public class InitCampaignDto {
 				Arrays.asList(1L, 2L), Arrays.asList("테스트 질문1", "테스트 질문2"), Arrays.asList(QuestionType.TEXT, QuestionType.CHECKBOX), Arrays.asList(null, "111,222,333"));
 	}
 
+	public UpdateCampaignPickDto getUpdatePickDto() {
+		return new UpdateCampaignPickDto(Arrays.asList(1L, 2L), Arrays.asList(3L, 4L));
+	}
+
 	private List<String> imageList = Arrays.asList("이미지1.jpg", "이미지2.jpg", "이미지3.jpg");
 
 	private CampaignLocalDto campaignLocalDto = new CampaignLocalDto(1L, "서울", "서울특별시 강남구 역삼1동",
 				"37.4954841", "127.0333574", "방문주의사항");
-
-	private List<ApplicationQuestionDto> applicationQuestionDtoList = Arrays.asList(
-			new ApplicationQuestionDto(1L, "단답형 질문", QuestionType.TEXT, null),
-			new ApplicationQuestionDto(2L , "복수선택 질문", QuestionType.CHECKBOX, "항목1,항목2,항목3")
-	);
 
 	private Pageable pageable = PageRequest.of(1, 10, Sort.by(Sort.Direction.DESC, "created"));
 
