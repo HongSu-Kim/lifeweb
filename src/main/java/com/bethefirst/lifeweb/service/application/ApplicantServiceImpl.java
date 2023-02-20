@@ -3,15 +3,18 @@ package com.bethefirst.lifeweb.service.application;
 import com.bethefirst.lifeweb.dto.application.request.ApplicantSearchRequirements;
 import com.bethefirst.lifeweb.dto.application.request.CreateApplicantDto;
 import com.bethefirst.lifeweb.dto.application.request.UpdateApplicantDto;
+import com.bethefirst.lifeweb.dto.application.request.UpdateApplicantStatusDto;
 import com.bethefirst.lifeweb.dto.application.response.ApplicantAnswerDto;
 import com.bethefirst.lifeweb.dto.application.response.ApplicantDto;
 import com.bethefirst.lifeweb.entity.application.*;
 import com.bethefirst.lifeweb.entity.application.ApplicationQuestion;
+import com.bethefirst.lifeweb.entity.campaign.Campaign;
 import com.bethefirst.lifeweb.entity.campaign.CampaignStatus;
 import com.bethefirst.lifeweb.entity.member.Member;
 import com.bethefirst.lifeweb.repository.application.ApplicationAnswerRepository;
 import com.bethefirst.lifeweb.repository.application.ApplicantRepository;
 import com.bethefirst.lifeweb.repository.application.ApplicationRepository;
+import com.bethefirst.lifeweb.repository.campaign.CampaignRepository;
 import com.bethefirst.lifeweb.repository.member.MemberRepository;
 import com.bethefirst.lifeweb.service.application.interfaces.ApplicantService;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +32,7 @@ import java.util.List;
 @Slf4j
 public class ApplicantServiceImpl implements ApplicantService {
 
+	private final CampaignRepository campaignRepository;
 	private final ApplicantRepository applicantRepository;
 	private final ApplicationAnswerRepository applicationAnswerRepository;
 	private final MemberRepository memberRepository;
@@ -131,10 +135,18 @@ public class ApplicantServiceImpl implements ApplicantService {
 
 	/** 신청자 상태 수정 */
 	@Override
-	public void updateStatus(Long applicantId, ApplicantStatus status) {
-		applicantRepository.findById(applicantId)
-				.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 신청자입니다. " + applicantId))
-				.updateApplicantStatus(status);
+	public void updateStatus(UpdateApplicantStatusDto updateApplicantStatusDto) {
+
+		applicantRepository.updateStatus(ApplicantStatus.SELECT, updateApplicantStatusDto.getSelectApplicantId(), updateApplicantStatusDto.getCampaignId());
+		applicantRepository.updateStatus(ApplicantStatus.UNSELECT, updateApplicantStatusDto.getUnselectApplicantId(), updateApplicantStatusDto.getCampaignId());
+
+		Campaign campaign = campaignRepository.findById(updateApplicantStatusDto.getCampaignId())
+				.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 캠페인입니다. " + updateApplicantStatusDto.getCampaignId()));
+
+		if (campaign.getHeadcount() < campaign.getApplication().getApplicantList().size()) {
+			throw new RuntimeException("신청자 선정은 " + campaign.getHeadcount() + "명까지만 가능합니다.");
+		}
+
 	}
 
 	/** 신청자 삭제 */
