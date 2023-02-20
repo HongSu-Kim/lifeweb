@@ -2,6 +2,7 @@ package com.bethefirst.lifeweb.repository.application;
 
 import com.bethefirst.lifeweb.dto.application.request.ApplicantSearchRequirements;
 import com.bethefirst.lifeweb.entity.application.Applicant;
+import com.bethefirst.lifeweb.entity.application.ApplicantStatus;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -43,7 +44,8 @@ public class ApplicantRepositoryQueryDslImpl implements ApplicantRepositoryQuery
 				.leftJoin(campaignLocal.local, local).fetchJoin()
 				.where(
 						memberIdEq(searchRequirements.getMemberId()),
-						campaignIdEq(searchRequirements.getCampaignId())
+						campaignIdEq(searchRequirements.getCampaignId()),
+						statusEq(searchRequirements.getStatus())
 				)
 				.offset(searchRequirements.getPageable().getOffset())
 				.limit(searchRequirements.getPageable().getPageSize())
@@ -55,7 +57,8 @@ public class ApplicantRepositoryQueryDslImpl implements ApplicantRepositoryQuery
 				.from(applicant)
 				.where(
 						memberIdEq(searchRequirements.getMemberId()),
-						campaignIdEq(searchRequirements.getCampaignId())
+						campaignIdEq(searchRequirements.getCampaignId()),
+						statusEq(searchRequirements.getStatus())
 				)
 				.fetchOne();
 
@@ -70,6 +73,11 @@ public class ApplicantRepositoryQueryDslImpl implements ApplicantRepositoryQuery
 	/** 캠페인 */
 	private BooleanExpression campaignIdEq(Long campaignId) {
 		return campaignId == null ? null : applicant.application.campaign.id.eq(campaignId);
+	}
+
+	/** 상태 */
+	private BooleanExpression statusEq(ApplicantStatus status) {
+		return status == null ? null : applicant.status.eq(status);
 	}
 	
 }

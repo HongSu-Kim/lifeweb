@@ -1,6 +1,7 @@
 package com.bethefirst.lifeweb.controller.campaign;
 
 import com.bethefirst.lifeweb.ControllerTest;
+import com.bethefirst.lifeweb.entity.member.Role;
 import com.bethefirst.lifeweb.initDto.campaign.InitCampaignTypeDto;
 import com.bethefirst.lifeweb.service.campaign.interfaces.CampaignTypeService;
 import org.junit.jupiter.api.Test;
@@ -12,6 +13,7 @@ import org.springframework.http.MediaType;
 import java.util.Map;
 
 import static org.mockito.BDDMockito.*;//given,willReturn
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;//get,post,multipart...
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;//status
 import static org.springframework.restdocs.headers.HeaderDocumentation.responseHeaders;//responseHeaders
@@ -38,8 +40,8 @@ class CampaignTypeControllerTest extends ControllerTest {
 						.content(objectMapper.writeValueAsString(Map.of(
 								"campaignTypeName", "new campaignTypeName"
 						)))
-//						.content("{ \"campaignTypeName\" : \"new campaignTypeName\" }")
 						.contentType(MediaType.APPLICATION_JSON)
+						.header(AUTHORIZATION, getJwt(Role.ADMIN.name(), 1L))
 				)
 				.andExpect(status().isCreated())
 				.andDo(
@@ -80,8 +82,8 @@ class CampaignTypeControllerTest extends ControllerTest {
 						.content(objectMapper.writeValueAsString(Map.of(
 								"campaignTypeName", "updated campaignTypeName"
 						)))
-//						.content("{ \"campaignTypeName\" : \"updated campaignTypeName\" }")
 						.contentType(MediaType.APPLICATION_JSON)
+						.header(AUTHORIZATION, getJwt(Role.ADMIN.name(), 1L))
 				)
 				.andExpect(status().isCreated())
 				.andDo(
@@ -104,7 +106,9 @@ class CampaignTypeControllerTest extends ControllerTest {
 
 		willDoNothing().given(campaignTypeService).deleteCampaignType(1L);
 
-		mockMvc.perform(delete(urlTemplate + "/{campaignTypeId}", 1L))
+		mockMvc.perform(delete(urlTemplate + "/{campaignTypeId}", 1L)
+						.header(AUTHORIZATION, getJwt(Role.ADMIN.name(), 1L))
+				)
 				.andExpect(status().isNoContent())
 				.andDo(
 						restDocs.document(

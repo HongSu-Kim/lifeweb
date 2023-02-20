@@ -1,5 +1,6 @@
 package com.bethefirst.lifeweb.initDto.application;
 
+import com.bethefirst.lifeweb.dto.application.request.UpdateApplicantStatusDto;
 import com.bethefirst.lifeweb.dto.application.response.ApplicantAnswerDto;
 import com.bethefirst.lifeweb.dto.application.response.ApplicantDto;
 import com.bethefirst.lifeweb.dto.application.request.ApplicantSearchRequirements;
@@ -55,6 +56,10 @@ public class InitApplicantDto {
 
 	public UpdateApplicantDto getUpdateApplicantDto() {
 		return new UpdateApplicantDto(1L, "updated memo", Arrays.asList(1L, 2L), Arrays.asList(1L, 2L), Arrays.asList("updated answer1", "updated answer2"));
+	}
+
+	public UpdateApplicantStatusDto getUpdateApplicantStatusDto() {
+		return new UpdateApplicantStatusDto(1L, Arrays.asList(1L, 2L), Arrays.asList(3L, 4L));
 	}
 
 	private List<ApplicantAnswerDto> applicantAnswerDtoList = Arrays.asList(

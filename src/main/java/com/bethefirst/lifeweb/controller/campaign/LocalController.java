@@ -1,8 +1,8 @@
 package com.bethefirst.lifeweb.controller.campaign;
 
+import com.bethefirst.lifeweb.dto.campaign.request.LocalNameDto;
 import com.bethefirst.lifeweb.service.campaign.interfaces.LocalService;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotEmpty;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -23,10 +23,10 @@ public class LocalController {
 
 	/** 지역 생성 */
 	@PostMapping
-	public ResponseEntity<?> create(@Valid @NotEmpty(message = "지역명은 필수 입력 값입니다.") String localName) {
+	public ResponseEntity<?> create(@Valid @RequestBody LocalNameDto localNameDto) {
 
 		// 지역 생성
-		localService.createLocal(localName);
+		localService.createLocal(localNameDto.getLocalName());
 
 		// Location 설정
 		HttpHeaders headers = new HttpHeaders();
@@ -44,10 +44,10 @@ public class LocalController {
 	/** 지역 수정 */
 	@PutMapping("/{localId}")
 	public ResponseEntity<?> update(@PathVariable Long localId,
-									@Valid @NotEmpty(message = "지역명은 필수 입력 값입니다.") String localName) {
+									@Valid @RequestBody LocalNameDto localNameDto) {
 
 		// 지역 수정
-		localService.updateLocal(localId, localName);
+		localService.updateLocal(localId, localNameDto.getLocalName());
 
 		// Location 설정
 		HttpHeaders headers = new HttpHeaders();

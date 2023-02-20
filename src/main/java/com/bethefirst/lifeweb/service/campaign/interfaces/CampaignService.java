@@ -1,5 +1,6 @@
 package com.bethefirst.lifeweb.service.campaign.interfaces;
 
+import com.bethefirst.lifeweb.dto.campaign.request.UpdateCampaignPickDto;
 import com.bethefirst.lifeweb.dto.campaign.response.CampaignDto;
 import com.bethefirst.lifeweb.dto.campaign.request.CreateCampaignDto;
 import com.bethefirst.lifeweb.dto.campaign.request.CampaignSearchRequirements;
@@ -23,5 +24,8 @@ public interface CampaignService {
 
 	/** 캠페인 상태 변경 */
 	void updateStatus(Long campaignId, CampaignStatus status);
+
+	/** 캠페인 PICK 체크 */
+	void updatePick(UpdateCampaignPickDto updateCampaignPickDto);
 
 }

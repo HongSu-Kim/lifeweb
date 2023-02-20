@@ -4,9 +4,11 @@ import com.bethefirst.lifeweb.ControllerTest;
 import com.bethefirst.lifeweb.CustomRestDocumentationRequestBuilders;
 import com.bethefirst.lifeweb.dto.campaign.request.CreateCampaignDto;
 import com.bethefirst.lifeweb.dto.campaign.request.UpdateCampaignDto;
+import com.bethefirst.lifeweb.dto.campaign.request.UpdateCampaignPickDto;
 import com.bethefirst.lifeweb.entity.application.ApplicantStatus;
 import com.bethefirst.lifeweb.entity.campaign.CampaignStatus;
 import com.bethefirst.lifeweb.entity.application.QuestionType;
+import com.bethefirst.lifeweb.entity.member.Role;
 import com.bethefirst.lifeweb.initDto.campaign.InitCampaignDto;
 import com.bethefirst.lifeweb.service.campaign.interfaces.CampaignService;
 import org.junit.jupiter.api.Test;
@@ -14,16 +16,17 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 
+import java.util.Map;
+
 import static org.mockito.BDDMockito.*;//given,willReturn
-import static org.mockito.BDDMockito.given;
+import static org.springframework.http.HttpHeaders.*;//AUTHORIZATION,LOCATION
+import static org.springframework.http.MediaType.*;//MULTIPART_FORM_DATA
+import static org.springframework.restdocs.headers.HeaderDocumentation.*;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;//get,post,multipart...
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;//status
-import static org.springframework.restdocs.headers.HeaderDocumentation.responseHeaders;//responseHeaders
-import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;//headerWithName
 import static org.springframework.restdocs.request.RequestDocumentation.*;//pathParameters,queryParameters,requestParts
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;//requestFields,responseFields
 import static org.springframework.restdocs.payload.JsonFieldType.*;
@@ -46,12 +49,15 @@ class CampaignControllerTest extends ControllerTest {
 
 		mockMvc.perform(
 				createMultiPartRequest(multipart(urlTemplate), dto)
-						.contentType(MediaType.MULTIPART_FORM_DATA)
-//						.header(HttpHeaders.AUTHORIZATION, )
+						.contentType(MULTIPART_FORM_DATA)
+						.header(AUTHORIZATION, getJwt(Role.ADMIN.name(), 1L))
 				)
 				.andExpect(status().isCreated())
 				.andDo(
 						restDocs.document(
+								requestHeaders(
+										headerWithName(AUTHORIZATION).attributes(role(Role.ADMIN)).description("token")
+								),
 								requestParts(
 										partWithName("categoryId").attributes(type(NUMBER)).description("카테고리ID"),
 										partWithName("typeId").attributes(type(NUMBER)).description("타입ID"),
@@ -79,7 +85,7 @@ class CampaignControllerTest extends ControllerTest {
 										partWithName("items").attributes(type(STRING)).description("항목").optional()
 								),
 								responseHeaders(
-										headerWithName(HttpHeaders.LOCATION).description("Location")
+										headerWithName(LOCATION).description(LOCATION)
 								)
 						)
 				);
@@ -213,8 +219,8 @@ class CampaignControllerTest extends ControllerTest {
 
 		mockMvc.perform(
 				createMultiPartRequest(CustomRestDocumentationRequestBuilders.multipart(HttpMethod.PUT, urlTemplate + "/{campaignId}", 1L), dto)
-//						.header(HttpHeaders.AUTHORIZATION, )
-						.contentType(MediaType.MULTIPART_FORM_DATA)
+						.contentType(MULTIPART_FORM_DATA)
+						.header(AUTHORIZATION, getJwt(Role.ADMIN.name(), 1L))
 				)
 				.andExpect(status().isCreated())
 				.andDo(
@@ -251,7 +257,54 @@ class CampaignControllerTest extends ControllerTest {
 										partWithName("items").attributes(type(ARRAY)).description("항목").optional()
 								),
 								responseHeaders(
-										headerWithName(HttpHeaders.LOCATION).description("Location")
+										headerWithName(LOCATION).description(LOCATION)
+								)
+						)
+				);
+	}
+
+	@Test
+	void 캠페인_상태_변경() throws Exception {
+
+		willDoNothing().given(campaignService).updateStatus(1L, CampaignStatus.FILING);
+
+		mockMvc.perform(put(urlTemplate + "/{campaignId}/status", 1L)
+						.content(objectMapper.writeValueAsString(Map.of(
+								"status", CampaignStatus.FILING.name()
+						)))
+						.contentType(MediaType.APPLICATION_JSON)
+						.header(AUTHORIZATION, getJwt(Role.ADMIN.name(), 1L))
+				)
+				.andExpect(status().isCreated())
+				.andDo(
+						restDocs.document(
+								pathParameters(
+										parameterWithName("campaignId").attributes(type(NUMBER)).description("캠페인ID")
+								),
+								requestFields(
+										fieldWithPath("status").type(CampaignStatus.class).description("캠페인상태")
+								)
+						)
+				);
+	}
+
+	@Test
+	void 캠페인_PICK_체크() throws Exception {
+
+		UpdateCampaignPickDto dto = campaignDto.getUpdatePickDto();
+		willDoNothing().given(campaignService).updatePick(dto);
+
+		mockMvc.perform(put(urlTemplate + "/pick")
+						.content(objectMapper.writeValueAsString(dto))
+						.contentType(MediaType.APPLICATION_JSON)
+						.header(AUTHORIZATION, getJwt(Role.ADMIN.name(), 1L))
+				)
+				.andExpect(status().isCreated())
+				.andDo(
+						restDocs.document(
+								requestFields(
+										fieldWithPath("newCampaignId").type(ARRAY_NUMBER).description("pick 선택할 캠페인ID"),
+										fieldWithPath("oldCampaignId").type(ARRAY_NUMBER).description("pick 해제할 캠페인ID")
 								)
 						)
 				);

@@ -1,15 +1,13 @@
 package com.bethefirst.lifeweb.controller.application;
 
+import com.bethefirst.lifeweb.dto.application.request.UpdateApplicantStatusDto;
 import com.bethefirst.lifeweb.dto.application.response.ApplicantDto;
 import com.bethefirst.lifeweb.dto.application.request.ApplicantSearchRequirements;
 import com.bethefirst.lifeweb.dto.application.request.CreateApplicantDto;
 import com.bethefirst.lifeweb.dto.application.request.UpdateApplicantDto;
-import com.bethefirst.lifeweb.entity.application.ApplicantStatus;
-import com.bethefirst.lifeweb.exception.UnauthorizedException;
 import com.bethefirst.lifeweb.service.application.interfaces.ApplicantService;
 import com.bethefirst.lifeweb.util.security.SecurityUtil;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotEmpty;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -35,9 +33,7 @@ public class ApplicantController {
 	@PostMapping
 	public ResponseEntity<?> create(@Valid @RequestBody CreateApplicantDto createApplicantDto) {
 
-//		Long memberId = SecurityUtil.getCurrentMemberId()
-//				.orElseThrow(() -> new UnauthorizedException("Security Context에 인증 정보가 없습니다."));
-		Long memberId = 1L;
+		Long memberId = SecurityUtil.getCurrentMemberId();
 
 		// 신청자 생성
 		Long applicantId = applicantService.createApplicant(memberId, createApplicantDto);
@@ -79,18 +75,10 @@ public class ApplicantController {
 	}
 
 	/** 신청자 상태 수정 */
-	@PutMapping("/{applicantId}/status")
-	public ResponseEntity<?> updateStatus(@PathVariable Long applicantId,
-										  @Valid @NotEmpty(message = "상태는 필수 입력 값입니다.") ApplicantStatus status) {
-
-		// 신청자 상태 수정
-		applicantService.updateStatus(applicantId, status);
-
-		// Location 설정
-		HttpHeaders headers = new HttpHeaders();
-		headers.setLocation(URI.create("/applicants/" + applicantId));
-
-		return new ResponseEntity<>(headers, HttpStatus.CREATED);
+	@ResponseStatus(HttpStatus.CREATED)
+	@PutMapping("/status")
+	public void updateStatus(@Valid @RequestBody UpdateApplicantStatusDto updateApplicantStatusDto) {
+		applicantService.updateStatus(updateApplicantStatusDto);
 	}
 
 	/** 신청자 삭제 */
