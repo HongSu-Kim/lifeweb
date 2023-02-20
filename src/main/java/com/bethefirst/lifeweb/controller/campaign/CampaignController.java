@@ -48,6 +48,8 @@ public class CampaignController {
 
 	/** 캠페인 리스트 조회 */
 	@GetMapping
+	@PreAuthorize("(!isAuthenticated() and #searchRequirements.memberId == null) " +
+			"or (isAuthenticated() and ((#searchRequirements.memberId == principal.memberId) or hasRole('ADMIN')))")
 	public Page<CampaignDto> readAll(CampaignSearchRequirements searchRequirements,
 									 @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
 
