@@ -1,21 +1,26 @@
 package com.bethefirst.lifeweb.service.member;
 
 import com.bethefirst.lifeweb.dto.member.request.JoinDto;
-import com.bethefirst.lifeweb.dto.member.request.PasswordDto;
+import com.bethefirst.lifeweb.dto.member.request.MemberSearchRequirements;
+import com.bethefirst.lifeweb.dto.member.request.UpdatePasswordDto;
 import com.bethefirst.lifeweb.dto.member.request.UpdateMemberDto;
 import com.bethefirst.lifeweb.dto.member.response.MemberInfoDto;
 import com.bethefirst.lifeweb.entity.member.Member;
 import com.bethefirst.lifeweb.repository.member.MemberRepository;
 import com.bethefirst.lifeweb.service.member.interfaces.MemberService;
+import com.bethefirst.lifeweb.util.EmailUtil;
 import com.bethefirst.lifeweb.util.ImageUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.UUID;
 
 
 @Service
@@ -30,6 +35,7 @@ public class MemberServiceImpl implements MemberService {
 	private final MemberRepository memberRepository;
 	private final PasswordEncoder passwordEncoder;
 	private final ImageUtil imageUtil;
+	private final EmailUtil emailUtil;
 
 	/** 회원 가입 */
 	@Override
@@ -86,10 +92,10 @@ public class MemberServiceImpl implements MemberService {
 
 	/** 회원 비밀번호 변경 */
 	@Override
-	public void updatePassword(PasswordDto passwordDto, Long memberId) {
+	public void updatePassword(UpdatePasswordDto updatePasswordDto, Long memberId) {
 
 		// DTO의 새 비밀번호와 확인용 비밀번호 일치하는지 검사
-		if(!passwordDto.getNewPassword().equals(passwordDto.getConfirmPassword())){
+		if(!updatePasswordDto.getNewPassword().equals(updatePasswordDto.getConfirmPassword())){
 			throw new IllegalArgumentException("새 비밀번호와 비밀번호 확인이 일치하지 않습니다.");
 		}
 
@@ -98,7 +104,7 @@ public class MemberServiceImpl implements MemberService {
 				-> new IllegalArgumentException("존재하지 않는 회원입니다. " + memberId));
 
 		//새로운 비밀번호를 DB에 저장
-		passwordDto.updatePassword(passwordEncoder, member);
+		updatePasswordDto.updatePassword(passwordEncoder, member);
 
 	}
 
@@ -120,6 +126,14 @@ public class MemberServiceImpl implements MemberService {
 
 		return new MemberInfoDto(member);
 	}
+
+	/** 회원 전체조회 */
+	@Override
+	public Page<MemberInfoDto> getMemberList(MemberSearchRequirements requirements, Pageable pageable) {
+		Page<Member> allBySearchRequirements = memberRepository.findAllBySearchRequirements(requirements, pageable);
+		return allBySearchRequirements.map(MemberInfoDto::new);
+	}
+
 	/** 닉네임 중복 체크 */
 	@Override
 	public void existsNickname(String nickname) {
@@ -133,6 +147,35 @@ public class MemberServiceImpl implements MemberService {
 	public void existsEmail(String email) {
 		if(memberRepository.existsByEmail(email))
 			throw new IllegalArgumentException("이미 존재하는 이메일 입니다.");
+	}
+
+	/** 비밀번호 찾기 */
+	@Override
+	public void findPassword(String email) {
+
+		Member member = memberRepository.findByEmail(email).orElseThrow(() ->
+				new IllegalArgumentException("존재하지 않는 이메일 입니다."));
+
+		//랜덤비밀번호 생성
+		UUID uuid = UUID.randomUUID();
+		//메일 본문내용 작성
+		StringBuilder builder = new StringBuilder();
+		builder.append("귀하의 임시 비밀번호는 ");
+		builder.append(uuid);
+		builder.append(" 입니다.");
+
+
+		String fromName = "biber";
+		String subject = "[라이프체험단] 임시비밀번호 발송 이메일입니다.";
+		String contentDiv = builder.toString();
+
+		//DB에 생성된 임시비밀번호 업데이트
+		member.updatePassword(passwordEncoder,uuid.toString());
+
+		//이메일 발송
+		emailUtil.sendEmail(fromName,contentDiv,subject,email);
+
+
 	}
 
 
