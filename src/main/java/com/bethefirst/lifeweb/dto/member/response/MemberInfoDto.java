@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 public class MemberInfoDto {
 
     private Long memberId; //회원 PK
+    private String email;
     private String fileName;//프로필이미지
     private String name; //이름
     private String nickname;//닉네임
@@ -29,6 +30,7 @@ public class MemberInfoDto {
 
     public MemberInfoDto(Member member) {
         this.memberId = member.getId();
+        this.email = member.getEmail();
         this.fileName = member.getFileName() == null ? null : member.getFileName();
         this.name = member.getName() == null ? null : member.getName();
         this.nickname = member.getNickname();
