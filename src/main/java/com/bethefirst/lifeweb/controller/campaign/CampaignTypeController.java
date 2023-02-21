@@ -1,8 +1,8 @@
 package com.bethefirst.lifeweb.controller.campaign;
 
+import com.bethefirst.lifeweb.dto.campaign.request.CampaignTypeNameDto;
 import com.bethefirst.lifeweb.service.campaign.interfaces.CampaignTypeService;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotEmpty;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -23,10 +23,10 @@ public class CampaignTypeController {
 
 	/** 캠페인타입 생성 */
 	@PostMapping
-	public ResponseEntity<?> create(@Valid @NotEmpty(message = "타입명은 필수 입력 값입니다.") String campaignTypeName) {
+	public ResponseEntity<?> create(@Valid @RequestBody CampaignTypeNameDto campaignTypeNameDto) {
 
 		// 캠페인타입 생성
-		campaignTypeService.createCampaignType(campaignTypeName);
+		campaignTypeService.createCampaignType(campaignTypeNameDto.getCampaignTypeName());
 
 		// Location 설정
 		HttpHeaders headers = new HttpHeaders();
@@ -44,10 +44,10 @@ public class CampaignTypeController {
 	/** 캠페인타입 수정 */
 	@PutMapping("/{campaignTypeId}")
 	public ResponseEntity<?> update(@PathVariable Long campaignTypeId,
-									@Valid @NotEmpty(message = "타입명은 필수 입력 값입니다.") String campaignTypeName) {
+									@Valid @RequestBody CampaignTypeNameDto campaignTypeNameDto) {
 
 		// 캠페인타입 수정
-		campaignTypeService.updateCampaignType(campaignTypeId, campaignTypeName);
+		campaignTypeService.updateCampaignType(campaignTypeId, campaignTypeNameDto.getCampaignTypeName());
 
 		// Location 설정
 		HttpHeaders headers = new HttpHeaders();

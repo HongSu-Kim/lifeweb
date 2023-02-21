@@ -1,8 +1,8 @@
 package com.bethefirst.lifeweb.controller.campaign;
 
+import com.bethefirst.lifeweb.dto.campaign.request.CampaignCategoryNameDto;
 import com.bethefirst.lifeweb.service.campaign.interfaces.CampaignCategoryService;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotEmpty;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -23,10 +23,10 @@ public class CampaignCategoryController {
 
 	/** 캠페인카테고리 생성 */
 	@PostMapping
-	public ResponseEntity<?> create(@Valid @NotEmpty(message = "카테고리명은 필수 입력 값입니다.") String campaignCategoryName) {
+	public ResponseEntity<?> create(@Valid @RequestBody CampaignCategoryNameDto campaignCategoryNameDto) {
 
 		// 캠페인카테고리 생성
-		campaignCategoryService.createCampaignCategory(campaignCategoryName);
+		campaignCategoryService.createCampaignCategory(campaignCategoryNameDto.getCampaignCategoryName());
 
 		// Location 설정
 		HttpHeaders headers = new HttpHeaders();
@@ -44,10 +44,10 @@ public class CampaignCategoryController {
 	/** 캠페인카테고리 수정 */
 	@PutMapping("/{campaignCategoryId}")
 	public ResponseEntity<?> update(@PathVariable Long campaignCategoryId,
-									@Valid @NotEmpty(message = "카테고리명은 필수 입력 값입니다.") String campaignCategoryName) {
+									@Valid @RequestBody CampaignCategoryNameDto campaignCategoryNameDto) {
 
 		// 캠페인카테고리 수정
-		campaignCategoryService.updateCampaignCategory(campaignCategoryId, campaignCategoryName);
+		campaignCategoryService.updateCampaignCategory(campaignCategoryId, campaignCategoryNameDto.getCampaignCategoryName());
 
 		// Location 설정
 		HttpHeaders headers = new HttpHeaders();

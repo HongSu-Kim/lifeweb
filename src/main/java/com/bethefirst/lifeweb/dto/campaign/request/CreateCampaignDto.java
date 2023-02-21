@@ -19,7 +19,6 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode
 public class CreateCampaignDto {
 
 	@NotNull(message = "카테고리는 필수 입력 값입니다.")

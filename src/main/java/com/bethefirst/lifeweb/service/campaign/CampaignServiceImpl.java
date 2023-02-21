@@ -3,6 +3,7 @@ package com.bethefirst.lifeweb.service.campaign;
 import com.bethefirst.lifeweb.dto.campaign.request.CampaignSearchRequirements;
 import com.bethefirst.lifeweb.dto.campaign.request.CreateCampaignDto;
 import com.bethefirst.lifeweb.dto.campaign.request.UpdateCampaignDto;
+import com.bethefirst.lifeweb.dto.campaign.request.UpdateCampaignPickDto;
 import com.bethefirst.lifeweb.dto.campaign.response.CampaignDto;
 import com.bethefirst.lifeweb.entity.campaign.*;
 import com.bethefirst.lifeweb.entity.member.Sns;
@@ -158,6 +159,19 @@ public class CampaignServiceImpl implements CampaignService {
 		campaignRepository.findById(campaignId)
 				.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 캠페인입니다. " + campaignId))
 				.updateCampaignStatus(status);
+	}
+
+	/** 캠페인 PICK 체크 */
+	@Override
+	public void updatePick(UpdateCampaignPickDto updateCampaignPickDto) {
+
+		campaignRepository.updatePick(true, updateCampaignPickDto.getNewCampaignId());
+		campaignRepository.updatePick(false, updateCampaignPickDto.getOldCampaignId());
+
+		if (campaignRepository.countByPick(true) > 10) {
+			throw new RuntimeException("PICK은 10개까지만 선택가능합니다.");
+		}
+
 	}
 
 }
