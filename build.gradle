@@ -59,6 +59,8 @@ dependencies {
 	implementation 'org.jsoup:jsoup:1.15.3'
 	implementation 'org.seleniumhq.selenium:selenium-java:4.1.2'
 
+	// email
+	implementation 'org.apache.commons:commons-email:1.5'
 }
 
 tasks.named('test') {
