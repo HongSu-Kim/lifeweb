@@ -3,15 +3,18 @@ package com.bethefirst.lifeweb.controller.member;
 import com.bethefirst.lifeweb.config.security.JwtFilter;
 import com.bethefirst.lifeweb.config.security.TokenProvider;
 import com.bethefirst.lifeweb.dto.jwt.TokenDto;
-import com.bethefirst.lifeweb.dto.member.request.DeleteMemberSnsDto;
+import com.bethefirst.lifeweb.dto.member.request.FindPasswordDto;
 import com.bethefirst.lifeweb.dto.member.request.*;
 import com.bethefirst.lifeweb.dto.member.response.MemberInfoDto;
-import com.bethefirst.lifeweb.dto.member.request.ExistNicknameDto;
 import com.bethefirst.lifeweb.service.member.interfaces.MemberService;
 import com.bethefirst.lifeweb.service.member.interfaces.MemberSnsService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -87,13 +90,23 @@ public class MemberController {
 
     }
 
-    /** 회원 단건 조회*/
+    /** 회원 단건 조회 */
     @GetMapping("/{memberId}")
     @PreAuthorize("isAuthenticated() and (( #memberId == principal.memberId ) or hasRole('ADMIN'))")
     public MemberInfoDto read(@PathVariable Long memberId) {
 
         return memberService.getMember(memberId);
     }
+
+    /** 회원 전체 조회 */
+    @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
+    public Page<MemberInfoDto> list(@RequestBody MemberSearchRequirements requirements,
+                                    @PageableDefault(sort = "id", size = 20, direction = Sort.Direction.DESC)Pageable pageable){
+        return memberService.getMemberList(requirements, pageable);
+    }
+
+
     /** 이미지 수정 */
     @PutMapping("/{memberId}/image")
     @PreAuthorize("isAuthenticated() and (( #memberId == principal.memberId ) or hasRole('ADMIN'))")
@@ -111,9 +124,9 @@ public class MemberController {
     @PutMapping("/{memberId}/password")
     @PreAuthorize("isAuthenticated() and (( #memberId == principal.memberId ) or hasRole('ADMIN'))")
     public ResponseEntity<?> updatePassword(@PathVariable Long memberId,
-                                            @RequestBody PasswordDto passwordDto){
+                                            @RequestBody UpdatePasswordDto updatePasswordDto){
 
-        memberService.updatePassword(passwordDto, memberId);
+        memberService.updatePassword(updatePasswordDto, memberId);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setLocation(URI.create("/members/" + memberId));
@@ -146,18 +159,23 @@ public class MemberController {
     }
 
     /** 닉네임 중복 체크 */
-    @PostMapping("/nickname")
-    public void existNickname(ExistNicknameDto nicknameDto){
-        memberService.existsNickname(nicknameDto.getNickname());
+    @GetMapping("/nickname")
+    public void existNickname(String nickname){
+        memberService.existsNickname(nickname);
     }
 
     /** 이메일 중복 체크 */
-    @PostMapping("/email")
-    public void existEmail(@RequestBody ExistEmailDto emailDto){
-        memberService.existsEmail(emailDto.getEmail());
+    @GetMapping("/email")
+    public void existEmail(String email){
+        memberService.existsEmail(email);
     }
 
 
+    /** 비밀번호 찾기 */
+    @PutMapping("/password")
+    public void findPassword(@RequestBody FindPasswordDto findPasswordDto){
+        memberService.findPassword(findPasswordDto.getEmail());
+    }
 }
 
 

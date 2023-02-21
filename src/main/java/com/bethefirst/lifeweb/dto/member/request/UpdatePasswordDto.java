@@ -7,7 +7,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Getter
 @Setter
-public class PasswordDto {
+public class UpdatePasswordDto {
 
     private String newPassword;
     private String confirmPassword;
