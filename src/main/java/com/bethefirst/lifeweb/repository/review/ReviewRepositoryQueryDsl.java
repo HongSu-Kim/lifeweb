@@ -8,5 +8,5 @@ import org.springframework.data.domain.Pageable;
 public interface ReviewRepositoryQueryDsl {
 
     /** 리뷰 리스트 조회 */
-    Page<Review> findAllBySearchRequirements(ReviewSearchRequirements condition, Pageable pageable);
+    Page<Review> findAllBySearchRequirements(ReviewSearchRequirements searchRequirements, Pageable pageable);
 }
